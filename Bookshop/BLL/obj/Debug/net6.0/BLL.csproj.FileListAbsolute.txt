@@ -1,0 +1,11 @@
+D:\S2-Individual\bookshop\Bookshop\BLL\bin\Debug\net6.0\BLL.deps.json
+D:\S2-Individual\bookshop\Bookshop\BLL\bin\Debug\net6.0\BLL.dll
+D:\S2-Individual\bookshop\Bookshop\BLL\bin\Debug\net6.0\BLL.pdb
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.AssemblyInfoInputs.cache
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.AssemblyInfo.cs
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.csproj.CoreCompileInputs.cache
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.dll
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\refint\BLL.dll
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\BLL.pdb
+D:\S2-Individual\bookshop\Bookshop\BLL\obj\Debug\net6.0\ref\BLL.dll

@@ -1,0 +1,11 @@
+D:\S2-Individual\bookshop\Bookshop\Classes\bin\Debug\net6.0\Classes.deps.json
+D:\S2-Individual\bookshop\Bookshop\Classes\bin\Debug\net6.0\Classes.dll
+D:\S2-Individual\bookshop\Bookshop\Classes\bin\Debug\net6.0\Classes.pdb
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.GeneratedMSBuildEditorConfig.editorconfig
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.AssemblyInfoInputs.cache
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.AssemblyInfo.cs
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.csproj.CoreCompileInputs.cache
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.dll
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\refint\Classes.dll
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\Classes.pdb
+D:\S2-Individual\bookshop\Bookshop\Classes\obj\Debug\net6.0\ref\Classes.dll

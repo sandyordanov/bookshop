@@ -1,0 +1,15 @@
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.AssemblyInfoInputs.cache
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.AssemblyInfo.cs
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.csproj.CoreCompileInputs.cache
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.csproj.AssemblyReference.cache
+D:\S2-Individual\bookshop\Bookshop\DAL\bin\Debug\net6.0\DAL.deps.json
+D:\S2-Individual\bookshop\Bookshop\DAL\bin\Debug\net6.0\DAL.dll
+D:\S2-Individual\bookshop\Bookshop\DAL\bin\Debug\net6.0\DAL.pdb
+D:\S2-Individual\bookshop\Bookshop\DAL\bin\Debug\net6.0\Classes.dll
+D:\S2-Individual\bookshop\Bookshop\DAL\bin\Debug\net6.0\Classes.pdb
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.csproj.CopyComplete
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.dll
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\refint\DAL.dll
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\DAL.pdb
+D:\S2-Individual\bookshop\Bookshop\DAL\obj\Debug\net6.0\ref\DAL.dll
