@@ -36,6 +36,7 @@
             // 
             // menuStrip1
             // 
+            menuStrip1.BackColor = SystemColors.ActiveCaption;
             menuStrip1.ImageScalingSize = new Size(20, 20);
             menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
@@ -53,9 +54,10 @@
             // 
             // panel1
             // 
-            panel1.Location = new Point(0, 31);
+            panel1.BackColor = SystemColors.InactiveCaption;
+            panel1.Location = new Point(0, 27);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1176, 463);
+            panel1.Size = new Size(1176, 467);
             panel1.TabIndex = 2;
             // 
             // JungleDesktop
@@ -67,7 +69,7 @@
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "JungleDesktop";
-            Text = "Form1";
+            Text = "JungleWebsite";
             Load += JungleDesktop_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

@@ -2,17 +2,17 @@
 {
     public class Review
     {
+        int userId;
         int rating;
-        string? comment;
-        string? reviewerName;
+        string comment;
         DateTime dateCreated;
 
-        public Review(int rating, string comment, string name)
+        public Review(int userId, int rating, string comment)
         {
+            this.userId = userId;
             SetRating(rating);
             SetComment(comment);
-            SetReviewerName(name);
-            SetCreationDate();
+            dateCreated = SetCreationDate();
         }
         public void SetRating(int rating)
         {
@@ -22,21 +22,9 @@
         {
             this.comment = comment;
         }
-        public void SetReviewerName(string reviewerName)
+        public DateTime SetCreationDate()
         {
-            if (reviewerName != null)
-            {
-                this.reviewerName = reviewerName;
-                return;
-            }
-            else
-            {
-                this.reviewerName = "anonymous";
-            }
-        }
-        public void SetCreationDate()
-        {
-            dateCreated = DateTime.Now;
+            return DateTime.Now;
         }
         public int GetRating()
         {
@@ -49,7 +37,7 @@
         }
         public string GetReviewerName()
         {
-            return reviewerName;
+            return "";
         }
     }
 }

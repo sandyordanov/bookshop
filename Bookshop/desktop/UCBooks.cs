@@ -16,13 +16,14 @@ namespace desktop
     public partial class UCBooks : UserControl
     {
         string action;
-        List<Book> books;
+        PaperBook selected;
+        List<PaperBook> books;
         private IBookRepository bookRepo;
 
         public UCBooks(IBookRepository bookRepo)
         {
             this.bookRepo = bookRepo;
-            books = new List<Book>();
+            books = new List<PaperBook>();
             InitializeComponent();
         }
 
@@ -34,31 +35,81 @@ namespace desktop
         private void btnAdd_Click(object sender, EventArgs e)
         {
             AddFormControl();
-
+            btnDelete.Enabled = false;
         }
-
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
+            PaperBook book = new PaperBook(tbTitle.Text,Convert.ToDouble(tbPrice.Text),"",tbAuthor.Text,tbLanguage.Text,tbPublisher.Text,Convert.ToInt32(tbPages.Text),tbISBN.Text,Convert.ToInt32(tbYear.Text),1);
             switch (action)
             {
                 case "add":
-                    Book book = new Book(tbTitle.Text, tbAuthor.Text, tbLanguage.Text, tbPublisher.Text, int.Parse(tbPages.Text), tbISBN.Text, double.Parse(tbPrice.Text), int.Parse(tbYear.Text), new List<Review>());
+                    
                     bool success = bookRepo.AddBook(book);
                     ReadOnlyTrue();
-                    if (success) { MessageBox.Show("Book succesfully added."); RefreshCollection(); }
+                    HideButtons();
+                    if (success) { MessageBox.Show("Book succesfully added.", "Update"); RefreshCollection(); }
                     else
                     {
-                        MessageBox.Show("Problem with adding the book occured.");
+                        MessageBox.Show("Problem with adding the book occured.", "Update");
                     }
                     break;
                 case "update":
-
+                    book.Id = selected.Id;
+                    success = bookRepo.UpdateBook(book);
+                    ReadOnlyTrue();
+                    HideButtons();
+                    if (success) { MessageBox.Show("Book succesfully updated.", "Update"); RefreshCollection(); }
+                    else
+                    {
+                        MessageBox.Show("Problem with updating the book occured.","Update");
+                    }
                     break;
                 default:
                     break;
             }
 
+        }
+
+        
+        private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (action != "add" || action != "update")
+            {
+                ReadOnlyTrue();
+                HideButtons();
+            }
+            selected = lbBooks.SelectedItem as PaperBook;
+            LoadBookInfo(selected);
+
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            ReadOnlyTrue();
+            HideButtons();
+            EnableButtons();
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            PaperBook book = lbBooks.SelectedItem as PaperBook;
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show("Do you really want to delete this book?", "Delete", buttons);
+            if (result == DialogResult.Yes)
+            {
+                bookRepo.DeleteBook(book);
+                RefreshCollection();
+            }
+            else
+            {
+                
+            }
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            UpdateFormControl();
         }
 
         private void AddFormControl()
@@ -99,43 +150,62 @@ namespace desktop
             tbPrice.ReadOnly = true;
             tbYear.ReadOnly = true;
         }
-        private void LoadBookInfo(Book book)
+        private void LoadBookInfo(PaperBook book)
         {
-            tbTitle.Text = book.GetTitle();
-            tbAuthor.Text = book.GetAuthor();
-            tbLanguage.Text = book.GetLanguage();
+            tbTitle.Text = book.Title;
+            tbAuthor.Text = book.Author;
+            tbLanguage.Text = book.Language;
             tbPublisher.Text = book.GetPublisher();
 
 
             tbPages.Text = Convert.ToString(book.GetPages());
             tbISBN.Text = book.GetISBN();
-            tbPrice.Text = Convert.ToString(book.GetPrice());
+            tbPrice.Text = Convert.ToString(book.Price);
             tbYear.Text = Convert.ToString(book.GetPublicationYear());
         }
         private void RefreshCollection()
         {
             lbBooks.Items.Clear();
             books = bookRepo.GetAllBooks();
-            foreach (Book book in books)
+            foreach (PaperBook book in books)
             {
                 lbBooks.Items.Add(book);
             }
         }
-        private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
+        private void UpdateFormControl()
         {
-            Book selected = lbBooks.SelectedItem as Book;
-            LoadBookInfo(selected);
-        }
+            tbTitle.ReadOnly = false;
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            ReadOnlyTrue();
-        }
+            tbAuthor.ReadOnly = false;
 
-        private void btnDelete_Click(object sender, EventArgs e)
+            tbLanguage.ReadOnly = false;
+
+            tbPublisher.ReadOnly = false;
+
+
+            tbPages.ReadOnly = false;
+
+            tbISBN.ReadOnly = false;
+
+            tbPrice.ReadOnly = false;
+
+            tbYear.ReadOnly = false;
+
+
+            btnConfirm.Visible = true;
+            btnCancel.Visible = true;
+            action = "update";
+        }
+        private void HideButtons()
         {
-            Book book = lbBooks.SelectedItem as Book;
-            MessageBoxButtons.YesNo.HasFlag(MessageBoxButtons.YesNo);
+            btnConfirm.Visible = false;
+            btnCancel.Visible = false;
+        }
+        private void EnableButtons()
+        {
+            btnAdd.Enabled = true;
+            btnUpdate.Enabled = true;
+            btnDelete.Enabled = true;
         }
     }
 }

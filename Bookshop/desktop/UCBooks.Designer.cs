@@ -260,6 +260,7 @@
             btnUpdate.TabIndex = 14;
             btnUpdate.Text = "Update";
             btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Click += btnUpdate_Click;
             // 
             // btnAdd
             // 
@@ -283,6 +284,7 @@
             // 
             // lbBooks
             // 
+            lbBooks.BackColor = SystemColors.MenuBar;
             lbBooks.FormattingEnabled = true;
             lbBooks.ItemHeight = 20;
             lbBooks.Location = new Point(3, 3);
