@@ -40,11 +40,11 @@ namespace desktop
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            PaperBook book = new PaperBook(tbTitle.Text,Convert.ToDouble(tbPrice.Text),"",tbAuthor.Text,tbLanguage.Text,tbPublisher.Text,Convert.ToInt32(tbPages.Text),tbISBN.Text,Convert.ToInt32(tbYear.Text),1);
+            PaperBook book = new PaperBook(0, tbTitle.Text, Convert.ToDouble(tbPrice.Text), "", tbAuthor.Text, tbLanguage.Text, tbPublisher.Text, Convert.ToInt32(tbPages.Text), tbISBN.Text, Convert.ToInt32(tbYear.Text), 1,0);
             switch (action)
             {
                 case "add":
-                    
+
                     bool success = bookRepo.AddBook(book);
                     ReadOnlyTrue();
                     HideButtons();
@@ -55,14 +55,14 @@ namespace desktop
                     }
                     break;
                 case "update":
-                    book.Id = selected.Id;
+                    
                     success = bookRepo.UpdateBook(book);
                     ReadOnlyTrue();
                     HideButtons();
                     if (success) { MessageBox.Show("Book succesfully updated.", "Update"); RefreshCollection(); }
                     else
                     {
-                        MessageBox.Show("Problem with updating the book occured.","Update");
+                        MessageBox.Show("Problem with updating the book occured.", "Update");
                     }
                     break;
                 default:
@@ -71,7 +71,7 @@ namespace desktop
 
         }
 
-        
+
         private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (action != "add" || action != "update")
@@ -103,7 +103,7 @@ namespace desktop
             }
             else
             {
-                
+
             }
         }
 
@@ -160,7 +160,6 @@ namespace desktop
 
             tbPages.Text = Convert.ToString(book.GetPages());
             tbISBN.Text = book.GetISBN();
-            tbPrice.Text = Convert.ToString(book.Price);
             tbYear.Text = Convert.ToString(book.GetPublicationYear());
         }
         private void RefreshCollection()

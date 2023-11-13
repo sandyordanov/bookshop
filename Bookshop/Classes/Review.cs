@@ -7,7 +7,9 @@
         string comment;
         DateTime dateCreated;
 
-        public Review(int userId, int rating, string comment)
+        public Review(int userId,
+                      int rating,
+                      string comment)
         {
             this.userId = userId;
             SetRating(rating);

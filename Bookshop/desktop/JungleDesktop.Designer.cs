@@ -31,6 +31,7 @@
             menuStrip1 = new MenuStrip();
             addBooksToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
+            reviewsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -38,7 +39,7 @@
             // 
             menuStrip1.BackColor = SystemColors.ActiveCaption;
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem, reviewsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(1176, 28);
@@ -59,6 +60,12 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1176, 467);
             panel1.TabIndex = 2;
+            // 
+            // reviewsToolStripMenuItem
+            // 
+            reviewsToolStripMenuItem.Name = "reviewsToolStripMenuItem";
+            reviewsToolStripMenuItem.Size = new Size(76, 24);
+            reviewsToolStripMenuItem.Text = "Reviews";
             // 
             // JungleDesktop
             // 
@@ -82,5 +89,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem addBooksToolStripMenuItem;
         private Panel panel1;
+        private ToolStripMenuItem reviewsToolStripMenuItem;
     }
 }

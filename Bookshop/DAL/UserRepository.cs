@@ -10,6 +10,11 @@ namespace DAL
 {
     public class UserRepository : IUserRepository
     {
+        public bool DeleteUserProfile(User user)
+        {
+            throw new NotImplementedException();
+        }
+
         public User GetUserByUsername(string username)
         {
             User user = new User();
@@ -39,6 +44,16 @@ namespace DAL
                 }
                 return user;
             }
+        }
+
+        public bool RegisterUserProfile(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateUserProfile(User user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

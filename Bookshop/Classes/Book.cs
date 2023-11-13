@@ -8,53 +8,34 @@ namespace Classes
 {
     public class Book
     {
-        int id;
-        string title;
-        double price;
-        string description;
-        string author;
-        string language;
-        private List<Review> reviews;
+        public int? Id { get; set; }
+        public string Title { get;  set; }
+        public string Author { get;  set; }
+        public string Description { get; set; }
+        public string Language { get;  set; }
+        private ReviewManager reviewManager;
 
-        public Book(int id, string title, double price, string description, string author, string language)
+        public Book(int id, string title, string description, string author, string language)
         {
-            this.id = id;
-            this.title = title;
-            this.price = price;
-            this.description = description;
-            this.author = author;
-            this.language = language;
-            reviews = new List<Review>();
+            Id = id;
+            Title = title;
+            Description = description;
+            Author = author;
+            Language = language;
+            reviewManager = new ReviewManager();
         }
-        public Book( string title, double price, string description, string author, string language)
-        {
-            this.title = title;
-            this.price = price;
-            this.description = description;
-            this.author = author;
-            this.language = language;
-            reviews = new List<Review>();
-        }
-        public Book()
-        {
-        }
-        public int Id { get { return id; } set { id = value; } }
-        public string Title { get {  return title; } set {  title = value; } }
-        public double Price { get { return price; } set { price = value; } }
-        public string Description { get { return description; } set { description = value; } }
-        public string Author { get { return author; } set { author = value; } }
-        public string Language { get { return language; } set { language = value; } }
 
         public void AddReview(Review review)
         {
-            reviews.Add(review);
+            reviewManager.AddReview(review);
         }
         public void RemoveReview(Review review)
         {
-            reviews.Remove(review);
+            reviewManager.RemoveReview(review);
         }
-        public List<Review> GetReviews() { return this.reviews; }
-
-
+        public List<Review> GetReviews() 
+        { 
+           return reviewManager.GetReviews();
+        }
     }
 }
