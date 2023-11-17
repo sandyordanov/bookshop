@@ -302,7 +302,7 @@
             btnConfirm.Text = "Confirm";
             btnConfirm.UseVisualStyleBackColor = true;
             btnConfirm.Visible = false;
-            btnConfirm.Click += btnConfirm_Click;
+           // btnConfirm.Click += btnConfirm_Click;
             // 
             // btnCancel
             // 

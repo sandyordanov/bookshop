@@ -2,44 +2,27 @@
 {
     public class Review
     {
-        int userId;
-        int rating;
-        string comment;
-        DateTime dateCreated;
+        int _id;
+        string _comment;
+        int _rating;
+        DateOnly _date;
+        int _likes;
+        private User _user;
+        public int Id { get { return _id; } }
+        public string Comment { get { return _comment; } set { _comment = value; } }
+        public int Rating { get { return _rating; } set { _rating = value; } }
+        public DateOnly Date { get { return _date; } set { _date = value; } }
+        public int Likes { get { return _likes; } set { _likes = value; } }
+        public User User { get => _user; set => _user = value; }
 
-        public Review(int userId,
-                      int rating,
-                      string comment)
+        public Review(int id, string comment, int rating, DateOnly date, int likes, User user)
         {
-            this.userId = userId;
-            SetRating(rating);
-            SetComment(comment);
-            dateCreated = SetCreationDate();
-        }
-        public void SetRating(int rating)
-        {
-            this.rating = rating;
-        }
-        public void SetComment(string comment)
-        {
-            this.comment = comment;
-        }
-        public DateTime SetCreationDate()
-        {
-            return DateTime.Now;
-        }
-        public int GetRating()
-        {
-            return rating;
-        }
-        public string GetComment()
-        {
-            if (!string.IsNullOrEmpty(comment)) { return comment; }
-            else { return "No comment added"; }
-        }
-        public string GetReviewerName()
-        {
-            return "";
+            _id = id;
+            Comment = comment;
+            Rating = rating;
+            Date = date;
+            Likes = likes;
+            User = user;
         }
     }
 }

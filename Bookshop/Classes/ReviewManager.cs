@@ -3,28 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Classes;
 
 namespace Classes
 {
     public class ReviewManager
     {
-        private List<Review> reviews;
-
+        private List<Review> _reviews;
         public ReviewManager()
         {
-            reviews = new List<Review>();
+            _reviews = new List<Review>();
         }
         public void AddReview(Review review)
         {
-            reviews.Add(review);
+            _reviews.Add(review);
+        }
+        public void AddAllReviews(List<Review> reviews)
+        {
+
         }
         public void RemoveReview(Review review)
         {
-            reviews.Remove(review);
+            _reviews.Remove(review);
         }
         public List<Review> GetReviews()
         {
-            return reviews;
+            return _reviews;
         }
     }
 }

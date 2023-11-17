@@ -15,8 +15,8 @@
         <div class="card d-inline-flex" style="width: 18rem;">
             <img class="card-img-top" src="~/book.png" alt="Card image cap" style="width: 18rem;">
             <div class="card-body">
-                <h5 class="card-title">@book.Title</h5>
-                <p class="card-text">Author: @book.Author</p>
+                <h5 class="card-title">@book.Title [@book.Format]</h5>
+                <p class="card-text">Author: @string.Join(",",book.Authors.Select(author => author.FullName))</p>
                 <p class="card-text">Publisher: @book.Publisher</p>
                 <form method="post" asp-page-handler="Post" asp-for="car.Id">
                     <input type="hidden" name="id" value="@book.Id" class="form-control" />
@@ -26,5 +26,5 @@
         </div>
     }
 </div>
-    
+
 

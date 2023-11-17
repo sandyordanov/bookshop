@@ -11,7 +11,7 @@ namespace BLL
     public class BookManagement
     {
         private IBookRepository _bookRepo;
-        private List<PaperBook> books;
+        private List<Book> books;
         public BookManagement()
         {
             _bookRepo = new BookRepository();
@@ -22,11 +22,11 @@ namespace BLL
             books.Add(book);
             _bookRepo.AddBook(book);
         }
-        public List<PaperBook> GetAllBooks()
+        public List<Book> GetAllBooks()
         {
             return books;
         }
-        public PaperBook GetBookInfo(int id)
+        public Book GetBookInfo(int id)
         {
             foreach (var book in books)
             {

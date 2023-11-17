@@ -8,7 +8,7 @@ namespace web.Pages
 {
     public class BookModel : PageModel
     {
-        public PaperBook Book { get; set; }
+        public Book Book { get; set; }
         private BookManagement bookManager;
         public BookModel()
         {

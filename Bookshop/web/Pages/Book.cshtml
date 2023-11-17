@@ -1,9 +1,55 @@
 ﻿@page
+@using Classes;
 @model web.Pages.BookModel
 @{
 }
-<h1>Title: @Model.Book.Title</h1>
-<h3>Author: @Model.Book.Author</h3>
-<h4>Publication year: @Model.Book.PublicationYear</h4>
-<h4>Publisher: @Model.Book.Publisher</h4>
-<h4>ISBN: @Model.Book.ISBN</h4>
+@if (Model.Book.GetType() == typeof(PaperBook))
+{
+    var paperBook = (PaperBook)Model.Book;
+    <h1> @paperBook.Title</h1>
+    <h3> @string.Join(',',paperBook.Authors.Select(author => author.FullName))</h3>
+    <p>@paperBook.Description</p>
+    <h4>Publication year: @paperBook.PublicationDate</h4>
+    <h4>Publisher: @paperBook.Publisher</h4>
+    <h4>ISBN: @paperBook.ISBN</h4>
+    <h4>ISBN10: @paperBook.ISBN10</h4>
+}
+else if (Model.Book.GetType() == typeof(EBook))
+{
+    var ebook = (EBook)Model.Book;
+    <h1> @ebook.Title</h1>
+    <h3>@string.Join(',',ebook.Authors.Select(author => author.FullName))</h3>
+    <p>@ebook.Description</p>
+    <h4>Publication year: @ebook.PublicationDate</h4>
+    <h4>Publisher: @ebook.Publisher</h4>
+    <h4>Format: @ebook.Format</h4>
+    <h4>File size: @ebook.FileSize</h4>
+}
+
+<div class="container mt-5">
+    <h2>Leave a Review</h2>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" id="comment" name="Comment" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <select class="form-control" id="rating" name="Rating" required>
+                <option value="1">1 - Poor</option>
+                <option value="2">2 - Fair</option>
+                <option value="3">3 - Good</option>
+                <option value="4">4 - Very Good</option>
+                <option value="5">5 - Excellent</option>
+            </select>
+        </div>
+
+        <!-- You may add more fields as needed -->
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </div>
+    </form>
+</div>

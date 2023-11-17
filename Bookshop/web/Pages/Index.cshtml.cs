@@ -13,7 +13,7 @@ namespace web.Pages
 
 
         [BindProperty(SupportsGet = true)]
-        public List<PaperBook> books { get; set; }
+        public List<Book> books { get; set; }
 
 
         public IndexModel(ILogger<IndexModel> logger)

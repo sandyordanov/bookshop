@@ -2,36 +2,25 @@
 {
     public class PaperBook : Book
     {
-        string publisher;
-        int pages;
-        string iSBN;
-        int publicationYear;
 
-        public PaperBook(int id, string title, string description, string author, string language, string publisher, int pages, string ISBN, int publicationYear) : base(id, title, description, author, language)
+        int _pages;
+        string _iSBN;
+        string _iSBN10;
+
+        public int Pages { get => _pages; set => _pages = value; }
+        public string ISBN { get => _iSBN; set => _iSBN = value; }
+        public string ISBN10 { get => _iSBN10; set => _iSBN10 = value; }
+
+        public PaperBook(int id, string title, string description, string publisher, string language, DateOnly publicationDate, Format format, List<Author> authors, int pages, string iSBN, string iSBN10) : base(id, title, description, publisher, language, publicationDate, format, authors)
         {
-            this.publisher = publisher;
-            this.pages = pages;
-            iSBN = ISBN;
-            this.publicationYear = publicationYear;
+            Pages = pages;
+            ISBN = iSBN;
+            ISBN10 = iSBN10;
         }
-
-        public string Publisher { get { return publisher; } set { publisher = value; } }
-        public int Pages { get { return pages; } set { pages = value; } }
-        public string ISBN { get { return iSBN; } set { iSBN = value; } }
-        public int PublicationYear { get { return publicationYear; } set { publicationYear = value; } }
-
-        public void SetPublisher(string _publisher) { publisher = _publisher; }
-        public void SetPages(int _pages) { pages = _pages; }
-        public void SetISBN(string _ISBN) { ISBN = _ISBN; }
-        public void SetPublicationYear(int year) { publicationYear = year; }
-        public string GetPublisher() { return publisher; }
-        public int GetPages() { return pages; }
-        public string GetISBN() { return ISBN; }
-        public int GetPublicationYear() { return publicationYear; }
 
         public override string ToString()
         {
-            return $"{Title} - {Author}, Publisher: {publisher}({ISBN})";
+            return base.ToString() + "{ISBN})";
         }
     }
 }

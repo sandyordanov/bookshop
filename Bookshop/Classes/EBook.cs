@@ -2,14 +2,15 @@
 {
     public class EBook : Book
     {
-        public string Format { get; private set; }
-        public double FileSize { get; private set; }
-        public string DownloadLink { get; private set; }
+        private double _filesize;
+        private string _downloadLink;
 
-        public EBook(int id, string title, string description, string author, string language, string format, double fileSize, string downloadLink): base(id, title, description, author, language)
+        public double FileSize { get => _filesize; set => _filesize = value; }
+        public string DownloadLink { get => _downloadLink; set => _downloadLink = value; }
+
+        public EBook(int id, string title, string description, string publisher, string language, DateOnly publicationDate, Format format, List<Author> authors, double filesize, string downloadLink) : base(id, title, description, publisher, language, publicationDate, format, authors)
         {
-            Format = format;
-            FileSize = fileSize;
+            FileSize = filesize;
             DownloadLink = downloadLink;
         }
     }

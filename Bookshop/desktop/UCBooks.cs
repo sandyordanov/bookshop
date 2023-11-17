@@ -17,13 +17,13 @@ namespace desktop
     {
         string action;
         PaperBook selected;
-        List<PaperBook> books;
+        List<Book> books;
         private IBookRepository bookRepo;
 
         public UCBooks(IBookRepository bookRepo)
         {
             this.bookRepo = bookRepo;
-            books = new List<PaperBook>();
+            books = new List<Book>();
             InitializeComponent();
         }
 
@@ -38,38 +38,38 @@ namespace desktop
             btnDelete.Enabled = false;
         }
 
-        private void btnConfirm_Click(object sender, EventArgs e)
-        {
-            PaperBook book = new PaperBook(0, tbTitle.Text, Convert.ToDouble(tbPrice.Text), "", tbAuthor.Text, tbLanguage.Text, tbPublisher.Text, Convert.ToInt32(tbPages.Text), tbISBN.Text, Convert.ToInt32(tbYear.Text), 1,0);
-            switch (action)
-            {
-                case "add":
+        //private void btnConfirm_Click(object sender, EventArgs e)
+        //{
+            
+        //    switch (action)
+        //    {
+        //        case "add":
 
-                    bool success = bookRepo.AddBook(book);
-                    ReadOnlyTrue();
-                    HideButtons();
-                    if (success) { MessageBox.Show("Book succesfully added.", "Update"); RefreshCollection(); }
-                    else
-                    {
-                        MessageBox.Show("Problem with adding the book occured.", "Update");
-                    }
-                    break;
-                case "update":
+        //            bool success = bookRepo.AddBook(book);
+        //            ReadOnlyTrue();
+        //            HideButtons();
+        //            if (success) { MessageBox.Show("Book succesfully added.", "Update"); RefreshCollection(); }
+        //            else
+        //            {
+        //                MessageBox.Show("Problem with adding the book occured.", "Update");
+        //            }
+        //            break;
+        //        case "update":
                     
-                    success = bookRepo.UpdateBook(book);
-                    ReadOnlyTrue();
-                    HideButtons();
-                    if (success) { MessageBox.Show("Book succesfully updated.", "Update"); RefreshCollection(); }
-                    else
-                    {
-                        MessageBox.Show("Problem with updating the book occured.", "Update");
-                    }
-                    break;
-                default:
-                    break;
-            }
+        //            success = bookRepo.UpdateBook(book);
+        //            ReadOnlyTrue();
+        //            HideButtons();
+        //            if (success) { MessageBox.Show("Book succesfully updated.", "Update"); RefreshCollection(); }
+        //            else
+        //            {
+        //                MessageBox.Show("Problem with updating the book occured.", "Update");
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
 
-        }
+        //}
 
 
         private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
@@ -153,20 +153,20 @@ namespace desktop
         private void LoadBookInfo(PaperBook book)
         {
             tbTitle.Text = book.Title;
-            tbAuthor.Text = book.Author;
+            tbAuthor.Text = string.Join(',', book.Authors);
             tbLanguage.Text = book.Language;
-            tbPublisher.Text = book.GetPublisher();
+            tbPublisher.Text = book.Publisher;
 
 
-            tbPages.Text = Convert.ToString(book.GetPages());
-            tbISBN.Text = book.GetISBN();
-            tbYear.Text = Convert.ToString(book.GetPublicationYear());
+            tbPages.Text = Convert.ToString(book.Pages);
+            tbISBN.Text = book.ISBN;
+            tbYear.Text = Convert.ToString(book.PublicationDate);
         }
         private void RefreshCollection()
         {
             lbBooks.Items.Clear();
             books = bookRepo.GetAllBooks();
-            foreach (PaperBook book in books)
+            foreach (Book book in books)
             {
                 lbBooks.Items.Add(book);
             }
