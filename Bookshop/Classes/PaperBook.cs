@@ -11,7 +11,7 @@
         public string ISBN { get => _iSBN; set => _iSBN = value; }
         public string ISBN10 { get => _iSBN10; set => _iSBN10 = value; }
 
-        public PaperBook(int id, string title, string description, string publisher, string language, DateOnly publicationDate, Format format, List<Author> authors, int pages, string iSBN, string iSBN10) : base(id, title, description, publisher, language, publicationDate, format, authors)
+        public PaperBook(int id, string title, string description, string publisher, string language, DateTime publicationDate, Format format, List<Author> authors, int pages, string iSBN, string iSBN10) : base(id, title, description, publisher, language, publicationDate, format, authors)
         {
             Pages = pages;
             ISBN = iSBN;

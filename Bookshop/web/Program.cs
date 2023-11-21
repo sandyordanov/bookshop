@@ -1,9 +1,14 @@
+using DAL;
+using DAL.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IBookRepository,BookRepository>();
+builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
+builder.Services.AddScoped<IUserRepository,UserRepository>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {

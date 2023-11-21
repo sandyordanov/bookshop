@@ -1,5 +1,6 @@
-﻿using Classes;
-using DAL;
+﻿using BLL;
+using Classes;
+using DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,14 +17,12 @@ namespace desktop
     public partial class UCBooks : UserControl
     {
         string action;
-        PaperBook selected;
-        List<Book> books;
-        private IBookRepository bookRepo;
+        Book currentlySelected;
+        BookManagement _bookManager;
 
         public UCBooks(IBookRepository bookRepo)
         {
-            this.bookRepo = bookRepo;
-            books = new List<Book>();
+            _bookManager = new BookManagement(bookRepo);
             InitializeComponent();
         }
 
@@ -38,38 +37,79 @@ namespace desktop
             btnDelete.Enabled = false;
         }
 
-        //private void btnConfirm_Click(object sender, EventArgs e)
-        //{
-            
-        //    switch (action)
-        //    {
-        //        case "add":
+        private void btnConfirm_click(object sender, EventArgs e)
+        {
+            Book book;
+            if (cbPaper.Checked == true)
+            {
+                List<Author> authorList = new List<Author>
+                {
+                    cbAuthors.SelectedItem as Author
+                };
+                book = new PaperBook(
+                    0,
+                    tbTitle.Text,
+                    tbDescription.Text,
+                    tbPublisher.Text,
+                    tbLanguage.Text,
+                    pubDatePicker.Value,
+                    (Format)cbFormat.SelectedValue,
+                    authorList,
+                    Convert.ToInt32(tbPages.Text),
+                    tbISBN.Text,
+                    tbISBN10.Text);
+            }
+            else if (cbEbook.Checked == true)
+            {
+                List<Author> authorList = new List<Author>
+                {
+                    cbAuthors.SelectedItem as Author
+                };
+                book = new EBook(0,
+                    tbTitle.Text,
+                    tbDescription.Text,
+                    tbPublisher.Text,
+                    tbLanguage.Text,
+                    pubDatePicker.Value,
+                    (Format)cbFormat.SelectedValue,
+                    authorList,
+                    Convert.ToDouble(tbFileSize.Text), tbLink.Text
+                    );
+            }
+            else
+            {
+                throw new Exception();
+            }
 
-        //            bool success = bookRepo.AddBook(book);
-        //            ReadOnlyTrue();
-        //            HideButtons();
-        //            if (success) { MessageBox.Show("Book succesfully added.", "Update"); RefreshCollection(); }
-        //            else
-        //            {
-        //                MessageBox.Show("Problem with adding the book occured.", "Update");
-        //            }
-        //            break;
-        //        case "update":
-                    
-        //            success = bookRepo.UpdateBook(book);
-        //            ReadOnlyTrue();
-        //            HideButtons();
-        //            if (success) { MessageBox.Show("Book succesfully updated.", "Update"); RefreshCollection(); }
-        //            else
-        //            {
-        //                MessageBox.Show("Problem with updating the book occured.", "Update");
-        //            }
-        //            break;
-        //        default:
-        //            break;
-        //    }
+            switch (action)
+            {
+                case "add":
 
-        //}
+                    bool success = _bookManager.AddNewBook(book);
+                    ReadOnlyTrue();
+                    HideButtons();
+                    if (success) { MessageBox.Show("book succesfully added.", "update"); RefreshCollection(); }
+                    else
+                    {
+                        MessageBox.Show("problem with adding the book occured.", "update");
+                    }
+                    break;
+                case "update":
+
+                    success = _bookManager.AddNewBook(book);
+                    ReadOnlyTrue();
+                    HideButtons();
+                    if (success) { MessageBox.Show("book succesfully updated.", "update"); RefreshCollection(); }
+                    else
+                    {
+                        MessageBox.Show("problem with updating the book occured.", "update");
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
 
 
         private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
@@ -79,8 +119,8 @@ namespace desktop
                 ReadOnlyTrue();
                 HideButtons();
             }
-            selected = lbBooks.SelectedItem as PaperBook;
-            LoadBookInfo(selected);
+            currentlySelected = lbBooks.SelectedItem as Book;
+            LoadBookInfo(currentlySelected);
 
         }
 
@@ -93,12 +133,12 @@ namespace desktop
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            PaperBook book = lbBooks.SelectedItem as PaperBook;
+            Book book = lbBooks.SelectedItem as Book;
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             DialogResult result = MessageBox.Show("Do you really want to delete this book?", "Delete", buttons);
             if (result == DialogResult.Yes)
             {
-                bookRepo.DeleteBook(book);
+                _bookManager.DeleteBook(book);
                 RefreshCollection();
             }
             else
@@ -116,8 +156,6 @@ namespace desktop
         {
             tbTitle.ReadOnly = false;
             tbTitle.Clear();
-            tbAuthor.ReadOnly = false;
-            tbAuthor.Clear();
             tbLanguage.ReadOnly = false;
             tbLanguage.Clear();
             tbPublisher.ReadOnly = false;
@@ -125,12 +163,8 @@ namespace desktop
 
             tbPages.ReadOnly = false;
             tbPages.Clear();
-            tbISBN.ReadOnly = false;
-            tbISBN.Clear();
-            tbPrice.ReadOnly = false;
-            tbPrice.Clear();
-            tbYear.ReadOnly = false;
-            tbYear.Clear();
+            tbDescription.ReadOnly = false;
+            tbDescription.Clear();
 
             btnConfirm.Visible = true;
             btnCancel.Visible = true;
@@ -140,33 +174,44 @@ namespace desktop
         private void ReadOnlyTrue()
         {
             tbTitle.ReadOnly = true;
-            tbAuthor.ReadOnly = true;
+
             tbLanguage.ReadOnly = true;
             tbPublisher.ReadOnly = true;
 
 
             tbPages.ReadOnly = true;
-            tbISBN.ReadOnly = true;
-            tbPrice.ReadOnly = true;
-            tbYear.ReadOnly = true;
+
+            tbDescription.ReadOnly = true;
         }
-        private void LoadBookInfo(PaperBook book)
+        private void LoadBookInfo(Book book)
         {
             tbTitle.Text = book.Title;
-            tbAuthor.Text = string.Join(',', book.Authors);
+            tbDescription.Text = book.Description;
+            cbAuthors.Text = string.Join(',', book.Authors);
             tbLanguage.Text = book.Language;
             tbPublisher.Text = book.Publisher;
+            pubDatePicker.Value = Convert.ToDateTime(book.PublicationDate);
+            cbFormat.SelectedItem = book.Format;
+            if (book.GetType() == typeof(PaperBook))
+            {
+                var paperBook = (PaperBook)book;
+                tbISBN.Text = paperBook.ISBN;
+                tbISBN10.Text = paperBook.ISBN10;
+                tbPages.Text = Convert.ToString(paperBook.Pages);
+            }
+            else if (book.GetType() == typeof(EBook))
+            {
+                var ebook = (EBook)book;
+                tbFileSize.Text = Convert.ToString(ebook.FileSize);
+                tbLink.Text = ebook.DownloadLink;
+            }
 
-
-            tbPages.Text = Convert.ToString(book.Pages);
-            tbISBN.Text = book.ISBN;
-            tbYear.Text = Convert.ToString(book.PublicationDate);
         }
         private void RefreshCollection()
         {
             lbBooks.Items.Clear();
-            books = bookRepo.GetAllBooks();
-            foreach (Book book in books)
+            _bookManager.RefreshCollection();  
+            foreach (Book book in _bookManager.GetAllBooks())
             {
                 lbBooks.Items.Add(book);
             }
@@ -175,7 +220,7 @@ namespace desktop
         {
             tbTitle.ReadOnly = false;
 
-            tbAuthor.ReadOnly = false;
+
 
             tbLanguage.ReadOnly = false;
 
@@ -184,12 +229,7 @@ namespace desktop
 
             tbPages.ReadOnly = false;
 
-            tbISBN.ReadOnly = false;
-
-            tbPrice.ReadOnly = false;
-
-            tbYear.ReadOnly = false;
-
+            tbDescription.ReadOnly = false;
 
             btnConfirm.Visible = true;
             btnCancel.Visible = true;
@@ -205,6 +245,20 @@ namespace desktop
             btnAdd.Enabled = true;
             btnUpdate.Enabled = true;
             btnDelete.Enabled = true;
+        }
+
+        private void UCBooks_Load(object sender, EventArgs e)
+        {
+            List<Author> authorList = _bookManager.GetAllAuthors();
+            foreach (var author in authorList)
+            {
+                cbAuthors.Items.Add(author);
+            }
+            List<Format> formats = _bookManager.GetAllFormats();
+            foreach (var format in formats)
+            {
+                cbFormat.Items.Add(format);
+            }
         }
     }
 }

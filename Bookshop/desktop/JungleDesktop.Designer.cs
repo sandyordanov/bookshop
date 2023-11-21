@@ -30,8 +30,8 @@
         {
             menuStrip1 = new MenuStrip();
             addBooksToolStripMenuItem = new ToolStripMenuItem();
-            panel1 = new Panel();
             reviewsToolStripMenuItem = new ToolStripMenuItem();
+            panel1 = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -42,7 +42,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem, reviewsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1176, 28);
+            menuStrip1.Size = new Size(1504, 28);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -53,25 +53,25 @@
             addBooksToolStripMenuItem.Text = "Books";
             addBooksToolStripMenuItem.Click += addBooksToolStripMenuItem_Click;
             // 
-            // panel1
-            // 
-            panel1.BackColor = SystemColors.InactiveCaption;
-            panel1.Location = new Point(0, 27);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(1176, 467);
-            panel1.TabIndex = 2;
-            // 
             // reviewsToolStripMenuItem
             // 
             reviewsToolStripMenuItem.Name = "reviewsToolStripMenuItem";
             reviewsToolStripMenuItem.Size = new Size(76, 24);
             reviewsToolStripMenuItem.Text = "Reviews";
             // 
+            // panel1
+            // 
+            panel1.BackColor = SystemColors.InactiveCaption;
+            panel1.Location = new Point(0, 27);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1505, 463);
+            panel1.TabIndex = 2;
+            // 
             // JungleDesktop
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1176, 496);
+            ClientSize = new Size(1504, 490);
             Controls.Add(panel1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;

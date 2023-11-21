@@ -10,7 +10,7 @@ namespace web.Pages
 {
     public class LoginModel : PageModel
     {
-        private UserServices userManager;
+        private UserController userManager;
 
         [BindProperty]
         public string Username { get; set; }
@@ -20,7 +20,7 @@ namespace web.Pages
 
         public LoginModel()
         {
-                userManager = new UserServices();
+            userManager = new UserController();
         }
         public IActionResult OnGet()
         {
@@ -36,21 +36,28 @@ namespace web.Pages
         {
             if (!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password))
             {
-                User loggee = userManager.GetUser(Username);
-                if (loggee != null)
+
+                var result = userManager.TryToLogUserIn(Username, Password);
+                if (result > 0)
                 {
-                    if (loggee.Password == Password)
-                    {
-                        List<Claim> claims = new List<Claim>();
-                       // claims.Add(new Claim("id", loggee.GetId().ToString()));
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-                        return RedirectToPage("/Index");
-                    }
+                    List<Claim> claims = new List<Claim>();
+                    
+                    claims.Add(new Claim("id", result.ToString()));
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+                    return RedirectToPage("/Index");
                 }
             }
             TempData["IsLogged"] = "Username or password invalid.";
             return Page();
+        }
+        public async Task<IActionResult> RedirectAfterRegistration(User registrated)
+        {
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim("id", registrated.Id.ToString()));
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+            return RedirectToPage("/Index");
         }
     }
 }

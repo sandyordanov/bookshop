@@ -10,7 +10,7 @@ namespace Classes
     {
         private int _id;
         private string _fullName;
-        private DateOnly _birthdate;
+        private DateTime _birthdate;
         private string _description;
         private string _website;
         private string _twitter;
@@ -18,7 +18,7 @@ namespace Classes
 
         public int Id { get { return _id; } }
         public string FullName { get { return _fullName; } set { _fullName = value; } }
-        public DateOnly Birthdate { get => _birthdate; set => _birthdate = value; }
+        public DateTime Birthdate { get => _birthdate; set => _birthdate = value; }
         public string Description { get { return _description; } set { _description = value; } }
         public string Website { get { return _website; } set { _website = value; } }
         public string Twitter { get { return _twitter; } set { _twitter = value; } }
@@ -26,7 +26,7 @@ namespace Classes
 
 
 
-        public Author(int id, string fullName, DateOnly birthdate, string description, string website, string twitter, List<string> genres)
+        public Author(int id, string fullName, DateTime birthdate, string description, string website, string twitter, List<string> genres)
         {
             _id = id;
             FullName = fullName;
@@ -34,6 +34,10 @@ namespace Classes
             Description = description;
             Website = website;
             Genres = genres;
+        }
+        public override string ToString()
+        {
+            return $"{FullName}";
         }
     }
 }

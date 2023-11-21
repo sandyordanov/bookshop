@@ -22,6 +22,12 @@ namespace Classes
         {
 
         }
+        public void LikeReview(int reviewId)
+        {
+          var likedReview = _reviews.First(x => x.Id == reviewId);
+            likedReview.Likes++;
+            
+        }
         public void RemoveReview(Review review)
         {
             _reviews.Remove(review);

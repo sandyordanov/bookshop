@@ -14,21 +14,94 @@ namespace Classes
         private string _description;
         private string _publisher;
         private string _language;
-        private DateOnly _publicationDate;
+        private DateTime _publicationDate;
         private Format _format;
         private List<Author> _authors;
         public int Id { get { return _id; } }
-        public string Title { get { return _title; } set { if (value == null) { throw new ArgumentException("Title cannot be null"); } _title = value; } }
-        public string Description { get { return _description; } set { if (value == null) { throw new ArgumentException("Description cannot be null"); } _description = value; } }
-        public string Publisher { get { return _publisher; } set { if (value == null) { throw new ArgumentException("Publisher cannot be null"); } _publisher = value; } }
-        public string Language { get { return _language; } set { if (value == null) { throw new ArgumentException("Language cannot be null"); } _language = value; } }
-        public DateOnly PublicationDate { get { return _publicationDate; } set { if (value > DateOnly.MaxValue || value < DateOnly.MinValue) { throw new ArgumentException("Insert valid datetime format"); } _publicationDate = value; } }
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Title cannot be null or empty");
+                }
+                if (value.Length > 100)
+                {
+                    throw new ArgumentException("Title cannot exceed 100 characters");
+                }
+                if (!value.Any(char.IsLetter))
+                {
+                    throw new ArgumentException("Title must contain at least one alphabetic character");
+                }
+                _title = value;
+            }
+        }
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Description cannot be null or empty");
+                }
+                if (value.Length > 1000)
+                {
+                    throw new ArgumentException("Description cannot exceed 1000 characters");
+                }
+                _description = value;
+            }
+        }
+        public string Publisher
+        {
+            get { return _publisher; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Publisher cannot be null or empty");
+                }
+                if (value.Length > 100)
+                {
+                    throw new ArgumentException("Publisher cannot exceed 25 characters");
+                }
+                if (!value.Any(char.IsLetterOrDigit))
+                {
+                    throw new ArgumentException("Publisher must contain at least one alphanumeric character");
+                }
+                _publisher = value;
+            }
+        }
+        public string Language
+        {
+            get { return _language; }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Language cannot be null or empty");
+                }
+                if (value.Length > 50)
+                {
+                    throw new ArgumentException("Language cannot exceed 50 characters");
+                }
+                if (!value.All(char.IsLetter))
+                {
+                    throw new ArgumentException("Language must consist only of alphabetic characters");
+                }
+                _language = value;
+            }
+        }
+
+        public DateTime PublicationDate { get { return _publicationDate; } set { if (value > DateTime.MaxValue || value < DateTime.MinValue) { throw new ArgumentException("Insert valid datetime format"); } _publicationDate = value; } }
         public Format Format { get { return _format; } set { _format = value; } }
         public List<Author> Authors { get { return _authors; } set { if (value == null) { throw new ArgumentException("Authors cannot be null"); } _authors = value; } }
-
+        public string Genre { get; set; }
         private ReviewManager reviewManager;
 
-        public Book(int id, string title, string description, string publisher, string language, DateOnly publicationDate, Format format, List<Author> authors)
+        public Book(int id, string title, string description, string publisher, string language, DateTime publicationDate, Format format, List<Author> authors)
         {
             _id = id;
             Title = title;

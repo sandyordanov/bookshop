@@ -1,5 +1,6 @@
 ﻿using BLL;
 using Classes;
+using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.Eventing.Reader;
@@ -8,7 +9,6 @@ namespace web.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
         private BookManagement bookManager;
 
 
@@ -16,10 +16,10 @@ namespace web.Pages
         public List<Book> books { get; set; }
 
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IBookRepository repos)
         {
-            _logger = logger;
-            bookManager = new BookManagement();
+
+            bookManager = new BookManagement(repos);
         }
 
         public void OnGet()

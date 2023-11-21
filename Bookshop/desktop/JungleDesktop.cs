@@ -1,4 +1,4 @@
-using DAL;
+using DAL.Interfaces;
 
 namespace desktop
 {

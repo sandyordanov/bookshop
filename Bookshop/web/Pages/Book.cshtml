@@ -53,3 +53,14 @@ else if (Model.Book.GetType() == typeof(EBook))
         </div>
     </form>
 </div>
+<div class="container">
+    @foreach(var review in Model.Book.GetReviews())
+    {
+        <div class="card">
+            <h4>@review.User</h4>
+            <h4>@review.Comment</h4>
+            <h4>@review.Rating</h4>
+        </div>
+        
+    }
+</div>
