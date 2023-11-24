@@ -126,7 +126,11 @@ namespace Classes
         {
             return reviewManager.GetReviews();
         }
-
+        public Statistics GetStatistics() { return reviewManager.GetStatistics();}
+        public void LikeReview(int reviewId)
+        {
+            reviewManager.LikeReview(reviewId);
+        }
         public override string ToString()
         {
             return $"{Title} - {string.Join(',', Authors.Select(author => author.FullName))}, Publisher: {Publisher} [{Format}]";

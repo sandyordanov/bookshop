@@ -1,0 +1,42 @@
+﻿@page
+@model web.Pages.ProfileModel
+@{
+}
+<h1>Recommended</h1>
+
+
+<div class="list-group">
+    @foreach (var book in Model.recommendedBooks)
+    {
+        <a href="/Book/?id=@book.Id" class="list-group-item list-group-item-action"> <h6>@book.Title</h6></a>
+    }
+</div>
+<hr />
+<h1>Reviews by you</h1>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Comment</th>
+            <th scope="col">Rating</th>
+            <th scope="col">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model.MyReviews)
+        {
+            <tr>
+                <th scope="row">1</th>
+
+                <td><a class="bg-dark" href="/Book/?id=@review.BookId" class="list-group-item list-group-item-action">@review.Comment</a></td>
+                <td>@review.Rating</td>
+                <td>@review.Date</td>
+            </tr>
+                            
+        }
+
+    </tbody>
+</table>
+
+
+

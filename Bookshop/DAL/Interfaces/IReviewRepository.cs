@@ -10,10 +10,12 @@ namespace DAL
     public interface IReviewRepository
     {
         bool AddReview(Review review);
-        void DeleteReview(Review review);
-
-        Review GetReview(int reviewId);
-        List<Review> GetAllReviews(int bookId);
+        bool UpdateReview(Review review);
+        bool DeleteReview(Review review);
+        void LikeReview(int reviewId);
+        Review? GetReview(int reviewId);
+        List<Review> GetAllReviewsByBook(int bookId);
+        List<Review> GetAllReviewsByUser(int userId);
 
     }
 }

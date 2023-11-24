@@ -14,13 +14,13 @@ namespace BLL
         private IBookRepository _bookRepo;
         private IReviewRepository _reviewRepo;
         private List<Book> books;
-        public BookManagement(IBookRepository som)
+        public BookManagement(IBookRepository bookRep, IReviewRepository revRep)
         {
-            _bookRepo =som;
-            _reviewRepo = new ReviewRepository();
+            _bookRepo = bookRep;
+            _reviewRepo = revRep;
             books = _bookRepo.GetAllBooks();
         }
-        public IEnumerable<Book> FilterByStrategies(List<IBookFilterStrategy> strategyCollection) 
+        public IEnumerable<Book> FilterByStrategies(List<IBookFilterStrategy> strategyCollection)
         {
             BookFilterContext filterMachine = new BookFilterContext(strategyCollection);
             return filterMachine.FilterBooks(books);
@@ -28,7 +28,7 @@ namespace BLL
         public bool AddNewBook(Book book)
         {
             books.Add(book);
-           return _bookRepo.AddBook(book);
+            return _bookRepo.AddBook(book);
         }
         public List<Book> GetAllBooks()
         {
@@ -38,7 +38,7 @@ namespace BLL
         {
             books = _bookRepo.GetAllBooks();
         }
-        public Book GetBookInfo(int id)
+        public Book? GetBookInfo(int id)
         {
             foreach (var book in books)
             {
@@ -48,6 +48,17 @@ namespace BLL
                 }
             }
             return null;
+        }
+        public Book GetBookAndReviews(int id)
+        {
+            Book? book = books.FirstOrDefault(book => book.Id == id);
+            if (book == null) { throw new Exception("Book with this ID not found"); }
+            List<Review> reviews = _reviewRepo.GetAllReviewsByBook(id);
+            foreach (Review review in reviews)
+            {
+                book.AddReview(review);
+            }
+            return book;
         }
         public List<Author> GetAllAuthors()
         {
@@ -59,17 +70,42 @@ namespace BLL
             return _bookRepo.GetAllFormats();
         }
 
-        public void DeleteBook(Book? book)
+        public void DeleteBook(Book book)
         {
             _bookRepo.DeleteBook(book);
         }
-        public List<Review> GetAllReviews(int bookId)
+        public List<Review> GetAllReviewsByBook(int bookId)
         {
-           return _reviewRepo.GetAllReviews(bookId);
+            return _reviewRepo.GetAllReviewsByBook(bookId);
+        }
+        public List<Review> GetAllReviewsByUser(int userId)
+        {
+            return _reviewRepo.GetAllReviewsByUser(userId);
         }
         public bool AddReview(Review review)
         {
             return _reviewRepo.AddReview(review);
+        }
+        public bool UpdateReview(Review review)
+        {
+            return _reviewRepo.UpdateReview(review);
+        }
+        public bool DeleteReview(Review review)
+        {
+            return _reviewRepo.DeleteReview(review);
+        }
+        public void LikeReview(Review review)
+        {
+            _reviewRepo.LikeReview(review.Id);
+            books.First(book => book.Id == review.BookId).LikeReview(review.Id);
+        }
+        public Review GetReview(int reviewId)
+        {
+            if (_reviewRepo.GetReview(reviewId) != null)
+            {
+                return _reviewRepo.GetReview(reviewId);
+            }
+           throw new Exception("review not fount");
         }
     }
 }

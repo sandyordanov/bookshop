@@ -25,19 +25,101 @@ else if (Model.Book.GetType() == typeof(EBook))
     <h4>Format: @ebook.Format</h4>
     <h4>File size: @ebook.FileSize</h4>
 }
+<hr />
+<h2>Reviews</h2>
+<div class="container">
 
+    <div class="row">
+
+        <div class="col-10">
+            <div class="row">
+                <div class="col-2">
+                    <h5>5 star</h5>
+                </div>
+                <div class="col-5 mt-1">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fiveStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fiveStarReviewsPercentage %</div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <h5>(@Model.Statistics.fiveStarReviewsCount)</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <h5>4 star</h5>
+                </div>
+                <div class="col-5 mt-1">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fourStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fourStarReviewsPercentage %</div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <h5>(@Model.Statistics.fourStarReviewsCount)</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <h5>3 star</h5>
+                </div>
+                <div class="col-5 mt-1">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.threeStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.threeStarReviewsPercentage %</div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <h5>(@Model.Statistics.threeStarReviewsCount)</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <h5>2 star</h5>
+                </div>
+                <div class="col-5 mt-1">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.twoStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.twoStarReviewsPercentage %</div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <h5>(@Model.Statistics.twoStarReviewsCount)</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <h5>1 star</h5>
+                </div>
+                <div class="col-5 mt-1">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.oneStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.oneStarReviewsPercentage %</div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <h5>(@Model.Statistics.oneStarReviewsCount)</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 text-center mt-5">
+            <h4>Average: @Model.Statistics.Average</h4>
+        </div>
+    </div>
+</div>
+<hr />
 <div class="container mt-5">
     <h2>Leave a Review</h2>
 
     <form method="post">
         <div class="form-group">
             <label for="comment">Comment:</label>
-            <textarea class="form-control" id="comment" name="Comment" rows="4" required></textarea>
+            <textarea asp-for="NewReview.Comment" class="form-control" id="comment" name="Comment" rows="4" required></textarea>
         </div>
 
         <div class="form-group">
             <label for="rating">Rating:</label>
-            <select class="form-control" id="rating" name="Rating" required>
+            <select asp-for="NewReview.Rating" class="form-control" id="rating" name="Rating" required>
                 <option value="1">1 - Poor</option>
                 <option value="2">2 - Fair</option>
                 <option value="3">3 - Good</option>
@@ -49,18 +131,20 @@ else if (Model.Book.GetType() == typeof(EBook))
         <!-- You may add more fields as needed -->
 
         <div class="form-group">
+            <input type="hidden" value="@Model.Book.Id" name="bookId" />
             <button type="submit" class="btn btn-primary">Submit Review</button>
         </div>
     </form>
 </div>
+
 <div class="container">
-    @foreach(var review in Model.Book.GetReviews())
+    @foreach (var review in Model.Book.GetReviews())
     {
         <div class="card">
-            <h4>@review.User</h4>
+            <h4>@review.User.Name</h4><p>(@review.User.Username)</p>
             <h4>@review.Comment</h4>
             <h4>@review.Rating</h4>
         </div>
-        
+
     }
 </div>

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace DAL
         public User GetUserById(int id)
         {
             string query = "SELECT Name, Email, Username, Password, Salt FROM Users WHERE Id = @id";
-            using (SqlConnection conn = new SqlConnection())
+            using (SqlConnection conn = new SqlConnection(DbConnectionString.Get()))
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -108,6 +109,38 @@ namespace DAL
             }
             return null;
         }
+
+        public List<User> GetAllUsers()
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = " SELECT Id, Name, Email FROM Users";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        
+                        List<User> result = new List<User>();
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32(0);
+                            string name = reader.GetString(1);
+                            string email = reader.GetString(2);
+                            IReviewRepository reviewer = new ReviewRepository();
+                            List<Review > reviews = reviewer.GetAllReviewsByUser(id);
+                            var user = new User(id,name,email,reviews);
+                            result.Add(user);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+
         public bool RegisterUserProfile(User user)
         {
             using SqlConnection conn = new SqlConnection(DbConnectionString.Get());

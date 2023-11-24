@@ -15,6 +15,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.LoginPath = new PathString("/Login");
     options.AccessDeniedPath = new PathString("/Error");
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin",
+        policy => policy.RequireClaim("UserType", "Admin"));
+    options.AddPolicy("User",
+        policy => policy.RequireClaim("UserType", "User"));
+});
 builder.Services.AddSession(options =>
             {
                 options.Cookie.Name = "BookSesh";
@@ -35,7 +42,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 app.MapRazorPages();

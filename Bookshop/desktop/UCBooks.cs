@@ -1,5 +1,6 @@
 ﻿using BLL;
 using Classes;
+using DAL;
 using DAL.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ namespace desktop
         Book currentlySelected;
         BookManagement _bookManager;
 
-        public UCBooks(IBookRepository bookRepo)
+        public UCBooks(IBookRepository bookRepo, IReviewRepository revRepo)
         {
-            _bookManager = new BookManagement(bookRepo);
+            _bookManager = new BookManagement(bookRepo,revRepo);
             InitializeComponent();
         }
 

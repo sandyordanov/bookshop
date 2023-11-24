@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Classes", "Classes\Classes.csproj", "{E4BC41E8-8CCC-4C26-BC7C-2FCD6E2933CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "testcases", "testcases\testcases.csproj", "{755190BD-5385-414C-A1F6-9E3FE7DA281C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "testcases\UnitTests.csproj", "{755190BD-5385-414C-A1F6-9E3FE7DA281C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

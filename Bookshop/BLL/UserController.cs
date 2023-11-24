@@ -55,5 +55,9 @@ namespace BLL
                 return 0;
             }
         }
+        public List<User> GetAllUsers()
+        {
+            return _userRepository.GetAllUsers();
+        }
     }
 }

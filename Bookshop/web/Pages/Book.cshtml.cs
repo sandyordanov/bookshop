@@ -2,23 +2,38 @@ using BLL;
 using Classes;
 using DAL;
 using DAL.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Security.Claims;
 
 namespace web.Pages
 {
     public class BookModel : PageModel
     {
-        [BindProperty]
         public Book Book { get; set; }
+        [BindProperty]
+        public Review NewReview { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public Statistics Statistics { get; set; }
         private BookManagement bookManager;
-        public BookModel(IBookRepository repos)
+        public BookModel(IBookRepository bookRepo, IReviewRepository reviewRepo)
         {
-            bookManager = new BookManagement(repos);
+            bookManager = new BookManagement(bookRepo, reviewRepo);
+            NewReview = new Review();
         }
         public void OnGet(int id)
         {
-            Book = bookManager.GetBookInfo(Convert.ToInt32(HttpContext.Session.GetString("id")));
+            Book = bookManager.GetBookAndReviews(id);
+            Statistics = Book.GetStatistics();
+        }
+        public IActionResult OnPost(int bookId)
+        {
+            UserController man = new UserController();
+            NewReview.User = man.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+            var review = new Review(0, NewReview.Comment, NewReview.Rating, DateTime.Now, 0, NewReview.User, bookId);
+            bookManager.AddReview(review);
+            return RedirectToPage("/Book", new { id = bookId });
         }
     }
 }

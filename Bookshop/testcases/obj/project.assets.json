@@ -2308,9 +2308,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\S2-Individual\\bookshop\\Bookshop\\testcases\\testcases.csproj",
-      "projectName": "testcases",
-      "projectPath": "D:\\S2-Individual\\bookshop\\Bookshop\\testcases\\testcases.csproj",
+      "projectUniqueName": "D:\\S2-Individual\\bookshop\\Bookshop\\testcases\\UnitTests.csproj",
+      "projectName": "UnitTests",
+      "projectPath": "D:\\S2-Individual\\bookshop\\Bookshop\\testcases\\UnitTests.csproj",
       "packagesPath": "C:\\Users\\Aleksandar\\.nuget\\packages\\",
       "outputPath": "D:\\S2-Individual\\bookshop\\Bookshop\\testcases\\obj\\",
       "projectStyle": "PackageReference",

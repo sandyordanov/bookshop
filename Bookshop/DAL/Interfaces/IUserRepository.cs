@@ -10,6 +10,7 @@ namespace DAL
     public interface IUserRepository
     {
         User GetUserByUsername(string username);
+        List<User> GetAllUsers();
         User GetUserInfo(int id);
         User GetUserById(int id);
         bool RegisterUserProfile(User user);

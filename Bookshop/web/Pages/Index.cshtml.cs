@@ -1,5 +1,6 @@
 ﻿using BLL;
 using Classes;
+using DAL;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,20 +17,18 @@ namespace web.Pages
         public List<Book> books { get; set; }
 
 
-        public IndexModel(IBookRepository repos)
+        public IndexModel(IBookRepository bookRepo, IReviewRepository reviewRepo)
         {
-
-            bookManager = new BookManagement(repos);
+            bookManager = new BookManagement(bookRepo, reviewRepo);
         }
 
         public void OnGet()
         {
             books = bookManager.GetAllBooks();
         }
-        public IActionResult OnPost(string id)
-        {
-                HttpContext.Session.SetString("id", id);
-                return RedirectToPage("/Book");
+        public IActionResult OnPost(int? id)
+        {      
+                return RedirectToPage("/Book",id);
         }
     }
 }

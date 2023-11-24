@@ -1,9 +1,11 @@
 ﻿using Classes;
 using DAL.Interfaces;
 using Microsoft.Data.SqlClient;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,8 +19,8 @@ namespace DAL
             {
                 connection.Open();
 
-                string query = "INSERT INTO Reviews (Comment, Rating, Date, Likes, UserId) " +
-                               "VALUES (@Comment, @Rating, @Date, @Likes, @UserId)";
+                string query = "INSERT INTO Reviews (Comment, Rating, Date, Likes,Book_Id, User_Id) " +
+                               "VALUES (@Comment, @Rating, @Date, @Likes,@BookId, @UserId)";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -26,7 +28,8 @@ namespace DAL
                     command.Parameters.AddWithValue("@Rating", review.Rating);
                     command.Parameters.AddWithValue("@Date", review.Date);
                     command.Parameters.AddWithValue("@Likes", review.Likes);
-                    command.Parameters.AddWithValue("@UserId", review.User.Id); 
+                    command.Parameters.AddWithValue("@BookId", review.BookId);
+                    command.Parameters.AddWithValue("@UserId", review.User.Id);
 
                     int rowsAffected = command.ExecuteNonQuery();
 
@@ -35,17 +38,160 @@ namespace DAL
             }
         }
 
-        public void DeleteReview(Review review)
+        public bool DeleteReview(Review review)
         {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = "DELETE FROM Reviews WHERE Id = @id";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", review.Id);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
+                }
+            }
+        }
+
+        public List<Review> GetAllReviewsByBook(int bookId)
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id, Users.Name, Users.Username FROM Reviews " +
+                    "INNER JOIN Users ON Reviews.User_id = Users.Id " +
+                    "WHERE Reviews.Book_id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", bookId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Review> result = new List<Review>();
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string comment = reader.GetString(1);
+                            int rating = reader.GetInt32(2);
+                            DateTime date = reader.GetDateTime(3);
+                            int likes = reader.GetInt32(4);
+                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            result.Add(review);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+
+        public List<Review> GetAllReviewsByUser(int userId)
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id,Users.Id, Users.Name, Users.Username FROM Reviews " +
+                    "INNER JOIN Users ON Reviews.User_id = Users.Id " +
+                    "WHERE Users.Id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", userId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Review> result = new List<Review>();
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string comment = reader.GetString(1);
+                            int rating = reader.GetInt32(2);
+                            DateTime date = reader.GetDateTime(3);
+                            int likes = reader.GetInt32(4);
+                            int bookId = reader.GetInt32(5);
+                            User user = new User(reader.GetInt32(6), reader.GetString(7), reader.GetString(8));
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            result.Add(review);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+
+        public Review? GetReview(int reviewId)
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = "SELECT Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id, Users.Id, Users.Name, Users.Username FROM Reviews" +
+                    "INNER JOIN Users ON Reviews.User_id = Users.Id" +
+                    "WHERE Reviews.Id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", reviewId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string comment = reader.GetString(0);
+                            int rating = reader.GetInt32(1);
+                            DateTime date = reader.GetDateTime(2);
+                            int likes = reader.GetInt32(3);
+                            int bookId = reader.GetInt32(4);
+                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            return review;
+                        }
+
+                    }
+                }
+                return null;
+            }
+        }
+
+        public void LikeReview(int reviewId)
+        {
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+
+                string query = "UPDATE Reviews SET Likes = Likes + 1 WHERE Id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, con))
+                {
+                    command.Parameters.AddWithValue("id", reviewId);
+                    command.ExecuteNonQuery();
+                }
+            }
 
         }
-        public List<Review> GetAllReviews(int bookId)
+
+        public bool UpdateReview(Review review)
         {
-            return null;
-        }
-        public Review GetReview(int reviewId)
-        {
-            throw new NotImplementedException();
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+
+                string query = "UPDATE Reviews SET Comment = @comment, Rating = @rating" +
+                    "WHERE Id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, con))
+                {
+                    command.Parameters.AddWithValue("comment", review.Comment);
+                    command.Parameters.AddWithValue("rating", review.Rating);
+                    command.Parameters.AddWithValue("id", review.Id);
+                   int rowsAffected = command.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+            }
         }
     }
 }

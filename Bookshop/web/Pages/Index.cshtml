@@ -18,10 +18,7 @@
                 <h5 class="card-title">@book.Title [@book.Format]</h5>
                 <p class="card-text">Author: @string.Join(",",book.Authors.Select(author => author.FullName))</p>
                 <p class="card-text">Publisher: @book.Publisher</p>
-                <form method="post" asp-page-handler="Post" asp-for="car.Id">
-                    <input type="hidden" name="id" value="@book.Id" class="form-control" />
-                    <button type="submit" class="btn btn-warning p-1">See details</button>
-                </form>
+                <a class="btn btn-primary" asp-route-id="@book.Id" asp-page="/Book">  </a>
             </div>
         </div>
     }
