@@ -22,10 +22,20 @@ namespace web.Pages
             bookManager = new BookManagement(bookRepo, reviewRepo);
             NewReview = new Review();
         }
-        public void OnGet(int id)
+        public IActionResult OnGet(int id)
         {
-            Book = bookManager.GetBookAndReviews(id);
-            Statistics = Book.GetStatistics();
+            try
+            {
+                Book = bookManager.GetBookAndReviews(id);
+                Statistics = Book.GetStatistics();
+                return Page();
+            }
+            catch (Exception x)
+            {
+                TempData["error"] = x.Message;
+                return RedirectToPage("/Error");
+            }
+           
         }
         public IActionResult OnPost(int bookId)
         {

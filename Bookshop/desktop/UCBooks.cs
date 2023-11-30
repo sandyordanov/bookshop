@@ -5,6 +5,7 @@ using DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -20,10 +21,10 @@ namespace desktop
         string action;
         Book currentlySelected;
         BookManagement _bookManager;
-
+        ValidationContext validationContext;
         public UCBooks(IBookRepository bookRepo, IReviewRepository revRepo)
         {
-            _bookManager = new BookManagement(bookRepo,revRepo);
+            _bookManager = new BookManagement(bookRepo, revRepo);
             InitializeComponent();
         }
 
@@ -38,80 +39,107 @@ namespace desktop
             btnDelete.Enabled = false;
         }
 
-        private void btnConfirm_click(object sender, EventArgs e)
+        private void btnConfirm_Click_1(object sender, EventArgs e)
         {
-            Book book;
-            if (cbPaper.Checked == true)
-            {
-                List<Author> authorList = new List<Author>
+            Book book = null;
+            List<Author> authorList = new List<Author>
                 {
                     cbAuthors.SelectedItem as Author
                 };
-                book = new PaperBook(
-                    0,
-                    tbTitle.Text,
-                    tbDescription.Text,
-                    tbPublisher.Text,
-                    tbLanguage.Text,
-                    pubDatePicker.Value,
-                    (Format)cbFormat.SelectedValue,
-                    authorList,
-                    Convert.ToInt32(tbPages.Text),
-                    tbISBN.Text,
-                    tbISBN10.Text);
-            }
-            else if (cbEbook.Checked == true)
+            List<string> errorMessages = new List<string>();
+            if (rdbPaperBook.Checked)
             {
-                List<Author> authorList = new List<Author>
+                try
                 {
-                    cbAuthors.SelectedItem as Author
-                };
-                book = new EBook(0,
-                    tbTitle.Text,
-                    tbDescription.Text,
-                    tbPublisher.Text,
-                    tbLanguage.Text,
-                    pubDatePicker.Value,
-                    (Format)cbFormat.SelectedValue,
-                    authorList,
-                    Convert.ToDouble(tbFileSize.Text), tbLink.Text
-                    );
-            }
-            else
-            {
-                throw new Exception();
-            }
-
-            switch (action)
-            {
-                case "add":
-
-                    bool success = _bookManager.AddNewBook(book);
-                    ReadOnlyTrue();
-                    HideButtons();
-                    if (success) { MessageBox.Show("book succesfully added.", "update"); RefreshCollection(); }
-                    else
+                    book = new PaperBook()
                     {
-                        MessageBox.Show("problem with adding the book occured.", "update");
-                    }
-                    break;
-                case "update":
+                        Title = tbTitle.Text,
+                        Description = tbDescription.Text,
+                        Publisher = tbPublisher.Text,
+                        Format = (Format)cbFormat.SelectedItem,
+                        PublicationDate = pubDatePicker.Value,
+                        Language = tbLanguage.Text,
+                        Authors = authorList,
+                        Pages = Convert.ToInt32(tbPages.Text),
+                        ISBN = tbISBN.Text,
+                        ISBN10 = tbISBN10.Text,
+                    };
+                }
+                catch (Exception arg)
+                {
+                    errorMessages.Add(arg.Message);
+                }
 
-                    success = _bookManager.AddNewBook(book);
-                    ReadOnlyTrue();
-                    HideButtons();
-                    if (success) { MessageBox.Show("book succesfully updated.", "update"); RefreshCollection(); }
-                    else
+            }
+            else if (rdbEBook.Checked)
+            {
+                try
+                {
+                    book = new EBook()
                     {
-                        MessageBox.Show("problem with updating the book occured.", "update");
-                    }
-                    break;
-                default:
-                    break;
+                        Title = tbTitle.Text,
+                        Description = tbDescription.Text,
+                        Publisher = tbPublisher.Text,
+                        Format = (Format)cbFormat.SelectedItem,
+                        PublicationDate = pubDatePicker.Value,
+                        Language = tbLanguage.Text,
+                        Authors = authorList,
+                        FileSize = Convert.ToDouble(tbFileSize.Text),
+                        DownloadLink = tbLink.Text,
+                    };
+                }
+                catch (Exception arg)
+                {
+
+                    errorMessages.Add(arg.Message);
+                }
+
+            }
+            if (errorMessages.Count > 0)
+            {
+                string errorMessage = string.Join(Environment.NewLine, errorMessages);
+                MessageBox.Show(errorMessage, "Input Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            if (book != null)
+            {
+                switch (action)
+                {
+                    case "add":
+
+                        bool success = _bookManager.AddNewBook(book);
+                        ReadOnlyTrue();
+                        HideButtons();
+                        if (success)
+                        {
+                            MessageBox.Show("book succesfully added.", "update");
+                            RefreshCollection();
+                            EnableButtons();
+                            action = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("problem with adding the book occured.", "update");
+                        }
+                        break;
+                    case "update":
+
+                        success = _bookManager.UpdateBook(book);
+                        ReadOnlyTrue();
+                        HideButtons();
+                        if (success) { MessageBox.Show("book succesfully updated.", "update"); RefreshCollection(); action = ""; RefreshCollection();
+                            EnableButtons();
+                        }
+                        else
+                        {
+                            MessageBox.Show("problem with updating the book occured.", "update");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
-
 
         private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -155,33 +183,48 @@ namespace desktop
 
         private void AddFormControl()
         {
+
             tbTitle.ReadOnly = false;
             tbTitle.Clear();
+            cbAuthors.Enabled = true;
+            cbAuthors.SelectedItem = null;
             tbLanguage.ReadOnly = false;
             tbLanguage.Clear();
             tbPublisher.ReadOnly = false;
             tbPublisher.Clear();
-
+            pubDatePicker.Enabled = true;
+            cbFormat.Enabled = true;
             tbPages.ReadOnly = false;
             tbPages.Clear();
             tbDescription.ReadOnly = false;
             tbDescription.Clear();
+            tbPages.Clear();
+            tbISBN.Clear();
+            tbISBN10.Clear();
+            tbLink.Clear();
+            tbFileSize.Clear();
+            groupBox2.BackColor = default;
+            groupBox3.BackColor = default;
 
+            btnUpdate.Enabled = false;
+            btnDelete.Enabled = false;
             btnConfirm.Visible = true;
             btnCancel.Visible = true;
+            rdbPaperBook.Visible = true;
+            rdbEBook.Visible = true;
             action = "add";
         }
 
         private void ReadOnlyTrue()
         {
             tbTitle.ReadOnly = true;
-
+            cbAuthors.Enabled = false;
             tbLanguage.ReadOnly = true;
             tbPublisher.ReadOnly = true;
 
-
+            pubDatePicker.Enabled = false;
             tbPages.ReadOnly = true;
-
+            cbFormat.Enabled = false;
             tbDescription.ReadOnly = true;
         }
         private void LoadBookInfo(Book book)
@@ -195,6 +238,9 @@ namespace desktop
             cbFormat.SelectedItem = book.Format;
             if (book.GetType() == typeof(PaperBook))
             {
+                tbFileSize.Clear();
+                tbLink.Clear();
+                groupBox3.BackColor = default;
                 var paperBook = (PaperBook)book;
                 tbISBN.Text = paperBook.ISBN;
                 tbISBN10.Text = paperBook.ISBN10;
@@ -202,6 +248,10 @@ namespace desktop
             }
             else if (book.GetType() == typeof(EBook))
             {
+                tbISBN.Clear();
+                tbISBN10.Clear();
+                tbPages.Clear();
+                groupBox2.BackColor = default;
                 var ebook = (EBook)book;
                 tbFileSize.Text = Convert.ToString(ebook.FileSize);
                 tbLink.Text = ebook.DownloadLink;
@@ -211,7 +261,7 @@ namespace desktop
         private void RefreshCollection()
         {
             lbBooks.Items.Clear();
-            _bookManager.RefreshCollection();  
+            _bookManager.RefreshCollection();
             foreach (Book book in _bookManager.GetAllBooks())
             {
                 lbBooks.Items.Add(book);
@@ -221,25 +271,31 @@ namespace desktop
         {
             tbTitle.ReadOnly = false;
 
-
-
+            cbAuthors.Enabled = true;
             tbLanguage.ReadOnly = false;
-
             tbPublisher.ReadOnly = false;
-
-
+            pubDatePicker.Enabled = true;
+            cbFormat.Enabled = true;
             tbPages.ReadOnly = false;
 
             tbDescription.ReadOnly = false;
+            groupBox2.BackColor = default;
+            groupBox3.BackColor = default;
 
+            btnUpdate.Enabled = false;
+            btnDelete.Enabled = false;
             btnConfirm.Visible = true;
             btnCancel.Visible = true;
+            rdbPaperBook.Visible = true;
+            rdbEBook.Visible = true;
             action = "update";
         }
         private void HideButtons()
         {
             btnConfirm.Visible = false;
             btnCancel.Visible = false;
+            rdbEBook.Visible = false;
+            rdbPaperBook.Visible = false;
         }
         private void EnableButtons()
         {
@@ -250,6 +306,7 @@ namespace desktop
 
         private void UCBooks_Load(object sender, EventArgs e)
         {
+            HideButtons();
             List<Author> authorList = _bookManager.GetAllAuthors();
             foreach (var author in authorList)
             {
@@ -260,6 +317,39 @@ namespace desktop
             {
                 cbFormat.Items.Add(format);
             }
+        }
+
+        private void rdbPaperBook_CheckedChanged(object sender, EventArgs e)
+        {
+            rdbEBook.Checked = false;
+            tbPages.ReadOnly = false;
+            tbPages.Clear();
+            tbISBN.ReadOnly = false;
+            tbISBN.Clear();
+            tbISBN10.ReadOnly = false;
+            tbISBN10.Clear();
+
+            tbFileSize.ReadOnly = true;
+            tbLink.ReadOnly = true;
+        }
+
+        private void rdbEBook_CheckedChanged(object sender, EventArgs e)
+        {
+            rdbPaperBook.Checked = false;
+            tbFileSize.ReadOnly = false;
+            tbFileSize.Clear();
+            tbLink.ReadOnly = false;
+            tbLink.Clear();
+
+            tbPages.ReadOnly = true;
+            tbISBN.ReadOnly = true;
+            tbISBN10.ReadOnly = true;
+
+        }
+
+        private void btnUpdate_Click_1(object sender, EventArgs e)
+        {
+            UpdateFormControl();
         }
     }
 }

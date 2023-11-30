@@ -30,6 +30,10 @@ namespace BLL
             books.Add(book);
             return _bookRepo.AddBook(book);
         }
+        public bool UpdateBook(Book book)
+        {
+            return _bookRepo.UpdateBook(book);
+        }
         public List<Book> GetAllBooks()
         {
             return books;

@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             groupBox2 = new GroupBox();
-            cbPaper = new CheckBox();
+            rdbPaperBook = new RadioButton();
             label12 = new Label();
             tbISBN10 = new TextBox();
             label11 = new Label();
@@ -60,42 +60,45 @@
             btnCancel = new Button();
             pictureBox1 = new PictureBox();
             groupBox3 = new GroupBox();
-            cbEbook = new CheckBox();
+            rdbEBook = new RadioButton();
             label8 = new Label();
             tbLink = new TextBox();
             label10 = new Label();
             tbFileSize = new TextBox();
+            d = new GroupBox();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox3.SuspendLayout();
+            d.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(cbPaper);
+            groupBox2.Controls.Add(rdbPaperBook);
             groupBox2.Controls.Add(label12);
             groupBox2.Controls.Add(tbISBN10);
             groupBox2.Controls.Add(label11);
             groupBox2.Controls.Add(tbISBN);
             groupBox2.Controls.Add(label6);
             groupBox2.Controls.Add(tbPages);
-            groupBox2.Location = new Point(1164, 44);
+            groupBox2.Location = new Point(6, 16);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(332, 175);
             groupBox2.TabIndex = 16;
             groupBox2.TabStop = false;
             groupBox2.Text = "Paperbook specific";
             // 
-            // cbPaper
+            // rdbPaperBook
             // 
-            cbPaper.AutoSize = true;
-            cbPaper.Location = new Point(220, 13);
-            cbPaper.Name = "cbPaper";
-            cbPaper.Size = new Size(106, 24);
-            cbPaper.TabIndex = 14;
-            cbPaper.Text = "Paper book";
-            cbPaper.UseVisualStyleBackColor = true;
+            rdbPaperBook.AutoSize = true;
+            rdbPaperBook.Location = new Point(309, 16);
+            rdbPaperBook.Name = "rdbPaperBook";
+            rdbPaperBook.Size = new Size(17, 16);
+            rdbPaperBook.TabIndex = 22;
+            rdbPaperBook.TabStop = true;
+            rdbPaperBook.UseVisualStyleBackColor = true;
+            rdbPaperBook.CheckedChanged += rdbPaperBook_CheckedChanged;
             // 
             // label12
             // 
@@ -320,7 +323,6 @@
             btnDelete.TabIndex = 15;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
-            btnDelete.Click += btnDelete_Click;
             // 
             // btnUpdate
             // 
@@ -330,7 +332,7 @@
             btnUpdate.TabIndex = 14;
             btnUpdate.Text = "Update";
             btnUpdate.UseVisualStyleBackColor = true;
-            btnUpdate.Click += btnUpdate_Click;
+            btnUpdate.Click += btnUpdate_Click_1;
             // 
             // btnAdd
             // 
@@ -372,6 +374,7 @@
             btnConfirm.Text = "Confirm";
             btnConfirm.UseVisualStyleBackColor = true;
             btnConfirm.Visible = false;
+            btnConfirm.Click += btnConfirm_Click_1;
             // 
             // btnCancel
             // 
@@ -394,27 +397,28 @@
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(cbEbook);
+            groupBox3.Controls.Add(rdbEBook);
             groupBox3.Controls.Add(label8);
             groupBox3.Controls.Add(tbLink);
             groupBox3.Controls.Add(label10);
             groupBox3.Controls.Add(tbFileSize);
-            groupBox3.Location = new Point(1164, 225);
+            groupBox3.Location = new Point(6, 197);
             groupBox3.Name = "groupBox3";
             groupBox3.Size = new Size(332, 167);
             groupBox3.TabIndex = 21;
             groupBox3.TabStop = false;
             groupBox3.Text = "E-Book specific";
             // 
-            // cbEbook
+            // rdbEBook
             // 
-            cbEbook.AutoSize = true;
-            cbEbook.Location = new Point(253, 13);
-            cbEbook.Name = "cbEbook";
-            cbEbook.Size = new Size(73, 24);
-            cbEbook.TabIndex = 15;
-            cbEbook.Text = "Ebook";
-            cbEbook.UseVisualStyleBackColor = true;
+            rdbEBook.AutoSize = true;
+            rdbEBook.Location = new Point(309, 21);
+            rdbEBook.Name = "rdbEBook";
+            rdbEBook.Size = new Size(17, 16);
+            rdbEBook.TabIndex = 23;
+            rdbEBook.TabStop = true;
+            rdbEBook.UseVisualStyleBackColor = true;
+            rdbEBook.CheckedChanged += rdbEBook_CheckedChanged;
             // 
             // label8
             // 
@@ -454,15 +458,25 @@
             tbFileSize.Size = new Size(194, 28);
             tbFileSize.TabIndex = 9;
             // 
+            // d
+            // 
+            d.Controls.Add(groupBox3);
+            d.Controls.Add(groupBox2);
+            d.FlatStyle = FlatStyle.Flat;
+            d.Location = new Point(1154, 26);
+            d.Name = "d";
+            d.Size = new Size(344, 366);
+            d.TabIndex = 22;
+            d.TabStop = false;
+            // 
             // UCBooks
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(groupBox3);
+            Controls.Add(d);
             Controls.Add(pictureBox1);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
-            Controls.Add(groupBox2);
             Controls.Add(tbDescription);
             Controls.Add(groupBox1);
             Controls.Add(btnDelete);
@@ -481,6 +495,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
+            d.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -519,10 +534,11 @@
         private TextBox tbFileSize;
         private Label label8;
         private TextBox tbLink;
-        private CheckBox cbPaper;
-        private CheckBox cbEbook;
         private ComboBox cbAuthors;
         private DateTimePicker pubDatePicker;
         private ComboBox cbFormat;
+        private RadioButton rdbPaperBook;
+        private GroupBox d;
+        private RadioButton rdbEBook;
     }
 }

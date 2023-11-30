@@ -30,5 +30,9 @@ namespace web.Pages
         {      
                 return RedirectToPage("/Book",id);
         }
+        public void OnPost()
+        {
+
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace DAL
                     command.Parameters.AddWithValue("@publicationDate", book.PublicationDate);
                     command.Parameters.AddWithValue("@formatId", Convert.ToInt32(book.Format));
 
-                    int rowsAffected = command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
 
                     command.CommandText = "SELECT SCOPE_IDENTITY()";
                     int bookId = Convert.ToInt32(command.ExecuteScalar());
@@ -84,7 +84,7 @@ namespace DAL
                 {
                     bookCommand.CommandText = "UPDATE Books SET title = @title, description = @description, " +
                                               "publisher = @publisher, language = @language, " +
-                                              "publicationDate = @publicationDate, format = @format " +
+                                              "publicationDate = @publicationDate, format_Id = @format " +
                                               "WHERE id = @id";
                     bookCommand.Parameters.AddWithValue("@id", book.Id);
                     bookCommand.Parameters.AddWithValue("@title", book.Title);
@@ -92,7 +92,7 @@ namespace DAL
                     bookCommand.Parameters.AddWithValue("@publisher", book.Publisher);
                     bookCommand.Parameters.AddWithValue("@language", book.Language);
                     bookCommand.Parameters.AddWithValue("@publicationDate", book.PublicationDate);
-                    bookCommand.Parameters.AddWithValue("@format", book.Format);
+                    bookCommand.Parameters.AddWithValue("@format", Convert.ToInt32(book.Format));
 
                     int bookRowsAffected = bookCommand.ExecuteNonQuery();
 

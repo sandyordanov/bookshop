@@ -9,14 +9,15 @@ namespace web.Pages
     [Authorize]
     public class LogoutModel : PageModel
     {
-        public IActionResult OnPostAsync()
+        public IActionResult OnGet()
         {
             if (User.Identity == null && User.Identity.IsAuthenticated == false)
             {
-                TempData["Message"] = "You are already logged in! Log out if you want to login a new profile.";
+                TempData["ErrorMessage"] = "Cannot logout if you have are not already logged in";
                 RedirectToPage("/Index");
             }
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData["Message"] = "Logged out succesfully";
             return RedirectToPage("/Index");
         }
     }

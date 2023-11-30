@@ -46,7 +46,6 @@ namespace BLL
 
         private List<User> FindSimilarUsers(User targetUser)
         {
-            // Simple similarity calculation: Users who have rated similar books
             return users.Where(u => u.Id != targetUser.Id &&
                                     u.Reviews.Select(rev => rev.Id).ToArray().Any(bookId => targetUser.Reviews.Select(rev => rev.Id).ToArray().Contains(bookId)))
                         .ToList();

@@ -3,107 +3,139 @@
 @model web.Pages.BookModel
 @{
 }
-@if (Model.Book.GetType() == typeof(PaperBook))
-{
-    var paperBook = (PaperBook)Model.Book;
-    <h1> @paperBook.Title</h1>
-    <h3> @string.Join(',',paperBook.Authors.Select(author => author.FullName))</h3>
-    <p>@paperBook.Description</p>
-    <h4>Publication year: @paperBook.PublicationDate</h4>
-    <h4>Publisher: @paperBook.Publisher</h4>
-    <h4>ISBN: @paperBook.ISBN</h4>
-    <h4>ISBN10: @paperBook.ISBN10</h4>
-}
-else if (Model.Book.GetType() == typeof(EBook))
-{
-    var ebook = (EBook)Model.Book;
-    <h1> @ebook.Title</h1>
-    <h3>@string.Join(',',ebook.Authors.Select(author => author.FullName))</h3>
-    <p>@ebook.Description</p>
-    <h4>Publication year: @ebook.PublicationDate</h4>
-    <h4>Publisher: @ebook.Publisher</h4>
-    <h4>Format: @ebook.Format</h4>
-    <h4>File size: @ebook.FileSize</h4>
-}
-<hr />
-<h2>Reviews</h2>
+
+
 <div class="container">
 
     <div class="row">
-
-        <div class="col-10">
+        <div class="col-3">
             <div class="row">
-                <div class="col-2">
-                    <h5>5 star</h5>
+                <img src="~/book.png" />
+            </div>
+            <div class="row mt-2 text-center">
+                <div class="col">
+                    <form method="post">
+                        <input type="hidden" />
+                        <button type="submit" class="btn btn-secondary border border-1 border-success rounded-pill"> Want to read</button>
+                    </form>
                 </div>
-                <div class="col-5 mt-1">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fiveStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fiveStarReviewsPercentage %</div>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <h5>(@Model.Statistics.fiveStarReviewsCount)</h5>
-                </div>
+               
             </div>
 
-            <div class="row">
-                <div class="col-2">
-                    <h5>4 star</h5>
-                </div>
-                <div class="col-5 mt-1">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fourStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fourStarReviewsPercentage %</div>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <h5>(@Model.Statistics.fourStarReviewsCount)</h5>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-2">
-                    <h5>3 star</h5>
-                </div>
-                <div class="col-5 mt-1">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.threeStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.threeStarReviewsPercentage %</div>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <h5>(@Model.Statistics.threeStarReviewsCount)</h5>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-2">
-                    <h5>2 star</h5>
-                </div>
-                <div class="col-5 mt-1">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.twoStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.twoStarReviewsPercentage %</div>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <h5>(@Model.Statistics.twoStarReviewsCount)</h5>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-2">
-                    <h5>1 star</h5>
-                </div>
-                <div class="col-5 mt-1">
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.oneStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.oneStarReviewsPercentage %</div>
-                    </div>
-                </div>
-                <div class="col-1">
-                    <h5>(@Model.Statistics.oneStarReviewsCount)</h5>
-                </div>
-            </div>
         </div>
-        <div class="col-2 text-center mt-5">
-            <h4>Average: @Model.Statistics.Average</h4>
+        <div class="col">
+            <div class="row">
+                @if (Model.Book.GetType() == typeof(PaperBook))
+                {
+                    var paperBook = (PaperBook)Model.Book;
+                    <h1> @paperBook.Title</h1>
+                    <h3> @string.Join(',',paperBook.Authors.Select(author => author.FullName))</h3>
+                    <p>@paperBook.Description</p>
+                    <h4>Publication year: @paperBook.PublicationDate</h4>
+                    <h4>Genre: @paperBook.Genre</h4>
+                    <h4>Publisher: @paperBook.Publisher</h4>
+                    <h4>ISBN: @paperBook.ISBN</h4>
+                    <h4>ISBN10: @paperBook.ISBN10</h4>
+                }
+                else if (Model.Book.GetType() == typeof(EBook))
+                {
+                    var ebook = (EBook)Model.Book;
+                    <h1> @ebook.Title</h1>
+                    <h3>@string.Join(',',ebook.Authors.Select(author => author.FullName))</h3>
+                    <p>@ebook.Description</p>
+                    <h4>Publication year: @ebook.PublicationDate</h4>
+                    <h4>Publication year: @ebook.Genre</h4>
+                    <h4>Publisher: @ebook.Publisher</h4>
+                    <h4>Format: @ebook.Format</h4>
+                    <h4>File size: @ebook.FileSize</h4>
+                }
+                <hr />
+                <h2>Rating</h2>
+            </div>
+            <div class="row">
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>5 star</h5>
+                        </div>
+                        <div class="col-5 mt-1">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fiveStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fiveStarReviewsPercentage %</div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <h5>(@Model.Statistics.fiveStarReviewsCount)</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>4 star</h5>
+                        </div>
+                        <div class="col-5 mt-1">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.fourStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.fourStarReviewsPercentage %</div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <h5>(@Model.Statistics.fourStarReviewsCount)</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>3 star</h5>
+                        </div>
+                        <div class="col-5 mt-1">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.threeStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.threeStarReviewsPercentage %</div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <h5>(@Model.Statistics.threeStarReviewsCount)</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>2 star</h5>
+                        </div>
+                        <div class="col-5 mt-1">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.twoStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.twoStarReviewsPercentage %</div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <h5>(@Model.Statistics.twoStarReviewsCount)</h5>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>1 star</h5>
+                        </div>
+                        <div class="col-5 mt-1">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: @Model.Statistics.oneStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100">@Model.Statistics.oneStarReviewsPercentage %</div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <h5>(@Model.Statistics.oneStarReviewsCount)</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 text-center mt-5">
+                    <div class="row">
+                        <h4> @Model.Statistics.Average/5 &#11088;</h4>
+                    </div>
+                    <div class="row">
+                        <p class="text-secondary">@Model.Statistics.ReviewCount reviews</p>
+                    </div>
+
+                </div>
+
+            </div>
+            
         </div>
     </div>
 </div>

@@ -9,6 +9,13 @@
 
 </div>
 
+<div class="text-success">
+    @TempData["Message"]
+</div>
+<div class="text-danger">
+    @TempData["ErrorMessage"]
+</div>
+
 <div class="container-fluid text-center">
     @foreach (var book in Model.books)
     {
@@ -18,7 +25,7 @@
                 <h5 class="card-title">@book.Title [@book.Format]</h5>
                 <p class="card-text">Author: @string.Join(",",book.Authors.Select(author => author.FullName))</p>
                 <p class="card-text">Publisher: @book.Publisher</p>
-                <a class="btn btn-primary" asp-route-id="@book.Id" asp-page="/Book">  </a>
+                <a class="btn btn-info" asp-route-id="@book.Id" asp-page="/Book">Details</a>
             </div>
         </div>
     }

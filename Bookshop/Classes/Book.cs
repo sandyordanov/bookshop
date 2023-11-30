@@ -100,7 +100,10 @@ namespace Classes
         public List<Author> Authors { get { return _authors; } set { if (value == null) { throw new ArgumentException("Authors cannot be null"); } _authors = value; } }
         public string Genre { get; set; }
         private ReviewManager reviewManager;
-
+        public Book()
+        {
+            
+        }
         public Book(int id, string title, string description, string publisher, string language, DateTime publicationDate, Format format, List<Author> authors)
         {
             _id = id;
