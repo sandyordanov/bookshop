@@ -21,14 +21,12 @@ namespace BLL
         // Collaborative filtering recommendation method
         public List<Book> GetRecommendations(int userId)
         {
-            // Find the user based on the provided userId
             var user = users.FirstOrDefault(u => u.Id == userId);
             if (user == null)
             {
                 throw new ArgumentException("User not found.");
             }
 
-            // Find other users who have rated similar books
             var similarUsers = FindSimilarUsers(user);
 
             // Aggregate ratings from similar users

@@ -76,6 +76,7 @@ namespace BLL
 
         public void DeleteBook(Book book)
         {
+            books.Remove(book);
             _bookRepo.DeleteBook(book);
         }
         public List<Review> GetAllReviewsByBook(int bookId)
@@ -109,7 +110,7 @@ namespace BLL
             {
                 return _reviewRepo.GetReview(reviewId);
             }
-           throw new Exception("review not fount");
+            throw new Exception("review not fount");
         }
     }
 }

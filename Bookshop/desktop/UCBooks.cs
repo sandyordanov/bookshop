@@ -31,6 +31,7 @@ namespace desktop
         private void tbnShowAll_Click(object sender, EventArgs e)
         {
             RefreshCollection();
+            EnableButtons();
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -41,104 +42,109 @@ namespace desktop
 
         private void btnConfirm_Click_1(object sender, EventArgs e)
         {
-            Book book = null;
-            List<Author> authorList = new List<Author>
+            switch (action)
+            {
+                case "add":
+                    Book book = null;
+                    List<Author> authorList = new List<Author>
                 {
                     cbAuthors.SelectedItem as Author
                 };
-            List<string> errorMessages = new List<string>();
-            if (rdbPaperBook.Checked)
-            {
-                try
-                {
-                    book = new PaperBook()
+                    List<string> errorMessages = new List<string>();
+                    if (rdbPaperBook.Checked)
                     {
-                        Title = tbTitle.Text,
-                        Description = tbDescription.Text,
-                        Publisher = tbPublisher.Text,
-                        Format = (Format)cbFormat.SelectedItem,
-                        PublicationDate = pubDatePicker.Value,
-                        Language = tbLanguage.Text,
-                        Authors = authorList,
-                        Pages = Convert.ToInt32(tbPages.Text),
-                        ISBN = tbISBN.Text,
-                        ISBN10 = tbISBN10.Text,
-                    };
-                }
-                catch (Exception arg)
-                {
-                    errorMessages.Add(arg.Message);
-                }
+                        try
+                        {
+                            book = new PaperBook()
+                            {
+                                Title = tbTitle.Text,
+                                Description = tbDescription.Text,
+                                Publisher = tbPublisher.Text,
+                                Format = (Format)cbFormat.SelectedItem,
+                                PublicationDate = pubDatePicker.Value,
+                                Language = tbLanguage.Text,
+                                Authors = authorList,
+                                Pages = Convert.ToInt32(tbPages.Text),
+                                ISBN = tbISBN.Text,
+                                ISBN10 = tbISBN10.Text,
+                            };
+                        }
+                        catch (Exception arg)
+                        {
+                            errorMessages.Add(arg.Message);
+                        }
 
-            }
-            else if (rdbEBook.Checked)
-            {
-                try
-                {
-                    book = new EBook()
+                    }
+                    else if (rdbEBook.Checked)
                     {
-                        Title = tbTitle.Text,
-                        Description = tbDescription.Text,
-                        Publisher = tbPublisher.Text,
-                        Format = (Format)cbFormat.SelectedItem,
-                        PublicationDate = pubDatePicker.Value,
-                        Language = tbLanguage.Text,
-                        Authors = authorList,
-                        FileSize = Convert.ToDouble(tbFileSize.Text),
-                        DownloadLink = tbLink.Text,
-                    };
-                }
-                catch (Exception arg)
-                {
+                        try
+                        {
+                            book = new EBook()
+                            {
+                                Title = tbTitle.Text,
+                                Description = tbDescription.Text,
+                                Publisher = tbPublisher.Text,
+                                Format = (Format)cbFormat.SelectedItem,
+                                PublicationDate = pubDatePicker.Value,
+                                Language = tbLanguage.Text,
+                                Authors = authorList,
+                                FileSize = Convert.ToDouble(tbFileSize.Text),
+                                DownloadLink = tbLink.Text,
+                            };
+                        }
+                        catch (Exception arg)
+                        {
 
-                    errorMessages.Add(arg.Message);
-                }
+                            errorMessages.Add(arg.Message);
+                        }
 
-            }
-            if (errorMessages.Count > 0)
-            {
-                string errorMessage = string.Join(Environment.NewLine, errorMessages);
-                MessageBox.Show(errorMessage, "Input Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            if (book != null)
-            {
-                switch (action)
-                {
-                    case "add":
-
-                        bool success = _bookManager.AddNewBook(book);
+                    }
+                    if (errorMessages.Count > 0)
+                    {
+                        string errorMessage = string.Join(Environment.NewLine, errorMessages);
+                        MessageBox.Show(errorMessage, "Input Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    bool success = _bookManager.AddNewBook(book);
+                    ReadOnlyTrue();
+                    HideButtons();
+                    if (success)
+                    {
+                        MessageBox.Show("book succesfully added.", "Book additions");
+                        RefreshCollection();
+                        EnableButtons();
+                        action = "";
+                    }
+                    else
+                    {
+                        MessageBox.Show("problem with adding the book occured.", "Book additions");
+                    }
+                    break;
+                case "update":
+                    if (currentlySelected != null)
+                    {
+                        success = _bookManager.UpdateBook(currentlySelected);
                         ReadOnlyTrue();
                         HideButtons();
                         if (success)
                         {
-                            MessageBox.Show("book succesfully added.", "update");
-                            RefreshCollection();
-                            EnableButtons();
-                            action = "";
-                        }
-                        else
-                        {
-                            MessageBox.Show("problem with adding the book occured.", "update");
-                        }
-                        break;
-                    case "update":
-
-                        success = _bookManager.UpdateBook(book);
-                        ReadOnlyTrue();
-                        HideButtons();
-                        if (success) { MessageBox.Show("book succesfully updated.", "update"); RefreshCollection(); action = ""; RefreshCollection();
+                            MessageBox.Show("book succesfully updated.", "update");
+                            RefreshCollection(); action = "";
                             EnableButtons();
                         }
                         else
                         {
                             MessageBox.Show("problem with updating the book occured.", "update");
                         }
-                        break;
-                    default:
-                        break;
-                }
+                    }
+                    else
+                    {
+                        lbDanger.Text = "Select an item first";
+                    }
+                    break;
+                default:
+                    break;
             }
+
         }
 
         private void lbBooks_SelectedIndexChanged(object sender, EventArgs e)
@@ -148,8 +154,16 @@ namespace desktop
                 ReadOnlyTrue();
                 HideButtons();
             }
-            currentlySelected = lbBooks.SelectedItem as Book;
-            LoadBookInfo(currentlySelected);
+            try
+            {
+                currentlySelected = lbBooks.SelectedItem as Book;
+                LoadBookInfo(currentlySelected);
+            }
+            catch (Exception)
+            {
+
+            }
+
 
         }
 
@@ -160,21 +174,6 @@ namespace desktop
             EnableButtons();
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            Book book = lbBooks.SelectedItem as Book;
-            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
-            DialogResult result = MessageBox.Show("Do you really want to delete this book?", "Delete", buttons);
-            if (result == DialogResult.Yes)
-            {
-                _bookManager.DeleteBook(book);
-                RefreshCollection();
-            }
-            else
-            {
-
-            }
-        }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
@@ -261,7 +260,6 @@ namespace desktop
         private void RefreshCollection()
         {
             lbBooks.Items.Clear();
-            _bookManager.RefreshCollection();
             foreach (Book book in _bookManager.GetAllBooks())
             {
                 lbBooks.Items.Add(book);
@@ -286,8 +284,6 @@ namespace desktop
             btnDelete.Enabled = false;
             btnConfirm.Visible = true;
             btnCancel.Visible = true;
-            rdbPaperBook.Visible = true;
-            rdbEBook.Visible = true;
             action = "update";
         }
         private void HideButtons()
@@ -350,6 +346,37 @@ namespace desktop
         private void btnUpdate_Click_1(object sender, EventArgs e)
         {
             UpdateFormControl();
+        }
+
+        private void lbDanger_Click(object sender, EventArgs e)
+        {
+            lbDanger.Visible = false;
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            Book book;
+            if (lbBooks.SelectedItem != null)
+            {
+                try
+                {
+                    book = lbBooks.SelectedItem as Book;
+                    DialogResult result = MessageBox.Show("Do you really want to delete this book?", "Delete", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        _bookManager.DeleteBook(book);
+                        RefreshCollection();
+                    }
+                    else { }
+                }
+                catch (Exception)
+                {
+                    lbDanger.Visible = true;
+                    lbDanger.Text = "Select an item from the list.";
+                }
+
+
+            }
         }
     }
 }

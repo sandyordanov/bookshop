@@ -17,6 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 builder.Services.AddAuthorization(options =>
 {
+    
     options.AddPolicy("Admin",
         policy => policy.RequireClaim("UserType", "Admin"));
     options.AddPolicy("User",

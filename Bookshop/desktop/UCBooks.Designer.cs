@@ -66,6 +66,7 @@
             label10 = new Label();
             tbFileSize = new TextBox();
             d = new GroupBox();
+            lbDanger = new Label();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
@@ -323,6 +324,7 @@
             btnDelete.TabIndex = 15;
             btnDelete.Text = "Delete";
             btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnUpdate
             // 
@@ -469,10 +471,21 @@
             d.TabIndex = 22;
             d.TabStop = false;
             // 
+            // lbDanger
+            // 
+            lbDanger.AutoSize = true;
+            lbDanger.Font = new Font("Segoe UI Semibold", 16.2F, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, GraphicsUnit.Point);
+            lbDanger.Location = new Point(605, 290);
+            lbDanger.Name = "lbDanger";
+            lbDanger.Size = new Size(0, 38);
+            lbDanger.TabIndex = 22;
+            lbDanger.Click += lbDanger_Click;
+            // 
             // UCBooks
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(lbDanger);
             Controls.Add(d);
             Controls.Add(pictureBox1);
             Controls.Add(btnCancel);
@@ -540,5 +553,6 @@
         private RadioButton rdbPaperBook;
         private GroupBox d;
         private RadioButton rdbEBook;
+        private Label lbDanger;
     }
 }

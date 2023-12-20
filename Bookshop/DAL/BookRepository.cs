@@ -13,7 +13,7 @@ namespace DAL
 
         private void AddAuthorBookRelationship(SqlCommand command, int authorId, int bookId)
         {
-            command.CommandText = "INSERT INTO Author_Books (Author_id, Book_id) VALUES (@authorId, @bookId)";
+            command.CommandText = "INSERT INTO Author_Book (Author_id, Book_id) VALUES (@authorId, @bookId)";
             command.Parameters.AddWithValue("@authorId", authorId);
             command.Parameters.AddWithValue("@bookId", bookId);
             command.ExecuteNonQuery();
@@ -28,7 +28,7 @@ namespace DAL
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandText = "INSERT INTO Books (Title, Description, Publisher, Language, PublicationDate, Format_id) " +
-                                          "VALUES (@title, @description, @publisher, @language, @publicationDate, @formatId)";
+                                          "VALUES (@title, @description, @publisher, @language, @publicationDate, @formatId) SELECT SCOPE_IDENTITY()";
                     command.Parameters.AddWithValue("@title", book.Title);
                     command.Parameters.AddWithValue("@description", book.Description);
                     command.Parameters.AddWithValue("@publisher", book.Publisher);
@@ -36,9 +36,6 @@ namespace DAL
                     command.Parameters.AddWithValue("@publicationDate", book.PublicationDate);
                     command.Parameters.AddWithValue("@formatId", Convert.ToInt32(book.Format));
 
-                    command.ExecuteNonQuery();
-
-                    command.CommandText = "SELECT SCOPE_IDENTITY()";
                     int bookId = Convert.ToInt32(command.ExecuteScalar());
 
                     foreach (var author in book.Authors)
@@ -78,7 +75,7 @@ namespace DAL
         {
             using (var connection = new SqlConnection(GetConnectionString()))
             {
-                connection.Open();
+                    connection.Open();
 
                 using (var bookCommand = connection.CreateCommand())
                 {
@@ -142,9 +139,9 @@ namespace DAL
             using (var connection = new SqlConnection(GetConnectionString()))
             {
                 connection.Open();
-                using (var command = connection.CreateCommand())
+                string query = "DELETE FROM Books WHERE id = @id";
+                using (var command = new SqlCommand(query, connection))
                 {
-                    command.CommandText = "DELETE FROM Books WHERE id = @id";
                     command.Parameters.AddWithValue("@id", book.Id);
                     int n = command.ExecuteNonQuery();
                     return n > 0;

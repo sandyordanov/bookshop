@@ -5,6 +5,8 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Win32;
 using System.Security.Claims;
 
 namespace web.Pages
@@ -39,11 +41,26 @@ namespace web.Pages
         }
         public IActionResult OnPost(int bookId)
         {
+            if (User.FindFirstValue("id").IsNullOrEmpty())
+            {
+                @TempData["isLogged"] = "If you want to leave a review, log in first. Don't have an account - register.";
+                return RedirectToPage("/Account/Login");
+            }
             UserController man = new UserController();
             NewReview.User = man.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
             var review = new Review(0, NewReview.Comment, NewReview.Rating, DateTime.Now, 0, NewReview.User, bookId);
             bookManager.AddReview(review);
             return RedirectToPage("/Book", new { id = bookId });
         }
+        public IActionResult OnPostUserOperations()
+        {
+            if (User.FindFirstValue("id").IsNullOrEmpty())
+            {
+                @TempData["isLogged"] = "You need to be logged in for this operation.";
+                return RedirectToPage("Account/Login");
+            }
+            return RedirectToPage("Library");
+        }
+        
     }
 }

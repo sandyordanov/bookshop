@@ -14,9 +14,9 @@
             </div>
             <div class="row mt-2 text-center">
                 <div class="col">
-                    <form method="post">
+                    <form method="post" asp-page-handler="OnPostUserOperations">
                         <input type="hidden" />
-                        <button type="submit" class="btn btn-secondary border border-1 border-success rounded-pill"> Want to read</button>
+                        <button type="submit" class="btn btn-secondary border border-1 border-success rounded-pill" asp-page-handler="UserOperations"> Want to read</button>
                     </form>
                 </div>
                
@@ -32,7 +32,6 @@
                     <h3> @string.Join(',',paperBook.Authors.Select(author => author.FullName))</h3>
                     <p>@paperBook.Description</p>
                     <h4>Publication year: @paperBook.PublicationDate</h4>
-                    <h4>Genre: @paperBook.Genre</h4>
                     <h4>Publisher: @paperBook.Publisher</h4>
                     <h4>ISBN: @paperBook.ISBN</h4>
                     <h4>ISBN10: @paperBook.ISBN10</h4>
@@ -44,7 +43,6 @@
                     <h3>@string.Join(',',ebook.Authors.Select(author => author.FullName))</h3>
                     <p>@ebook.Description</p>
                     <h4>Publication year: @ebook.PublicationDate</h4>
-                    <h4>Publication year: @ebook.Genre</h4>
                     <h4>Publisher: @ebook.Publisher</h4>
                     <h4>Format: @ebook.Format</h4>
                     <h4>File size: @ebook.FileSize</h4>
@@ -140,10 +138,11 @@
     </div>
 </div>
 <hr />
+
 <div class="container mt-5">
     <h2>Leave a Review</h2>
 
-    <form method="post">
+    <form method="post" asp-page-handler="OnPost">
         <div class="form-group">
             <label for="comment">Comment:</label>
             <textarea asp-for="NewReview.Comment" class="form-control" id="comment" name="Comment" rows="4" required></textarea>
@@ -164,7 +163,7 @@
 
         <div class="form-group">
             <input type="hidden" value="@Model.Book.Id" name="bookId" />
-            <button type="submit" class="btn btn-primary">Submit Review</button>
+            <button type="submit" class="btn btn-primary" asp-page-handler="OnPost">Submit Review</button>
         </div>
     </form>
 </div>

@@ -1,11 +1,48 @@
-﻿<!DOCTYPE html>
+﻿@functions {
+    void SetDarkMode()
+    {
+        var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(30)
+            };
+        Context.Response.Cookies.Append("ColorThemeCookie", "dark", cookieOptions);
+    }
+    void SetLightMode()
+    {
+        var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(30)
+            };
+        Context.Response.Cookies.Append("ColorThemeCookie", "light", cookieOptions);
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @if (Context.Request.Cookies.ContainsKey("ColorThemeCookie"))
+    {
+        if (Context.Request.Cookies.Equals("dark"))
+        {
+            <link rel="stylesheet" href="~/css/darkMode.css" asp-append-version="true" />
+        }
+        else if (Context.Request.Cookies.Equals("light"))
+        {
+            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        }
+        else
+        {
+            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        }
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    }
+
     <link rel="stylesheet" href="~/web.styles.css" asp-append-version="true" />
 </head>
 <body>
@@ -17,16 +54,17 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Timetable">My library</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            </li>
+
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Library">My library</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Profile">Profile</a>
@@ -34,20 +72,41 @@
                             <li class="nav-item d-flex justify-content-end flex-grow-1">
                                 <a class="btn btn-light nav-link " asp-page="Account/Logout">Logout</a>
                             </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item d-flex justify-content-end flex-grow-1">
+                        </ul>
+
+                    </div>
+                }
+
+                else
+                {
+                    <div class="navbar-collapse collapse d-flex flex-row bd-highlight mb-3 justify-content-end">
+
+                        <ul class="navbar-nav">
+                            <li class="nav-item ">
                                 <a class="nav-link text-dark" asp-area="" asp-page="Account/Register">Register</a>
                             </li>
-                            <li class="nav-item d-flex justify-content-end flex-grow-1">
+                            <li class="nav-item d-flex flex-grow-1">
                                 <a class="nav-link text-dark" asp-area="" asp-page="Account/Login">Login</a>
                             </li>
-                        }
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                }
+
+            </div>
+            <div class="nav-item d-inline justify-content-end">
+
+                <form method="post" asp-page="/Pages/CookieModel" asp-page-handler="SetLightMode">
+                    <button type="submit" class="btn btn-light border-1 border-light">Light mode</button>
+                </form>
+                <form method="post" asp-page="\Pages\CookieModel" asp-page-handler="SetDarkMode">
+                    <button type="submit" class="btn btn-dark border-1 border-dark">Dark mode</button>
+                </form>
             </div>
         </nav>
+
+
+
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
