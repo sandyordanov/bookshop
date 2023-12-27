@@ -6,9 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IBookRepository,BookRepository>();
-builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
@@ -17,7 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 });
 builder.Services.AddAuthorization(options =>
 {
-    
+
     options.AddPolicy("Admin",
         policy => policy.RequireClaim("UserType", "Admin"));
     options.AddPolicy("User",
