@@ -68,5 +68,16 @@ namespace Classes
             return statistics;
 
         }
+
+        public Review GetReviewByUser(int userId)
+        {
+            var result = _reviews.Find(x => x.User.Id == userId);
+            if (result != null)
+            {
+                _reviews.Remove(result);
+                return result;
+            }
+            return null;
+        }
     }
 }

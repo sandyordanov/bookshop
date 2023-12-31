@@ -10,7 +10,11 @@ namespace Classes
         DateTime _date;
         int _likes;
         private User _user;
-        public int Id { get { return _id; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
         [Required(ErrorMessage = "Comment is required.")]
         [MaxLength(5000)]
         public string Comment

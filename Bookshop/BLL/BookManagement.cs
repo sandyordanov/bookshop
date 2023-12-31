@@ -102,7 +102,7 @@ namespace BLL
         public void LikeReview(Review review)
         {
             _reviewRepo.LikeReview(review.Id);
-            books.First(book => book.Id == review.BookId).LikeReview(review.Id);
+            //books.First(book => book.Id == review.BookId).LikeReview(review.Id);
         }
         public Review GetReview(int reviewId)
         {
@@ -110,7 +110,20 @@ namespace BLL
             {
                 return _reviewRepo.GetReview(reviewId);
             }
-            throw new Exception("review not fount");
+            throw new Exception("review not found");
+        }
+        public bool UserHasReviewsOnBook(int userId, int bookId)
+        {
+            return _reviewRepo.HasUserReviewsOnBook(userId, bookId);
+        }
+        public List<Review> GetReviewsPagination(int bookId, int currentPage, int pagesize)
+        {
+            return _reviewRepo.GetReviewsPagination(bookId, currentPage, pagesize);
+        }
+
+        public int GetTotalReviewCountForBook(int bookId)
+        {
+            return _reviewRepo.GetReviewCountByBook( bookId);
         }
     }
 }

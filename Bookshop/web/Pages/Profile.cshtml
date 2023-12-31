@@ -17,26 +17,26 @@
     <thead>
         <tr>
             <th scope="col">#</th>
+            <th scope="col">Book</th>
             <th scope="col">Comment</th>
             <th scope="col">Rating</th>
             <th scope="col">Date</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var review in Model.MyReviews)
+        @foreach (var (index, review) in Model.MyReviews.Select((value, i) => (i + 1, value)))
         {
             <tr>
-                <th scope="row">1</th>
-
-                <td><a class="bg-dark list-group-item list-group-item-action" href="/Book/?id=@review.BookId">@review.Comment</a></td>
+                <td>@index</td>
+                <td>@Model._bookManager.GetBookInfo(review.BookId).Title</td>
+                <td><a class="bg-dark text-white list-group-item list-group-item-action" href="/Book/?id=@review.BookId">@review.Comment</a></td>
                 <td>@review.Rating</td>
                 <td>@review.Date</td>
             </tr>
-                            
         }
-
     </tbody>
 </table>
+
 
 
 

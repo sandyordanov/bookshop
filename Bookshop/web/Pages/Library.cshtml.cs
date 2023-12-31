@@ -7,7 +7,6 @@ namespace web.Pages
     {
         public void OnGet()
         {
-            Response.Cookies.Append("MyCookie", "value1");
         }
     }
 }

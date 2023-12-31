@@ -89,11 +89,11 @@ namespace Classes
         {
 
         }
-        public User(int id, string name, string email)
+        public User(int id, string name, string username)
         {
             _id = id;
             Name = name;
-            Email = email;
+            Username = username;
 
         }
         public User(int id, string name, string email, List<Review> reviews)

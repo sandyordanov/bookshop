@@ -16,6 +16,8 @@ namespace DAL
         Review? GetReview(int reviewId);
         List<Review> GetAllReviewsByBook(int bookId);
         List<Review> GetAllReviewsByUser(int userId);
-
+        bool HasUserReviewsOnBook(int userId, int bookId);
+        List<Review> GetReviewsPagination(int bookId, int startIndex, int pageSize);
+        int GetReviewCountByBook(int bookId);
     }
 }

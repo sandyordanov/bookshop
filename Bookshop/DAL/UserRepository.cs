@@ -122,7 +122,7 @@ namespace DAL
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        
+
                         List<User> result = new List<User>();
                         while (reader.Read())
                         {
@@ -130,8 +130,8 @@ namespace DAL
                             string name = reader.GetString(1);
                             string email = reader.GetString(2);
                             IReviewRepository reviewer = new ReviewRepository();
-                            List<Review > reviews = reviewer.GetAllReviewsByUser(id);
-                            var user = new User(id,name,email,reviews);
+                            List<Review> reviews = reviewer.GetAllReviewsByUser(id);
+                            var user = new User(id, name, email, reviews);
                             result.Add(user);
                         }
                         return result;
@@ -142,18 +142,27 @@ namespace DAL
 
         public bool RegisterUserProfile(User user)
         {
-            using SqlConnection conn = new SqlConnection(DbConnectionString.Get());
-            using var command = conn.CreateCommand();
-            conn.Open();
-            command.CommandText = "INSERT INTO USERS (Name, Email, Username, Password, Salt) VALUES ( @name, @email, @username, @password, @salt )";
-            command.Parameters.AddWithValue("name", user.Name);
-            command.Parameters.AddWithValue("email", user.Email);
-            command.Parameters.AddWithValue("username", user.Username);
-            command.Parameters.AddWithValue("password", user.Password);
-            command.Parameters.AddWithValue("salt", user.Salt);
-            var result = command.ExecuteNonQuery();
-            conn.Close();
-            return result == 1;
+            try
+            {
+                using SqlConnection conn = new SqlConnection(DbConnectionString.Get());
+                using var command = conn.CreateCommand();
+                conn.Open();
+                command.CommandText = "INSERT INTO USERS (Name, Email, Username, Password, Salt) VALUES ( @name, @email, @username, @password, @salt )";
+                command.Parameters.AddWithValue("name", user.Name);
+                command.Parameters.AddWithValue("email", user.Email);
+                command.Parameters.AddWithValue("username", user.Username);
+                command.Parameters.AddWithValue("password", user.Password);
+                command.Parameters.AddWithValue("salt", user.Salt);
+                var result = command.ExecuteNonQuery();
+                conn.Close();
+
+                return result == 1;
+            }
+            catch (SqlException)
+            {
+                return false;
+            }
+
         }
 
         public bool UpdateUserProfile(User user)

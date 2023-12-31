@@ -4,8 +4,11 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -130,8 +133,8 @@ namespace DAL
             {
                 connection.Open();
 
-                string query = "SELECT Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id, Users.Id, Users.Name, Users.Username FROM Reviews" +
-                    "INNER JOIN Users ON Reviews.User_id = Users.Id" +
+                string query = "SELECT Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id, Users.Id, Users.Name, Users.Username FROM Reviews " +
+                    "INNER JOIN Users ON Reviews.User_id = Users.Id " +
                     "WHERE Reviews.Id = @id";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
@@ -180,7 +183,7 @@ namespace DAL
             {
                 con.Open();
 
-                string query = "UPDATE Reviews SET Comment = @comment, Rating = @rating" +
+                string query = "UPDATE Reviews SET Comment = @comment, Rating = @rating " +
                     "WHERE Id = @id";
 
                 using (SqlCommand command = new SqlCommand(query, con))
@@ -188,9 +191,81 @@ namespace DAL
                     command.Parameters.AddWithValue("comment", review.Comment);
                     command.Parameters.AddWithValue("rating", review.Rating);
                     command.Parameters.AddWithValue("id", review.Id);
-                   int rowsAffected = command.ExecuteNonQuery();
+                    int rowsAffected = command.ExecuteNonQuery();
                     return rowsAffected > 0;
                 }
+            }
+        }
+
+        public bool HasUserReviewsOnBook(int userId, int bookId)
+        {
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+
+                string query = "  SELECT Id FROM Reviews WHERE Book_id = @bookId AND User_id = @userId";
+                using (var command = new SqlCommand(query, con))
+                {
+                    command.Parameters.AddWithValue("userId", userId);
+                    command.Parameters.AddWithValue("bookId", bookId);
+                    var result = command.ExecuteScalar();
+                    if (result != null)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
+        public List<Review> GetReviewsPagination(int bookId, int currentPage, int pageSize)
+        {
+            int startIndex = (currentPage - 1) * pageSize;
+            int endIndex = startIndex + pageSize;
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = " WITH RankedReviews AS(SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id AS UserId, Users.Name, Users.Username, ROW_NUMBER() OVER(ORDER BY Likes DESC) AS RowNumber FROM Reviews INNER JOIN Users ON Reviews.User_id = Users.Id WHERE Reviews.Book_id = @id) SELECT * FROM RankedReviews WHERE RowNumber BETWEEN @StartIndex AND @EndIndex";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", bookId);
+                    command.Parameters.AddWithValue("StartIndex", startIndex);
+                    command.Parameters.AddWithValue("EndIndex", endIndex);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Review> result = new List<Review>();
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string comment = reader.GetString(1);
+                            int rating = reader.GetInt32(2);
+                            DateTime date = reader.GetDateTime(3);
+                            int likes = reader.GetInt32(4);
+                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            result.Add(review);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+
+        public int GetReviewCountByBook(int bookId)
+        {
+            using (var connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(Id) FROM Reviews WHERE Book_Id = @bookId";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("bookId", bookId);
+                    return (int)command.ExecuteScalar();
+                }
+
             }
         }
     }

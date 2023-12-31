@@ -102,7 +102,7 @@ namespace Classes
         private ReviewManager reviewManager;
         public Book()
         {
-            
+
         }
         public Book(int id, string title, string description, string publisher, string language, DateTime publicationDate, Format format, List<Author> authors)
         {
@@ -129,7 +129,11 @@ namespace Classes
         {
             return reviewManager.GetReviews();
         }
-        public Statistics GetStatistics() { return reviewManager.GetStatistics();}
+        public Review GetReviewByUser(int userId)
+        {
+            return reviewManager.GetReviewByUser(userId);
+        }
+        public Statistics GetStatistics() { return reviewManager.GetStatistics(); }
         public void LikeReview(int reviewId)
         {
             reviewManager.LikeReview(reviewId);

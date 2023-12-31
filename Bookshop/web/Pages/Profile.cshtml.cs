@@ -13,7 +13,8 @@ namespace web.Pages
     public class ProfileModel : PageModel
     {
         UserController _userCon;
-        BookManagement _bookManager;
+        [BindProperty]
+        public BookManagement _bookManager { get; set; }
         public List<Review> MyReviews { get; set; }
         public List<Book> recommendedBooks { get; set; }
         public ProfileModel(IReviewRepository reviewRepository, IUserRepository userRepository, IBookRepository bookRepo)

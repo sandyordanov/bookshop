@@ -23,11 +23,11 @@ namespace Classes
         public double Sum { get; set; }
         public void GeneratePercentages()
         {
-            oneStarReviewsPercentage =Math.Round( oneStarReviewsCount *100/ReviewCount,2);
-            twoStarReviewsPercentage = Math.Round(twoStarReviewsCount * 100 /ReviewCount,2);
-            threeStarReviewsPercentage = Math.Round(threeStarReviewsCount * 100/ ReviewCount, 2);
-            fourStarReviewsPercentage = Math.Round(fourStarReviewsCount * 100 / ReviewCount, 2);
-            fiveStarReviewsPercentage = Math.Round(fiveStarReviewsCount * 100 / ReviewCount, 2);
+            oneStarReviewsPercentage =Math.Round( oneStarReviewsCount *100/ReviewCount);
+            twoStarReviewsPercentage = Math.Round(twoStarReviewsCount * 100 /ReviewCount);
+            threeStarReviewsPercentage = Math.Round(threeStarReviewsCount * 100/ ReviewCount);
+            fourStarReviewsPercentage = Math.Round(fourStarReviewsCount * 100 / ReviewCount);
+            fiveStarReviewsPercentage = Math.Round(fiveStarReviewsCount * 100 / ReviewCount);
             Average =Math.Round( Sum / ReviewCount,2);
         }
     }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net;
 
 namespace web.Pages
 {
@@ -16,7 +17,7 @@ namespace web.Pages
 
             Response.Cookies.Append("ColorThemeCookie", ThemeColor, cookieOptions);
 
-            return RedirectToPage("Index");
+            return RedirectToPage("/Index");
         }
 
     }

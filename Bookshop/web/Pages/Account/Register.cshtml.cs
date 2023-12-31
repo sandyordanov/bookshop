@@ -31,7 +31,7 @@ namespace web.Pages
             {
                 return RedirectToPage("Login", "OnGetRedirectAfterRegistration", registrator);
             }
-            TempData["fail"] = "Registration unsucessful";
+            TempData["fail"] = "Registration unsucessful. Username is in use.";
             return Page();
         }
     }
