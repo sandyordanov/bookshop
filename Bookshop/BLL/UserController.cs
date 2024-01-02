@@ -11,21 +11,15 @@ namespace BLL
 {
     public class UserController
     {
-        User? logged;
         IUserRepository _userRepository;
-        public UserController()
+        public UserController(IUserRepository userRepo)
         {
-            _userRepository = new UserRepository();
-        }
-        public UserController(int userId)
-        {
-            logged = GetUserById(userId);
-            _userRepository = new UserRepository();
-
+            _userRepository = userRepo;
         }
         public User GetUserById(int id)
         {
             User user = _userRepository.GetUserById(id);
+            user.LikedReviews = GetLikedReviews(id);
             if (user == null)
             {
                 throw new Exception("User return was null - user not found");
@@ -36,7 +30,6 @@ namespace BLL
         {
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt, true);
-            user.Salt = salt;
             return _userRepository.RegisterUserProfile(user);
         }
         public int TryToLogUserIn(string username, string password)
@@ -58,6 +51,23 @@ namespace BLL
         public List<User> GetAllUsers()
         {
             return _userRepository.GetAllUsers();
+        }
+        public void InsertProfilePicture(int userId, string picturePath)
+        {
+            _userRepository.InsertProfilePicture(userId, picturePath);
+        }
+        public bool UpdateUserProfile(User user)
+        {
+            if (!user.Password.Contains("$2a$11$"))
+            {
+                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt, true);
+            }    
+            return _userRepository.UpdateUserProfile(user);
+        }
+        public Dictionary<int, string> GetLikedReviews(int userId)
+        {
+            return _userRepository.GetLikedReviews(userId);
         }
     }
 }

@@ -2,6 +2,11 @@
 @model web.Pages.EditModel
 @{
 }
+<form method="post" asp-page-handler="Delete">
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Delete</button>
+    </div>
+</form>
 <form method="post" asp-page-handler="OnPost">
     <div class="form-group">
         <label for="comment">Comment:</label>

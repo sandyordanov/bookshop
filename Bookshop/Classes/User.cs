@@ -15,6 +15,7 @@ namespace Classes
         private string _email;
         private string? _username;
         private string? _password;
+        private string _picturePath;
 
         public int Id { get => _id; }
         
@@ -81,9 +82,10 @@ namespace Classes
             }
         }
 
-        public string? Salt { get; set; }
 
         public List<Review>? Reviews { get; set; }
+        public string PicturePath { get => _picturePath; set => _picturePath = value; }
+        public Dictionary<int, string> LikedReviews { get; set; }
 
         public User()
         {
@@ -94,7 +96,13 @@ namespace Classes
             _id = id;
             Name = name;
             Username = username;
-
+        }
+        public User(int id, string name, string username, string pp)
+        {
+            _id = id;
+            Name = name;
+            Username = username;
+            PicturePath = pp;
         }
         public User(int id, string name, string email, List<Review> reviews)
         {
@@ -103,13 +111,15 @@ namespace Classes
             Email = email;
             Reviews = reviews;
         }
-        public User(int id, string name, string email, string username, string password)
+        public User(int id, string name, string email, string username, string password, string picturePath)
         {
             _id = id;
             Name = name;
             Email = email;
             Username = username;
             Password = password;
+            PicturePath = picturePath;
+
         }
     }
 }

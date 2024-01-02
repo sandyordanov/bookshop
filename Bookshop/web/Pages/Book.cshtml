@@ -140,7 +140,14 @@
     @if (Model.UserHasReviews)
     {
         <div class="text-center">
-            <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/userIcon.png">
+            @if (Model.NewReview.User.PicturePath != "noPic")
+            {
+                <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/uploads/@Model.NewReview.User.PicturePath">
+            }
+            else
+            {
+                <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/userIcon.png">
+            }
             <h1 class="">Your review</h1>
             @for (int i = 0; i < Model.NewReview.Rating; i++)
             {
@@ -188,19 +195,22 @@
     <hr />
 </div>
 
-<div class="container">
+<div id="scroll-pagi" class="container">
     <div class=" row text-center">
         <h3>Community Reviews</h3>
     </div>
     @foreach (var review in Model.Reviews)
     {
 
-        <div id="scroll-pagi" class="row">
+        <div class="row">
             <div class="col-3">
             </div>
             <div class="col-9">
                 <div class="row">
                     <div class="col-4">
+                        <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+                            <img id="userIcon" style="width: 100%; height: 100%;" src="~/uploads/@review.User.PicturePath" alt="User Icon">
+                        </div>
                         <h5>@review.User.Name</h5>
                         <p class="text-light">@review.User.Username</p>
 
@@ -215,15 +225,25 @@
                                 <p class="">@review.Date</p>
                             </div>
                             <div class="col text-end">
-
                                 <form method="post" asp-page-handler="Upvote">
                                     <span class=" text-muted">@review.Likes likes </span>
                                     <input type="hidden" value="@review.Id" name="revId" />
                                     <input type="hidden" value="@Model.Book.Id" name="bookId" />
-                                    <button type="submit" id="upvoteArrow" class="btn"><span>↑</span></button>
+                                    <button type="submit" id="upvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "green" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
+                                    {
+                                        <text>disabled</text>
+                                    }><span>↑</span></button>
+                                </form>
+
+                                <form method="post" asp-page-handler="Downvote">
+                                    <input type="hidden" value="@review.Id" name="revId" />
+                                    <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                                    <button type="submit" id="downvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "red" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
+                                    {
+                                        <text>disabled</text>
+                                    }><span>↓</span></button>
                                 </form>
                                 <form method="post" asp-page-handler="DownVote">
-                                    <button type="submit" id="downvoteArrow" value="@review.Id" class="btn"><span>↓</span></button>
                                 </form>
                             </div>
                         </div>
@@ -239,22 +259,28 @@
             </div>
         </div>
     }
-    <div class="row text-center">
-        <div class="col">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                            <a class="page-link" asp-page="Book" asp-route-id="@Model.Book.Id" asp-route-pageNumber="@i" onclick="searchResultsSection">@i</a>
-                        </li>
-                    }
-                </ul>
-            </nav>
-        </div>
+</div>
+<div class="row text-center">
+    <div class="col">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-page="Book" asp-route-id="@Model.Book.Id" asp-route-pageNumber="@i" ('@i')">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
     </div>
 </div>
-<script>
-    var searchResultsSection = document.getElementById("scroll-pagi");  // Replace "search-results" with the actual ID or selector of your search results section
-        searchResultsSection.scrollIntoView({ behavior: "smooth" });
-</script>
+@if (Model.pagiButtonPressed)
+{
+    <script>
+        var searchResultsSection = document.getElementById("scroll-pagi");  // Replace "search-results" with the actual ID or selector of your search results section
+        if (searchResultsSection) {
+            searchResultsSection.scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+}
+

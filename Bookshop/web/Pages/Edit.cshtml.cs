@@ -34,5 +34,12 @@ namespace web.Pages
             HttpContext.Session.Remove("reviewId");
             return RedirectToPage("/Profile");
         }
+        public IActionResult OnPostDelete()
+        {
+            SelectedReview.Id = Convert.ToInt32(HttpContext.Session.GetInt32("reviewId"));
+            _bookMan.DeleteReview(SelectedReview);
+            HttpContext.Session.Remove("reviewId");
+            return RedirectToPage("/Profile");
+        }
     }
 }

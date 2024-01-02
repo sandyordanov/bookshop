@@ -2,3 +2,13 @@
 @model web.Pages.LibraryModel
 @{
 }
+<h1>Recommended</h1>
+
+
+<div class="list-group">
+    @foreach (var book in Model.recommendedBooks)
+    {
+        <a href="/Book/?id=@book.Id" class="list-group-item list-group-item-action"> <h6>@book.Title</h6></a>
+    }
+</div>
+<hr />

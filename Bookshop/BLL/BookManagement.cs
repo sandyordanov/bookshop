@@ -14,6 +14,10 @@ namespace BLL
         private IBookRepository _bookRepo;
         private IReviewRepository _reviewRepo;
         private List<Book> books;
+        public BookManagement()
+        {
+            
+        }
         public BookManagement(IBookRepository bookRep, IReviewRepository revRep)
         {
             _bookRepo = bookRep;
@@ -99,9 +103,9 @@ namespace BLL
         {
             return _reviewRepo.DeleteReview(review);
         }
-        public void LikeReview(Review review)
+        public void LikeReview(Review review, int userId, string voteType)
         {
-            _reviewRepo.LikeReview(review.Id);
+            _reviewRepo.LikeReview(review.Id,userId,voteType);
             //books.First(book => book.Id == review.BookId).LikeReview(review.Id);
         }
         public Review GetReview(int reviewId)

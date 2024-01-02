@@ -1,5 +1,6 @@
 using BLL;
 using Classes;
+using DAL;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,9 +14,9 @@ namespace web.Pages
 
         private UserController controller;
 
-        public RegisterModel()
+        public RegisterModel(IUserRepository userRepo)
         {
-            controller = new UserController();
+            controller = new UserController(userRepo);
         }
         public void OnGet()
         {

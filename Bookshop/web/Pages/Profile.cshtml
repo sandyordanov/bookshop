@@ -2,15 +2,43 @@
 @model web.Pages.ProfileModel
 @{
 }
-<h1>Recommended</h1>
+<h1>Personal information</h1>
+<dic class="row">
+    <div class="list-group col-3">
+        @if(Model.MyUser.PicturePath == "noPic")
+        {
+            <img id="userIcon" style="height:auto; width:45%" src="~/userIcon.png" />
+        }
+        else
+        {
+            <img id="userIcon" style="height:auto%; width:45%" src="~/uploads/@Model.MyUser.PicturePath" alt="User Icon" />
+        }
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="fileInput">Choose Profile Picture:</label>
+                <input type="file" class="form-control-file" id="fileInput" name="profilePicture">
+                @if (ViewData.ModelState.ContainsKey(string.Empty))
+                {
+                    <div class="text-danger">@ViewData.ModelState[string.Empty].Errors.First().ErrorMessage</div>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
 
+    </div>
+    <div class="list-group col-9">
 
-<div class="list-group">
-    @foreach (var book in Model.recommendedBooks)
-    {
-        <a href="/Book/?id=@book.Id" class="list-group-item list-group-item-action"> <h6>@book.Title</h6></a>
-    }
-</div>
+        <div class="list-group-item list-group-item-action d-inline-flex align-items-lg-center justify-content-between">
+            <h6 class="">@Model.MyUser.Username</h6>
+            <a href="/UserProfileUpdate" class="btn btn-outline-info btn-sm ml-auto">Update</a>
+        </div>
+        <div class="list-group-item list-group-item-action"> <h6>@Model.MyUser.Email</h6></div>
+        <div class="list-group-item list-group-item-action"> <h6>@Model.MyUser.Name</h6></div>
+        <div class="list-group-item list-group-item-action"> <h6>@Model.MyUser.Password</h6></div>
+
+    </div>
+</dic>
+
 <hr />
 <h1>Reviews by you</h1>
 <table class="table table-dark">

@@ -15,12 +15,25 @@ namespace DAL
     {
         public bool DeleteUserProfile(User user)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = "DELETE FROM Users WHERE Id = @id";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("id", user.Id);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    return rowsAffected > 0;
+                }
+            }
         }
 
         public User GetUserById(int id)
         {
-            string query = "SELECT Name, Email, Username, Password, Salt FROM Users WHERE Id = @id";
+            string query = "SELECT Name, Email, Username, Password, ProfilePicturePath FROM Users WHERE Id = @id";
             using (SqlConnection conn = new SqlConnection(DbConnectionString.Get()))
             {
                 conn.Open();
@@ -37,9 +50,9 @@ namespace DAL
                                  reader.GetString(0),
                                  reader.GetString(1),
                                  reader.GetString(2),
-                                 reader.GetString(3)
+                                 reader.GetString(3),
+                                 reader.GetString(4)
                                  );
-                            user.Salt = reader.GetString(4);
                             return user;
                         }
                     }
@@ -67,9 +80,9 @@ namespace DAL
                                 reader.GetString(1),
                                 reader.GetString(2),
                                 reader.GetString(3),
-                                reader.GetString(4)
+                                reader.GetString(4),
+                                reader.GetString(5)
                                 );
-                            user.Salt = reader.GetString(5);
                             conn.Close();
                             return user;
                         }
@@ -147,12 +160,12 @@ namespace DAL
                 using SqlConnection conn = new SqlConnection(DbConnectionString.Get());
                 using var command = conn.CreateCommand();
                 conn.Open();
-                command.CommandText = "INSERT INTO USERS (Name, Email, Username, Password, Salt) VALUES ( @name, @email, @username, @password, @salt )";
+                command.CommandText = "INSERT INTO USERS (Name, Email, Username, Password, ProfilePicturePath) VALUES ( @name, @email, @username, @password, @ppp)";
                 command.Parameters.AddWithValue("name", user.Name);
                 command.Parameters.AddWithValue("email", user.Email);
                 command.Parameters.AddWithValue("username", user.Username);
                 command.Parameters.AddWithValue("password", user.Password);
-                command.Parameters.AddWithValue("salt", user.Salt);
+                command.Parameters.AddWithValue("ppp", "noPic.png");
                 var result = command.ExecuteNonQuery();
                 conn.Close();
 
@@ -167,7 +180,61 @@ namespace DAL
 
         public bool UpdateUserProfile(User user)
         {
-            throw new NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+
+                string query = " Update Users Set (Name = @name, Email = @email, Password = @password) WHERE Id = @id";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("name", user.Name);
+                    command.Parameters.AddWithValue("email", user.Email);
+                    command.Parameters.AddWithValue("password", user.Password);
+                    command.Parameters.AddWithValue("id", user.Id);
+                    int result = command.ExecuteNonQuery();
+                    return result == 1;
+                }
+            }
+        }
+
+        public void InsertProfilePicture(int userId, string picturePath)
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+                string query = "UPDATE Users SET ProfilePicturePath = @picturePath WHERE Id = @id";
+                using (var com = new SqlCommand(query, connection))
+                {
+                    com.Parameters.AddWithValue("id", userId);
+                    com.Parameters.AddWithValue("picturePath", picturePath);
+                    com.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public Dictionary<int, string> GetLikedReviews(int userId)
+        {
+            using (var sqlConnection = new SqlConnection(DbConnectionString.Get()))
+            {
+                sqlConnection.Open();
+                string query = "SELECT Review_id, Opinion FROM ReviewLikes WHERE User_id = @id";
+                using (SqlCommand command = new SqlCommand(query, sqlConnection))
+                {
+                    command.Parameters.AddWithValue("id", userId);
+                    Dictionary<int, string> result = new Dictionary<int, string>();
+                    using(SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string opinion = reader.GetString(1);
+                            result.Add(reviewId, opinion);
+                        }
+                        return result;
+                    }
+                }
+            }
         }
     }
 }

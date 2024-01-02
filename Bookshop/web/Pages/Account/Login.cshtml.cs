@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using BLL;
 using Classes;
+using DAL;
 
 namespace web.Pages.Account
 {
@@ -18,9 +19,9 @@ namespace web.Pages.Account
         public string Password { get; set; }
 
 
-        public LoginModel()
+        public LoginModel(IUserRepository userRepo)
         {
-            userManager = new UserController();
+            userManager = new UserController(userRepo);
         }
         public IActionResult OnGet()
         {

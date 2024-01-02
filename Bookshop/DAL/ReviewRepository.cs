@@ -65,7 +65,7 @@ namespace DAL
             {
                 connection.Open();
 
-                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id, Users.Name, Users.Username FROM Reviews " +
+                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id, Users.Name, Users.Username, Users.ProfilePicturePath FROM Reviews " +
                     "INNER JOIN Users ON Reviews.User_id = Users.Id " +
                     "WHERE Reviews.Book_id = @id";
 
@@ -83,7 +83,7 @@ namespace DAL
                             int rating = reader.GetInt32(2);
                             DateTime date = reader.GetDateTime(3);
                             int likes = reader.GetInt32(4);
-                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7), reader.GetString(8));
                             Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
                             result.Add(review);
                         }
@@ -160,22 +160,51 @@ namespace DAL
             }
         }
 
-        public void LikeReview(int reviewId)
+        public void LikeReview(int reviewId, int userId, string voteType)
         {
             using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
             {
                 con.Open();
 
-                string query = "UPDATE Reviews SET Likes = Likes + 1 WHERE Id = @id";
-
-                using (SqlCommand command = new SqlCommand(query, con))
+                using (SqlTransaction transaction = con.BeginTransaction())
                 {
-                    command.Parameters.AddWithValue("id", reviewId);
-                    command.ExecuteNonQuery();
+                    try
+                    {
+                        string query = "";
+                        if (voteType == "upVote")
+                        {
+                            query = "UPDATE Reviews SET Likes = Likes + 1 WHERE Id = @id";
+                        }
+                        else if (voteType == "downVote")
+                        {
+                            query = "UPDATE Reviews SET Likes = Likes - 1 WHERE Id = @id";
+                        }
+                        using (SqlCommand command = new SqlCommand(query, con, transaction))
+                        {
+                            command.Parameters.AddWithValue("id", reviewId);
+                            command.ExecuteNonQuery();
+                        }
+
+                        string query2 = "INSERT INTO ReviewLikes (User_id, Review_id, Opinion) VALUES (@userId, @reviewId, @voteType)";
+                        using (SqlCommand command2 = new SqlCommand(query2, con, transaction))
+                        {
+                            command2.Parameters.AddWithValue("userId", userId);
+                            command2.Parameters.AddWithValue("reviewId", reviewId);
+                            command2.Parameters.AddWithValue("voteType", voteType);
+                            command2.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
+                        transaction.Rollback();
+                    }
                 }
             }
-
         }
+
 
         public bool UpdateReview(Review review)
         {
@@ -220,13 +249,13 @@ namespace DAL
 
         public List<Review> GetReviewsPagination(int bookId, int currentPage, int pageSize)
         {
-            int startIndex = (currentPage - 1) * pageSize;
-            int endIndex = startIndex + pageSize;
+            int startIndex = (currentPage - 1) * pageSize + 1;
+            int endIndex = startIndex + pageSize - 1;
             using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
             {
                 connection.Open();
 
-                string query = " WITH RankedReviews AS(SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id AS UserId, Users.Name, Users.Username, ROW_NUMBER() OVER(ORDER BY Likes DESC) AS RowNumber FROM Reviews INNER JOIN Users ON Reviews.User_id = Users.Id WHERE Reviews.Book_id = @id) SELECT * FROM RankedReviews WHERE RowNumber BETWEEN @StartIndex AND @EndIndex";
+                string query = " WITH RankedReviews AS(SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes,Users.Id AS UserId, Users.Name, Users.Username,Users.ProfilePicturePath, ROW_NUMBER() OVER(ORDER BY Likes DESC) AS RowNumber FROM Reviews INNER JOIN Users ON Reviews.User_id = Users.Id WHERE Reviews.Book_id = @id) SELECT * FROM RankedReviews WHERE RowNumber BETWEEN @StartIndex AND @EndIndex";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -244,7 +273,7 @@ namespace DAL
                             int rating = reader.GetInt32(2);
                             DateTime date = reader.GetDateTime(3);
                             int likes = reader.GetInt32(4);
-                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
+                            User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7), reader.GetString(8));
                             Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
                             result.Add(review);
                         }

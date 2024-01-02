@@ -12,7 +12,7 @@ namespace DAL
         bool AddReview(Review review);
         bool UpdateReview(Review review);
         bool DeleteReview(Review review);
-        void LikeReview(int reviewId);
+        void LikeReview(int reviewId, int userId, string voteType);
         Review? GetReview(int reviewId);
         List<Review> GetAllReviewsByBook(int bookId);
         List<Review> GetAllReviewsByUser(int userId);

@@ -17,5 +17,7 @@ namespace DAL
         bool UpdateUserProfile(User user);
         bool DeleteUserProfile(User user);
 
+        void InsertProfilePicture(int userId, string picturePath);
+        Dictionary<int, string> GetLikedReviews(int userId);
     }
 }
