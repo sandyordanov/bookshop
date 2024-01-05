@@ -19,5 +19,6 @@ namespace DAL
 
         void InsertProfilePicture(int userId, string picturePath);
         Dictionary<int, string> GetLikedReviews(int userId);
+        Dictionary<int, string> GetDislikedReviews(int userId);
     }
 }

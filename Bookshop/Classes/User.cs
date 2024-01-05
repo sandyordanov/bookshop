@@ -83,9 +83,12 @@ namespace Classes
         }
 
 
-        public List<Review>? Reviews { get; set; }
+        public List<Review> Reviews { get; set; }
         public string PicturePath { get => _picturePath; set => _picturePath = value; }
         public Dictionary<int, string> LikedReviews { get; set; }
+        public Dictionary<int, string> DislikedReviews { get; set; }
+
+        //public Dictionary<int, string> DislikedReviews { get; set; }
 
         public User()
         {

@@ -11,21 +11,26 @@ namespace BLL
 {
     public class UserController
     {
-        IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
+
         public UserController(IUserRepository userRepo)
         {
             _userRepository = userRepo;
         }
+
         public User GetUserById(int id)
         {
             User user = _userRepository.GetUserById(id);
             user.LikedReviews = GetLikedReviews(id);
+            user.DislikedReviews = GetDislikedReviews(id);
             if (user == null)
             {
                 throw new Exception("User return was null - user not found");
             }
             else { return user; }
         }
+
+
         public bool RegisterUser(User user)
         {
             var salt = BCrypt.Net.BCrypt.GenerateSalt();
@@ -68,6 +73,10 @@ namespace BLL
         public Dictionary<int, string> GetLikedReviews(int userId)
         {
             return _userRepository.GetLikedReviews(userId);
+        }
+        private Dictionary<int, string> GetDislikedReviews(int userId)
+        {
+            return _userRepository.GetDislikedReviews(userId);
         }
     }
 }

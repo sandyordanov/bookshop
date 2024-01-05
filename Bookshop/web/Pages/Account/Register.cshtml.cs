@@ -27,13 +27,16 @@ namespace web.Pages
         }
         public IActionResult OnPost()
         {
-            bool success =controller.RegisterUser(registrator);
+            bool success = controller.RegisterUser(registrator);
+
             if (success)
             {
-                return RedirectToPage("Login", "OnGetRedirectAfterRegistration", registrator);
+                return RedirectToPage("/Account/Login");
             }
-            TempData["fail"] = "Registration unsucessful. Username is in use.";
+
+            TempData["fail"] = "Registration unsuccessful. Username is in use.";
             return Page();
         }
+
     }
 }

@@ -27,7 +27,8 @@ namespace web.Pages
             {
 
             }
-            _userController.UpdateUserProfile(OldUser);
+            User NewUserDAta = new User(Convert.ToInt32(User.FindFirstValue("id")),OldUser.Name,OldUser.Email,"userName",OldUser.Password, "");
+            _userController.UpdateUserProfile(NewUserDAta);
             return RedirectToPage("/Profile");
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
+using System.Net;
 using System.Security.Claims;
 
 namespace web.Pages
@@ -46,7 +47,7 @@ namespace web.Pages
                 CurrentPage = pageNumber ?? 1;
 
                 int totalReviewCount = bookManager.GetTotalReviewCountForBook(id);
-               
+
                 TotalPages = (int)Math.Ceiling(totalReviewCount / (double)pageSize);
                 Book = bookManager.GetBookAndReviews(id);
                 Statistics = Book.GetStatistics();
@@ -94,23 +95,27 @@ namespace web.Pages
             return RedirectToPage("Library");
         }
 
-        public void OnPostUpvote(int revId)
+        public IActionResult OnPostUpvote(int revId)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var rev = bookManager.GetReview(revId);
-                int userId = Convert.ToInt32(User.FindFirstValue("id"));
-                bookManager.LikeReview(rev, userId, "upVote");
+                User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+                bookManager.LikeReview(rev, currentUser, "upVote");
+                return RedirectToPage("/Book", new { id = rev.BookId });
             }
+            return RedirectToPage("Login");
         }
-        public void OnPostDownvote(int revId)
+        public IActionResult OnPostDownvote(int revId)
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var rev = bookManager.GetReview(revId);
-                int userId = Convert.ToInt32(User.FindFirstValue("id"));
-                bookManager.LikeReview(rev, userId, "downVote");
+                User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+                bookManager.LikeReview(rev, currentUser, "downVote");
+                return RedirectToPage("/Book", new { id = rev.BookId });
             }
+            return RedirectToPage("Login");
         }
         public IActionResult OnPostEdit(int revId)
         {

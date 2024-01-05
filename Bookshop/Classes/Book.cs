@@ -17,6 +17,7 @@ namespace Classes
         private DateTime _publicationDate;
         private Format _format;
         private List<Author> _authors;
+
         public int Id { get { return _id; } }
         public string Title
         {

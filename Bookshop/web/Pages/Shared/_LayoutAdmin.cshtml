@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/webapp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous" />
+    <style>
+        #footer {
+            padding: 20px;
+            font-size: 14px;
+            background-color: #333;
+            color: #fff;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/5vz3hFqHW2j5R4CFGm4xDD21RtQD0h0md1b2g" crossorigin="anonymous">
+</head>
+<body>
+    <header style="box-shadow: 0 -6px 10px 5px rgba(0,0,0,0.5); border-color: #212529;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-dark box-shadow mb-3">
+           <h1 class="text-white">Admin Panel</h1>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <form method="get" action="/Account/Logout" class="form-inline">
+                        <button type="submit" class="btn btn-link nav-link">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <body style="background-color: #212529; color: #fff">
+                @RenderBody()
+            </body>
+        </main>
+    </div>
+
+    <footer class="text-center text-white fixed-bottom bg-dark">
+        <!-- Grid container -->
+        <div class="container p-1 "></div>
+        <!-- Grid container -->
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023 Copyright:
+            <a class="text-white" href="https://fontys.nl/">PixelPerfectMedia</a>
+        </div>
+        <!-- Copyright -->
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5/5vz3hFqHW2j5R4CFGm4xDD21RtQD0h0md1b2g" crossorigin="anonymous"></script>
+
+</body>
+</html>

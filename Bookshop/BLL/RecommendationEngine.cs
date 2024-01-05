@@ -14,8 +14,8 @@ namespace BLL
 
         public RecommendationEngine(List<Book> books, List<User> users)
         {
-            this.books = books;
-            this.users = users;
+            this.books = books.FindAll(book => book.GetReviews().Count() > 0);
+            this.users = users.FindAll(user => user.Reviews.Count() > 0);
         }
 
         // Collaborative filtering recommendation method
@@ -24,7 +24,7 @@ namespace BLL
             var user = users.FirstOrDefault(u => u.Id == userId);
             if (user == null)
             {
-                throw new ArgumentException("User not found.");
+                throw new ArgumentException("You need to leave at least one review on a book, before getting recommendations.");
             }
 
             var similarUsers = FindSimilarUsers(user);
@@ -42,46 +42,98 @@ namespace BLL
             return rankedBooks;
         }
 
-        private List<User> FindSimilarUsers(User targetUser)
+        public List<User> FindSimilarUsers(User targetUser)
         {
-            return users.Where(u => u.Id != targetUser.Id &&
-                                    u.Reviews.Select(rev => rev.Id).ToArray().Any(bookId => targetUser.Reviews.Select(rev => rev.Id).ToArray().Contains(bookId)))
-                        .ToList();
+            List<User> similarUsers = new List<User>();
+
+            foreach (User user in users)
+            {
+                if (user.Id != targetUser.Id)
+                {
+                    bool hasCommonReview = false;
+
+                    foreach (Review review in user.Reviews)
+                    {
+                        if (targetUser.Reviews.Any(targetReview => targetReview.BookId == review.BookId))
+                        {
+                            hasCommonReview = true;
+                            break;
+                        }
+                    }
+
+                    if (hasCommonReview)
+                    {
+                        similarUsers.Add(user);
+                    }
+                }
+            }
+
+            return similarUsers;
         }
 
-        private Dictionary<int, double> AggregateRatings(List<User> similarUsers)
+
+        public Dictionary<int, double> AggregateRatings(List<User> similarUsers)
         {
             // Aggregate ratings from similar users
             var aggregatedRatings = new Dictionary<int, double>();
 
             foreach (var user in similarUsers)
             {
-                foreach (var bookId in user.Reviews.Select(rev => rev.Id).ToArray())
+                foreach (var bookId in user.Reviews.Select(rev => rev.BookId).ToArray())
                 {
                     if (!aggregatedRatings.ContainsKey(bookId))
                     {
-                        aggregatedRatings[bookId] = 0;
+                        aggregatedRatings.Add(bookId, 0);
                     }
 
                     // Weighted sum based on the similarity of users
-                    aggregatedRatings[bookId] += 1.0 / similarUsers.Count;
+                    aggregatedRatings[bookId] += user.Reviews.First(r => r.BookId == bookId).Rating;
                 }
             }
 
             return aggregatedRatings;
         }
 
-        private List<Book> FindUnratedBooks(User user)
+        public List<Book> FindUnratedBooks(User user)
         {
-            // Find books that the user hasn't rated yet
-            return books.Where(book => !user.Reviews.Select(rev => rev.Id).ToArray().Contains(book.Id)).ToList();
+            List<Book> unratedBooks = new List<Book>();
+
+            foreach (Book book in books)
+            {
+                bool isRated = false;
+
+                foreach (Review review in user.Reviews)
+                {
+                    if (review.BookId == book.Id)
+                    {
+                        isRated = true;
+                        break;
+                    }
+                }
+
+                if (!isRated)
+                {
+                    unratedBooks.Add(book);
+                }
+            }
+
+            return unratedBooks;
         }
 
-        private List<Book> RankBooks(Dictionary<int, double> aggregatedRatings, List<Book> unratedBooks)
+
+        public List<Book> RankBooks(Dictionary<int, double> aggregatedRatings, List<Book> unratedBooks)
         {
-            // Rank unrated books based on aggregated ratings
-            return unratedBooks.OrderByDescending(book => aggregatedRatings.ContainsKey(book.Id) ? aggregatedRatings[book.Id] : 0)
-                              .ToList();
+            return unratedBooks.OrderByDescending(delegate (Book book)
+            {
+                if (aggregatedRatings.ContainsKey(book.Id))
+                {
+                    return aggregatedRatings[book.Id];
+                }
+                else
+                {
+                    return 0;
+                }
+            }).ToList();
         }
     }
 }

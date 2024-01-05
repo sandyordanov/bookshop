@@ -56,10 +56,10 @@ namespace Classes
             get => _likes;
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException("Likes must be a non-negative integer.");
-                }
+                //if (value < 0)
+                //{
+                //    throw new ArgumentOutOfRangeException("Likes must be a non-negative integer.");
+                //}
                 _likes = value;
             }
         }

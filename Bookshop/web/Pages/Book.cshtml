@@ -224,28 +224,32 @@
                                 }
                                 <p class="">@review.Date</p>
                             </div>
-                            <div class="col text-end">
-                                <form method="post" asp-page-handler="Upvote">
-                                    <span class=" text-muted">@review.Likes likes </span>
-                                    <input type="hidden" value="@review.Id" name="revId" />
-                                    <input type="hidden" value="@Model.Book.Id" name="bookId" />
-                                    <button type="submit" id="upvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "green" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
-                                    {
-                                        <text>disabled</text>
-                                    }><span>↑</span></button>
-                                </form>
+                            @if (Model.MyUser != null)
+                            {
+                                <div class="col text-end">
+                                    <form method="post" asp-page-handler="Upvote">
+                                        <span class=" text-muted">@review.Likes likes </span>
+                                        <input type="hidden" value="@review.Id" name="revId" />
+                                        <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                                        <button type="submit" id="upvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "green" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
+                                        {
+                                            <text>disabled</text>
+                                        }><span>↑</span></button>
+                                    </form>
 
-                                <form method="post" asp-page-handler="Downvote">
-                                    <input type="hidden" value="@review.Id" name="revId" />
-                                    <input type="hidden" value="@Model.Book.Id" name="bookId" />
-                                    <button type="submit" id="downvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "red" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
-                                    {
-                                        <text>disabled</text>
-                                    }><span>↓</span></button>
-                                </form>
-                                <form method="post" asp-page-handler="DownVote">
-                                </form>
-                            </div>
+                                    <form method="post" asp-page-handler="Downvote">
+                                        <input type="hidden" value="@review.Id" name="revId" />
+                                        <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                                        <button type="submit" id="downvoteArrow" class="btn" style="background-color:@(Model.MyUser.DislikedReviews.ContainsKey(review.Id) ? "red" : null)" @if (Model.MyUser.DislikedReviews.ContainsKey(review.Id))
+                                        {
+                                            <text>disabled</text>
+                                        }><span>↓</span></button>
+                                    </form>
+                                    <form method="post" asp-page-handler="DownVote">
+                                    </form>
+                                </div>
+                            }
+                            
                         </div>
                         <div class="row ">
                             <div class="col">

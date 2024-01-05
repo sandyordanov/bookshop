@@ -204,6 +204,50 @@ namespace DAL
                 }
             }
         }
+        public void ChangeVoteTypeOnAReview(int reviewId, int userId, string voteType)
+        {
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+
+                using (SqlTransaction transaction = con.BeginTransaction())
+                {
+                    try
+                    {
+                        string query = "";
+                        if (voteType == "upVote")
+                        {
+                            query = "UPDATE Reviews SET Likes = Likes + 2 WHERE Id = @id";
+                        }
+                        else if (voteType == "downVote")
+                        {
+                            query = "UPDATE Reviews SET Likes = Likes - 2 WHERE Id = @id";
+                        }
+                        using (SqlCommand command = new SqlCommand(query, con, transaction))
+                        {
+                            command.Parameters.AddWithValue("id", reviewId);
+                            command.ExecuteNonQuery();
+                        }
+
+                        string query2 = "UPDATE ReviewLikes SET Opinion = @voteType WHERE User_Id = @userId AND Review_Id = @reviewId";
+                        using (SqlCommand command2 = new SqlCommand(query2, con, transaction))
+                        {
+                            command2.Parameters.AddWithValue("userId", userId);
+                            command2.Parameters.AddWithValue("reviewId", reviewId);
+                            command2.Parameters.AddWithValue("voteType", voteType);
+                            command2.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error: " + ex.Message);
+                        transaction.Rollback();
+                    }
+                }
+            }
+        }
 
 
         public bool UpdateReview(Review review)

@@ -24,7 +24,15 @@ namespace web.Pages
         {
             //Recommended
             RecommendationEngine engine = new RecommendationEngine(_bookManager.GetAllBooks(), _userCon.GetAllUsers());
-            recommendedBooks = engine.GetRecommendations(Convert.ToInt32(User.FindFirstValue("id")));
+            try
+            {
+                recommendedBooks = engine.GetRecommendations(Convert.ToInt32(User.FindFirstValue("id")));
+            }
+            catch (Exception ex)
+            {
+                TempData["recommendationErrors"] = ex.Message;
+            }
+            
 
             
         }

@@ -184,7 +184,7 @@ namespace DAL
             {
                 connection.Open();
 
-                string query = " Update Users Set (Name = @name, Email = @email, Password = @password) WHERE Id = @id";
+                string query = "Update Users Set Name = @name, Email = @email, Password = @password WHERE Id = @id";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
@@ -218,12 +218,35 @@ namespace DAL
             using (var sqlConnection = new SqlConnection(DbConnectionString.Get()))
             {
                 sqlConnection.Open();
-                string query = "SELECT Review_id, Opinion FROM ReviewLikes WHERE User_id = @id";
+                string query = "SELECT Review_id, Opinion FROM ReviewLikes WHERE User_id = @id AND Opinion = 'upVote'";
                 using (SqlCommand command = new SqlCommand(query, sqlConnection))
                 {
                     command.Parameters.AddWithValue("id", userId);
                     Dictionary<int, string> result = new Dictionary<int, string>();
                     using(SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string opinion = reader.GetString(1);
+                            result.Add(reviewId, opinion);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
+        public Dictionary<int, string> GetDislikedReviews(int userId)
+        {
+            using (var sqlConnection = new SqlConnection(DbConnectionString.Get()))
+            {
+                sqlConnection.Open();
+                string query = "SELECT Review_id, Opinion FROM ReviewLikes WHERE User_id = @id AND Opinion = 'downVote'";
+                using (SqlCommand command = new SqlCommand(query, sqlConnection))
+                {
+                    command.Parameters.AddWithValue("id", userId);
+                    Dictionary<int, string> result = new Dictionary<int, string>();
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {

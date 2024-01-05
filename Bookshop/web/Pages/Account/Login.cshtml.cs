@@ -35,16 +35,26 @@ namespace web.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-
             if(!ModelState.IsValid) { return Page(); }
             if (!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password))
             {
+                //admin auth
+                if (Username == "admin" && Password == "admin")
+                {
+                    List<Claim> claims = new List<Claim>();
+
+                    claims.Add(new Claim("UserType", "Admin"));
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+
+                    return RedirectToPage("/AdminPanel");
+                }
 
                 var result = userManager.TryToLogUserIn(Username, Password);
                 if (result > 0)
                 {
                     List<Claim> claims = new List<Claim>();
-                    claims.Add(new Claim(ClaimTypes.Name, userManager.GetUserById(result).Username));
+
                     claims.Add(new Claim("id", result.ToString()));
                     claims.Add(new Claim("UserType", "User"));
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -56,16 +66,17 @@ namespace web.Pages.Account
             TempData["IsLogged"] = "Username or password invalid.";
             return Page();
         }
-        public IActionResult OnGetRedirectAfterRegistration(User registrated)
+        public async Task<IActionResult> OnGetRedirectAfterRegistration(User registrated)
         {
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, registrated.Name));
             claims.Add(new Claim("id", registrated.Id.ToString()));
             claims.Add(new Claim("UserType", "User"));
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+            await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
 
             return RedirectToPage("/Index");
         }
+
     }
 }
