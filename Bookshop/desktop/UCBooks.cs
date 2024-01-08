@@ -20,11 +20,11 @@ namespace desktop
     {
         string action;
         Book currentlySelected;
-        BookManagement _bookManager;
+        BookManager _bookManager;
         ValidationContext validationContext;
         public UCBooks(IBookRepository bookRepo, IReviewRepository revRepo)
         {
-            _bookManager = new BookManagement(bookRepo, revRepo);
+            _bookManager = new BookManager(bookRepo, revRepo);
             InitializeComponent();
         }
 
@@ -42,15 +42,13 @@ namespace desktop
 
         private void btnConfirm_Click_1(object sender, EventArgs e)
         {
+            Book book = null;
+            List<Author> authorList = new List<Author>() { cbAuthors.SelectedItem as Author };
+            List<string> errorMessages = new List<string>();
             switch (action)
             {
                 case "add":
-                    Book book = null;
-                    List<Author> authorList = new List<Author>
-                {
-                    cbAuthors.SelectedItem as Author
-                };
-                    List<string> errorMessages = new List<string>();
+
                     if (rdbPaperBook.Checked)
                     {
                         try
@@ -94,7 +92,6 @@ namespace desktop
                         }
                         catch (Exception arg)
                         {
-
                             errorMessages.Add(arg.Message);
                         }
 
@@ -104,37 +101,74 @@ namespace desktop
                         string errorMessage = string.Join(Environment.NewLine, errorMessages);
                         MessageBox.Show(errorMessage, "Input Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    bool success = _bookManager.AddNewBook(book);
-                    ReadOnlyTrue();
-                    HideButtons();
-                    if (success)
-                    {
-                        MessageBox.Show("book succesfully added.", "Book additions");
-                        RefreshCollection();
-                        EnableButtons();
-                        action = "";
-                    }
                     else
                     {
-                        MessageBox.Show("problem with adding the book occured.", "Book additions");
-                    }
-                    break;
-                case "update":
-                    if (currentlySelected != null)
-                    {
-                        success = _bookManager.UpdateBook(currentlySelected);
+                        bool success = _bookManager.AddNewBook(book);
                         ReadOnlyTrue();
                         HideButtons();
                         if (success)
                         {
-                            MessageBox.Show("book succesfully updated.", "update");
-                            RefreshCollection(); action = "";
+                            MessageBox.Show("book succesfully added.", "Book additions");
+                            RefreshCollection();
                             EnableButtons();
+                            action = "";
                         }
                         else
                         {
-                            MessageBox.Show("problem with updating the book occured.", "update");
+                            MessageBox.Show("problem with adding the book occured.", "Book additions");
                         }
+                    }
+                   
+                    break;
+                case "update":
+                    if (currentlySelected != null)
+                    {
+
+                        if (currentlySelected.Format == Format.EBOOK)
+                        {
+                            
+                            try
+                            {
+                                book = new EBook(currentlySelected.Id, tbTitle.Text, tbDescription.Text, tbPublisher.Text, tbLanguage.Text, pubDatePicker.Value, (Format)cbFormat.SelectedItem, authorList, Convert.ToDouble(tbFileSize.Text), tbLink.Text);
+                            }
+                            catch (Exception arg)
+                            {
+                                errorMessages.Add(arg.Message);
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                book = new PaperBook(currentlySelected.Id, tbTitle.Text, tbDescription.Text, tbPublisher.Text, tbLanguage.Text, pubDatePicker.Value, (Format)cbFormat.SelectedItem, authorList, Convert.ToInt32(tbPages.Text), tbISBN.Text, tbISBN10.Text);
+                            }
+                            catch (Exception arg)
+                            {
+                                errorMessages.Add(arg.Message);
+                            }
+                        }
+                        if (errorMessages.Count > 0)
+                        {
+                            string errorMessage = string.Join(Environment.NewLine, errorMessages);
+                            MessageBox.Show(errorMessage, "Input Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            bool success = _bookManager.UpdateBook(book);
+                            ReadOnlyTrue();
+                            HideButtons();
+                            if (success)
+                            {
+                                MessageBox.Show("book succesfully updated.", "update");
+                                RefreshCollection(); action = "";
+                                EnableButtons();
+                            }
+                            else
+                            {
+                                MessageBox.Show("problem with updating the book occured.", "update");
+                            }
+                        }
+                       
                     }
                     else
                     {

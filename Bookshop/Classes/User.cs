@@ -18,10 +18,10 @@ namespace Classes
         private string _picturePath;
 
         public int Id { get => _id; }
-        
+
         [Required(ErrorMessage = "Name is required.")]
         [MaxLength(20, ErrorMessage = "Maximum length is 20 symbols")]
-        [RegularExpression(@"^[A-Za-z\-]+$", ErrorMessage = "Name must contain only letters or hyphens")]
+        [RegularExpression(@"^[A-Za-z\-]+( [A-Za-z\-]+)*$", ErrorMessage = "Name must contain letters, hyphens or white space")]
         public string Name
         {
             get => _name;
@@ -50,7 +50,8 @@ namespace Classes
                 _email = value;
             }
         }
-        [MinLength(3,ErrorMessage ="Minimun length is 3 symbols")]
+
+        [MinLength(3, ErrorMessage = "Minimun length is 3 symbols")]
         [MaxLength(20, ErrorMessage = "Maximum length is 20 symbols")]
         [Required(ErrorMessage = "Username is required.")]
         public string? Username
@@ -81,14 +82,11 @@ namespace Classes
                 _password = value;
             }
         }
-
+        public string PicturePath { get => _picturePath; set => _picturePath = value; }
 
         public List<Review> Reviews { get; set; }
-        public string PicturePath { get => _picturePath; set => _picturePath = value; }
         public Dictionary<int, string> LikedReviews { get; set; }
         public Dictionary<int, string> DislikedReviews { get; set; }
-
-        //public Dictionary<int, string> DislikedReviews { get; set; }
 
         public User()
         {
@@ -100,12 +98,12 @@ namespace Classes
             Name = name;
             Username = username;
         }
-        public User(int id, string name, string username, string pp)
+        public User(int id, string name, string username, string profilePicture)
         {
             _id = id;
             Name = name;
             Username = username;
-            PicturePath = pp;
+            PicturePath = profilePicture;
         }
         public User(int id, string name, string email, List<Review> reviews)
         {

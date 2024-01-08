@@ -100,7 +100,8 @@ namespace Classes
         public Format Format { get { return _format; } set { _format = value; } }
         public List<Author> Authors { get { return _authors; } set { if (value == null) { throw new ArgumentException("Authors cannot be null"); } _authors = value; } }
         public string Genre { get; set; }
-        private ReviewManager reviewManager;
+
+        private List<Review> Reviews;
         public Book()
         {
 
@@ -115,29 +116,34 @@ namespace Classes
             PublicationDate = publicationDate;
             Format = format;
             Authors = authors;
-            reviewManager = new ReviewManager();
+            Reviews = new List<Review>();
         }
 
         public void AddReview(Review review)
         {
-            reviewManager.AddReview(review);
+            Reviews.Add(review);
         }
-        public void RemoveReview(Review review)
+        public void AddReviews(List<Review> reviews)
         {
-            reviewManager.RemoveReview(review);
+            Reviews.AddRange(reviews);
         }
         public List<Review> GetReviews()
         {
-            return reviewManager.GetReviews();
+            return Reviews;
         }
         public Review GetReviewByUser(int userId)
         {
-            return reviewManager.GetReviewByUser(userId);
+            var result = Reviews.Find(x => x.User.Id == userId);
+            if (result == null)
+            {
+                return null;
+            }
+            Reviews.Remove(result);
+            return result;
         }
-        public Statistics GetStatistics() { return reviewManager.GetStatistics(); }
-        public void LikeReview(int reviewId)
+        public void RemoveReview(Review review)
         {
-            reviewManager.LikeReview(reviewId);
+            Reviews.Remove(review);
         }
         public override string ToString()
         {

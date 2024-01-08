@@ -7,10 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddTransient<BookManagement>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddSingleton<IBookRepository, BookRepository>();
+builder.Services.AddSingleton<IReviewRepository, ReviewRepository>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+
+builder.Services.AddSingleton<BookManager>();
+builder.Services.AddSingleton<UserController>();
+builder.Services.AddSingleton<ReviewManager>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 

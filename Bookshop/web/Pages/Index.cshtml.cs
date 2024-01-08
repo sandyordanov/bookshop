@@ -10,7 +10,7 @@ namespace web.Pages
 {
     public class IndexModel : PageModel
     {
-        private BookManagement bookManager;
+        private BookManager bookManager;
 
 
         [BindProperty(SupportsGet = true)]
@@ -19,7 +19,7 @@ namespace web.Pages
 
         public IndexModel(IBookRepository bookRepo, IReviewRepository reviewRepo)
         {
-            bookManager = new BookManagement(bookRepo, reviewRepo);
+            bookManager = new BookManager(bookRepo, reviewRepo);
         }
 
         public void OnGet()

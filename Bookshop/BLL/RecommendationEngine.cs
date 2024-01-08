@@ -54,7 +54,7 @@ namespace BLL
 
                     foreach (Review review in user.Reviews)
                     {
-                        if (targetUser.Reviews.Any(targetReview => targetReview.BookId == review.BookId))
+                        if (targetUser.Reviews.Any(targetReview => targetReview.Book.Id == review.Book.Id))
                         {
                             hasCommonReview = true;
                             break;
@@ -79,7 +79,7 @@ namespace BLL
 
             foreach (var user in similarUsers)
             {
-                foreach (var bookId in user.Reviews.Select(rev => rev.BookId).ToArray())
+                foreach (var bookId in user.Reviews.Select(rev => rev.Book.Id).ToArray())
                 {
                     if (!aggregatedRatings.ContainsKey(bookId))
                     {
@@ -87,7 +87,7 @@ namespace BLL
                     }
 
                     // Weighted sum based on the similarity of users
-                    aggregatedRatings[bookId] += user.Reviews.First(r => r.BookId == bookId).Rating;
+                    aggregatedRatings[bookId] += user.Reviews.First(r => r.Book.Id == bookId).Rating;
                 }
             }
 
@@ -104,7 +104,7 @@ namespace BLL
 
                 foreach (Review review in user.Reviews)
                 {
-                    if (review.BookId == book.Id)
+                    if (review.Book.Id == book.Id)
                     {
                         isRated = true;
                         break;

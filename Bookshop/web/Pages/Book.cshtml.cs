@@ -15,8 +15,9 @@ namespace web.Pages
     public class BookModel : PageModel
     {
 
-        private BookManagement bookManager;
+        private BookManager _bookManager;
         private UserController userController;
+        private ReviewManager _reviewManager;
 
         public List<Review> Reviews { get; set; }
         public int TotalPages { get; set; }
@@ -29,10 +30,11 @@ namespace web.Pages
         public Statistics Statistics { get; set; }
         public bool UserHasReviews { get; set; }
         public User MyUser { get; set; }
-        public BookModel(IBookRepository bookRepo, IReviewRepository reviewRepo, IUserRepository userRepo)
+        public BookModel(BookManager bookManager, ReviewManager reviewMan, UserController userCon)
         {
-            userController = new UserController(userRepo);
-            bookManager = new BookManagement(bookRepo, reviewRepo);
+            userController = userCon;
+            _bookManager = bookManager;
+            _reviewManager = reviewMan;
             NewReview = new Review();
         }
         [BindProperty]
@@ -46,18 +48,19 @@ namespace web.Pages
                 const int pageSize = 5;
                 CurrentPage = pageNumber ?? 1;
 
-                int totalReviewCount = bookManager.GetTotalReviewCountForBook(id);
+                int totalReviewCount = _reviewManager.GetTotalReviewCountForBook(id);
 
                 TotalPages = (int)Math.Ceiling(totalReviewCount / (double)pageSize);
-                Book = bookManager.GetBookAndReviews(id);
-                Statistics = Book.GetStatistics();
-                Reviews = bookManager.GetReviewsPagination(id, CurrentPage, pageSize);
+                Book = _bookManager.GetBook(id);
+
+                Reviews = _reviewManager.GetReviewsPagination(Book, CurrentPage, pageSize);
+                Statistics = _bookManager.GetBookStatistics(Book);
 
                 if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     int userId = Convert.ToInt32(User.FindFirstValue("id"));
                     MyUser = userController.GetUserById(userId);
-                    UserHasReviews = bookManager.UserHasReviewsOnBook(userId, Book.Id);
+                    UserHasReviews = _reviewManager.UserHasReviewsOnBook(userId, Book.Id);
                     NewReview = Book.GetReviewByUser(userId);
                     if (UserHasReviews)
                     {
@@ -81,8 +84,9 @@ namespace web.Pages
             }
 
             NewReview.User = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
-            var review = new Review(0, NewReview.Comment, NewReview.Rating, DateTime.Now, 0, NewReview.User, bookId);
-            bookManager.AddReview(review);
+            var book = _bookManager.GetBook(bookId);
+            var review = new Review(0, NewReview.Comment, NewReview.Rating, DateTime.Now, 0, NewReview.User, book);
+            _reviewManager.AddReview(review);
             return RedirectToPage("/Book", new { id = bookId });
         }
         public IActionResult OnPostUserOperations()
@@ -99,10 +103,10 @@ namespace web.Pages
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                var rev = bookManager.GetReview(revId);
+                var rev = _reviewManager.GetReview(revId);
                 User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
-                bookManager.LikeReview(rev, currentUser, "upVote");
-                return RedirectToPage("/Book", new { id = rev.BookId });
+                _reviewManager.VoteOnReview(rev, currentUser, "upVote");
+                return RedirectToPage("/Book", new { id = rev.Book.Id });
             }
             return RedirectToPage("Login");
         }
@@ -110,10 +114,10 @@ namespace web.Pages
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                var rev = bookManager.GetReview(revId);
+                var rev = _reviewManager.GetReview(revId);
                 User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
-                bookManager.LikeReview(rev, currentUser, "downVote");
-                return RedirectToPage("/Book", new { id = rev.BookId });
+                _reviewManager.VoteOnReview(rev, currentUser, "downVote");
+                return RedirectToPage("/Book", new { id = rev.Book.Id });
             }
             return RedirectToPage("Login");
         }

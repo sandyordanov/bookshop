@@ -1,4 +1,5 @@
 ﻿using Classes;
+using DAL.DbConnection;
 using DAL.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
@@ -31,7 +32,7 @@ namespace DAL
                     command.Parameters.AddWithValue("@Rating", review.Rating);
                     command.Parameters.AddWithValue("@Date", review.Date);
                     command.Parameters.AddWithValue("@Likes", review.Likes);
-                    command.Parameters.AddWithValue("@BookId", review.BookId);
+                    command.Parameters.AddWithValue("@BookId", review.Book.Id);
                     command.Parameters.AddWithValue("@UserId", review.User.Id);
 
                     int rowsAffected = command.ExecuteNonQuery();
@@ -59,7 +60,7 @@ namespace DAL
             }
         }
 
-        public List<Review> GetAllReviewsByBook(int bookId)
+        public List<Review> GetAllReviewsByBook(Book book)
         {
             using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
             {
@@ -71,7 +72,7 @@ namespace DAL
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("id", bookId);
+                    command.Parameters.AddWithValue("id", book.Id);
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -84,7 +85,7 @@ namespace DAL
                             DateTime date = reader.GetDateTime(3);
                             int likes = reader.GetInt32(4);
                             User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7), reader.GetString(8));
-                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, book);
                             result.Add(review);
                         }
                         return result;
@@ -93,19 +94,19 @@ namespace DAL
             }
         }
 
-        public List<Review> GetAllReviewsByUser(int userId)
+        public List<Review> GetAllReviewsByUser(User user)
         {
             using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
             {
                 connection.Open();
-
-                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id,Users.Id, Users.Name, Users.Username FROM Reviews " +
-                    "INNER JOIN Users ON Reviews.User_id = Users.Id " +
-                    "WHERE Users.Id = @id";
+                string query = "SELECT * FROM Reviews WHERE User_id = @id";
+                //string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id,Users.Id, Users.Name, Users.Username FROM Reviews " +
+                //    "INNER JOIN Users ON Reviews.User_id = Users.Id " +
+                //    "WHERE Users.Id = @id";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("id", userId);
+                    command.Parameters.AddWithValue("id", user.Id);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         List<Review> result = new List<Review>();
@@ -117,8 +118,8 @@ namespace DAL
                             DateTime date = reader.GetDateTime(3);
                             int likes = reader.GetInt32(4);
                             int bookId = reader.GetInt32(5);
-                            User user = new User(reader.GetInt32(6), reader.GetString(7), reader.GetString(8));
-                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            Book book = new BookRepository().GetBook(bookId);
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, book);
                             result.Add(review);
                         }
                         return result;
@@ -149,8 +150,9 @@ namespace DAL
                             DateTime date = reader.GetDateTime(2);
                             int likes = reader.GetInt32(3);
                             int bookId = reader.GetInt32(4);
+                            Book book = new BookRepository().GetBook(bookId);
                             User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7));
-                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, book);
                             return review;
                         }
 
@@ -291,7 +293,7 @@ namespace DAL
             }
         }
 
-        public List<Review> GetReviewsPagination(int bookId, int currentPage, int pageSize)
+        public List<Review> GetReviewsPagination(Book book, int currentPage, int pageSize)
         {
             int startIndex = (currentPage - 1) * pageSize + 1;
             int endIndex = startIndex + pageSize - 1;
@@ -303,7 +305,7 @@ namespace DAL
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("id", bookId);
+                    command.Parameters.AddWithValue("id", book.Id);
                     command.Parameters.AddWithValue("StartIndex", startIndex);
                     command.Parameters.AddWithValue("EndIndex", endIndex);
 
@@ -318,7 +320,7 @@ namespace DAL
                             DateTime date = reader.GetDateTime(3);
                             int likes = reader.GetInt32(4);
                             User user = new User(reader.GetInt32(5), reader.GetString(6), reader.GetString(7), reader.GetString(8));
-                            Review review = new Review(reviewId, comment, rating, date, likes, user, bookId);
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, book);
                             result.Add(review);
                         }
                         return result;

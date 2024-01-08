@@ -56,8 +56,8 @@
         {
             <tr>
                 <td>@index</td>
-                <td>@Model._bookManager.GetBookInfo(review.BookId).Title</td>
-                <td><a class="bg-dark text-white list-group-item list-group-item-action" href="/Book/?id=@review.BookId">@review.Comment</a></td>
+                <td>@review.Book.Title</td>
+                <td><a class="bg-dark text-white list-group-item list-group-item-action" href="/Book/?id=@review.Book.Id">@review.Comment</a></td>
                 <td>@review.Rating</td>
                 <td>@review.Date</td>
             </tr>

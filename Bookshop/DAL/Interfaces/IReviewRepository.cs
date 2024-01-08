@@ -12,12 +12,14 @@ namespace DAL
         bool AddReview(Review review);
         bool UpdateReview(Review review);
         bool DeleteReview(Review review);
+        //the gets
         Review? GetReview(int reviewId);
-        List<Review> GetAllReviewsByBook(int bookId);
-        List<Review> GetAllReviewsByUser(int userId);
+        List<Review> GetAllReviewsByBook(Book book);
+        List<Review> GetAllReviewsByUser(User user);
+        //user review checks
         bool HasUserReviewsOnBook(int userId, int bookId);
         //pagination
-        List<Review> GetReviewsPagination(int bookId, int startIndex, int pageSize);
+        List<Review> GetReviewsPagination(Book book, int startIndex, int pageSize);
         int GetReviewCountByBook(int bookId);
         //votes on reviews
         void LikeReview(int reviewId, int userId, string voteType);

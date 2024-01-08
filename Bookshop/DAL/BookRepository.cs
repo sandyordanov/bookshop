@@ -1,4 +1,5 @@
 ﻿using Classes;
+using DAL.DbConnection;
 using DAL.Interfaces;
 using Microsoft.Data.SqlClient;
 using System;
@@ -75,7 +76,7 @@ namespace DAL
         {
             using (var connection = new SqlConnection(GetConnectionString()))
             {
-                    connection.Open();
+                connection.Open();
 
                 using (var bookCommand = connection.CreateCommand())
                 {
@@ -149,120 +150,117 @@ namespace DAL
             }
         }
 
-        public Book GetBook(int id, Type bookType)
+        public Book GetBook(int bookId)
         {
             using (var connection = new SqlConnection(GetConnectionString()))
             {
                 connection.Open();
-
-                string commonQuery = "SELECT Books.Id, Books.Title, Books.Description, Books.Publisher, Books.Language, " +
-                                     "Books.PublicationDate, Formats.Format, Authors.Id as 'Author_ID', Authors.FullName, " +
-                                     "Authors.BirthDate, Authors.Description, Authors.Website, Authors.Twitter";
-
-                int bookId = 0;
-                string title = "";
-                string description = "";
-                string publisher = "";
-                string language = "";
-                DateTime publicationDate = default;
-                Format format = default;
-
-                int authorId = 0;
-                string authorName = "";
-                DateTime authorBirthdate = default;
-                string authorDescription = "";
-                string authorWebsite = "";
-                string authorTwitter = "";
-
-                string query = "";
-
-                switch (bookType.Name)
+                using (var transaction = connection.BeginTransaction())
                 {
-                    case nameof(PaperBook):
-                        query = $"{commonQuery}, PaperBooks.Pages, PaperBooks.ISBN, PaperBooks.ISBN10 " +
-                                "FROM Books " +
-                                "INNER JOIN Formats ON Books.Format_Id = Formats.Id " +
-                                "INNER JOIN Author_Book ON Books.Id = Author_Book.Book_Id " +
-                                "INNER JOIN Authors ON Author_Book.Author_id = Authors.Id " +
-                                "INNER JOIN PaperBooks ON Books.Id = PaperBooks.Id " +
-                                "WHERE Books.Id = @id";
-                        using (var command = new SqlCommand(query, connection))
+                    try
+                    {
+                        string commonQuery = "SELECT Books.Id, Books.Title, Books.Description, Books.Publisher, Books.Language, " +
+                                               "Books.PublicationDate, Formats.Format, Authors.Id as 'Author_ID', Authors.FullName, " +
+                                               "Authors.BirthDate, Authors.Description, Authors.Website, Authors.Twitter " +
+                                               "FROM Books " +
+                                               "INNER JOIN Formats ON Books.Format_Id = Formats.Id " +
+                                               "INNER JOIN Author_Book ON Books.Id = Author_Book.Book_Id " +
+                                               "INNER JOIN Authors ON Author_Book.Author_id = Authors.Id " +
+                                               "WHERE Books.Id = @id";
+
+                        using (var command = new SqlCommand(commonQuery, connection, transaction))
                         {
-                            command.Parameters.AddWithValue("@id", id);
+                            command.Parameters.AddWithValue("@id", bookId);
 
                             using (var reader = command.ExecuteReader())
                             {
                                 if (reader.Read())
                                 {
-                                    bookId = reader.GetInt32(0);
-                                    title = reader.GetString(1);
-                                    description = reader.GetString(2);
-                                    publisher = reader.GetString(3);
-                                    language = reader.GetString(4);
-                                    publicationDate = (DateTime)reader.GetValue(5);
-                                    format = (Format)reader.GetInt32(6);
-                                    authorId = reader.GetInt32(7);
-                                    authorName = reader.GetString(8);
-                                    authorBirthdate = (DateTime)reader.GetValue(9);
-                                    authorDescription = reader.GetString(10);
-                                    authorWebsite = reader.GetString(11);
-                                    authorTwitter = reader.GetString(12);
-                                    int pages = reader.GetInt32(13);
-                                    string isbn = reader.GetString(14);
-                                    string isbn10 = reader.GetString(15);
-                                    Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter, null);
-                                    List<Author> list = new List<Author> { author };
-                                    return new PaperBook(bookId, title, description, publisher, language, publicationDate, format, list, pages, isbn, isbn10);
+                                    int BookId = reader.GetInt32(0);
+                                    string Title = reader.GetString(1);
+                                    string Description = reader.GetString(2);
+                                    string Publisher = reader.GetString(3);
+                                    string Language = reader.GetString(4);
+                                    DateTime PublicationDate = (DateTime)reader.GetValue(5);
+                                    Format format = (Format)Enum.Parse(typeof(Format), reader.GetString(6), true);
+
+                                    int AuthorId = reader.GetInt32(7);
+                                    string AuthorName = reader.GetString(8);
+                                    DateTime AuthorBirthdate = (DateTime)reader.GetValue(9);
+                                    string AuthorDescription = reader.GetString(10);
+                                    string AuthorWebsite = reader.GetString(11);
+                                    string AuthorTwitter = reader.GetString(12);
+
+                                    Author author = new Author(AuthorId, AuthorName, AuthorBirthdate, AuthorDescription, AuthorWebsite, AuthorTwitter, null);
+                                    List<Author> authors = new List<Author> { author };
+                                    reader.Close();
+                                    switch (format)
+                                    {
+                                        case Format.PAPERBOOK:
+                                        case Format.PAPERBACK:
+                                        case Format.HARDCOVER:
+                                            // Fetch additional PaperBook properties
+                                            string paperBookQuery = "SELECT Pages, ISBN, ISBN10 FROM PaperBooks WHERE Id = @id";
+                                            using (var paperBookCommand = new SqlCommand(paperBookQuery, connection, transaction))
+                                            {
+                                                paperBookCommand.Parameters.AddWithValue("@id", BookId);
+                                                using (var paperBookReader = paperBookCommand.ExecuteReader())
+                                                {
+                                                    if (paperBookReader.Read())
+                                                    {
+                                                        int pages = paperBookReader.GetInt32(0);
+                                                        string isbn = paperBookReader.GetString(1);
+                                                        string isbn10 = paperBookReader.GetString(2);
+
+                                                        return new PaperBook(bookId, Title, Description, Publisher, Language, PublicationDate, format, authors, pages, isbn, isbn10);
+                                                    }
+                                                }
+                                            }
+                                            break;
+
+                                        case Format.EBOOK:
+                                            // Fetching additional EBook properties
+                                            string ebookQuery = "SELECT Filesize, DownloadLink FROM Ebooks WHERE Id = @id";
+                                            using (var ebookCommand = new SqlCommand(ebookQuery, connection, transaction))
+                                            {
+                                                ebookCommand.Parameters.AddWithValue("@id", BookId);
+                                                using (var ebookReader = ebookCommand.ExecuteReader())
+                                                {
+                                                    if (ebookReader.Read())
+                                                    {
+                                                        double fileSize = ebookReader.GetDouble(0);
+                                                        string downloadLink = ebookReader.GetString(1);
+
+                                                        return new EBook(bookId, Title, Description, Publisher, Language, PublicationDate, format, authors, fileSize, downloadLink);
+                                                    }
+                                                }
+                                            }
+                                            break;
+
+                                        default:
+                                            // Handle unsupported formats or other cases
+                                            break;
+                                    }
                                 }
                             }
                         }
-                        break;
 
-                    case nameof(EBook):
-                        query = $"{commonQuery}, Ebooks.Filesize, Ebooks.DownloadLink " +
-                                "FROM Books " +
-                                "INNER JOIN Formats ON Books.Format_Id = Formats.Id " +
-                                "INNER JOIN Author_Book ON Books.Id = Author_Book.Book_Id " +
-                                "INNER JOIN Authors ON Author_Book.Author_id = Authors.Id " +
-                                "INNER JOIN Ebooks ON Books.Id = Ebooks.Id " +
-                                "WHERE Books.Id = @id";
-                        using (var command = new SqlCommand(query, connection))
-                        {
-                            command.Parameters.AddWithValue("@id", id);
-
-                            using (var reader = command.ExecuteReader())
-                            {
-                                if (reader.Read())
-                                {
-                                    bookId = reader.GetInt32(0);
-                                    title = reader.GetString(1);
-                                    description = reader.GetString(2);
-                                    publisher = reader.GetString(3);
-                                    language = reader.GetString(4);
-                                    publicationDate = reader.GetDateTime(5);
-                                    format = (Format)reader.GetInt32(6);
-                                    authorId = reader.GetInt32(7);
-                                    authorName = reader.GetString(8);
-                                    authorBirthdate = reader.GetDateTime(9);
-                                    authorDescription = reader.GetString(10);
-                                    authorWebsite = reader.GetString(11);
-                                    authorTwitter = reader.GetString(12);
-                                    double fileSize = reader.GetDouble(13);
-                                    string link = reader.GetString(14);
-                                    Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter, null);
-                                    List<Author> list = new List<Author> { author };
-                                    return new EBook(bookId, title, description, publisher, language, publicationDate, format, list, fileSize, link);
-                                }
-                            }
-                        }
-                        break;
-
-                    default:
-                        break;
+                        // Commit the transaction if successful
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle exceptions and rollback the transaction if an error occurs
+                        transaction.Rollback();
+                        // Log or throw the exception as needed
+                        throw;
+                    }
                 }
             }
+
             return null;
         }
+
 
         public List<Book> GetAllBooks()
         {

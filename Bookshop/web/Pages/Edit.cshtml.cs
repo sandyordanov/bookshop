@@ -10,10 +10,12 @@ namespace web.Pages
     [BindProperties]
     public class EditModel : PageModel
     {
-        private BookManagement _bookMan;
-        public EditModel(IBookRepository Brepo, IReviewRepository Rrepo)
+        private BookManager _bookMan;
+        private BLL.ReviewManager _reviewManager;
+        public EditModel(IBookRepository Brepo, IReviewRepository Rrepo, BLL.ReviewManager reviewManager)
         {
-            _bookMan = new BookManagement(Brepo, Rrepo);
+            _bookMan = new BookManager(Brepo, Rrepo);
+            _reviewManager =  reviewManager;
         }
         public Review SelectedReview { get; set; }
         public IActionResult OnGet()
@@ -21,7 +23,7 @@ namespace web.Pages
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 int reviewId = Convert.ToInt32(HttpContext.Session.GetInt32("reviewId"));
-                SelectedReview = _bookMan.GetReview(reviewId);
+                SelectedReview = _reviewManager.GetReview(reviewId);
                 return Page();
             }
             TempData["isLogged"] = "You do not have permission for that operation.";
@@ -30,14 +32,14 @@ namespace web.Pages
         public IActionResult OnPost()
         {
             SelectedReview.Id = Convert.ToInt32(HttpContext.Session.GetInt32("reviewId"));
-            _bookMan.UpdateReview(SelectedReview);
+            _reviewManager.UpdateReview(SelectedReview);
             HttpContext.Session.Remove("reviewId");
             return RedirectToPage("/Profile");
         }
         public IActionResult OnPostDelete()
         {
             SelectedReview.Id = Convert.ToInt32(HttpContext.Session.GetInt32("reviewId"));
-            _bookMan.DeleteReview(SelectedReview);
+            _reviewManager.DeleteReview(SelectedReview);
             HttpContext.Session.Remove("reviewId");
             return RedirectToPage("/Profile");
         }

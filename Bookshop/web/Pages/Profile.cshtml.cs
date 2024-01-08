@@ -16,30 +16,25 @@ namespace web.Pages
     public class ProfileModel : PageModel
     {
         UserController _userCon;
+        private BookManager _bookManager;
+        private BLL.ReviewManager _reviewManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-
-        [BindProperty]
-        public BookManagement _bookManager { get; set; }
         public List<Review> MyReviews { get; set; }
         public User MyUser { get; set; }
 
-        public ProfileModel(IReviewRepository reviewRepository, IUserRepository userRepository, IBookRepository bookRepo, IWebHostEnvironment hostingEnvironment)
+        public ProfileModel(IWebHostEnvironment hostingEnvironment, BookManager bookManager, BLL.ReviewManager reviewManager, UserController userController)
         {
-            _userCon = new UserController(userRepository);
-            _bookManager = new BookManagement(bookRepo, reviewRepository);
+            _userCon = userController;
+            _bookManager = bookManager;
+            _reviewManager = reviewManager;
             _hostingEnvironment = hostingEnvironment;
         }
         public IActionResult OnGet()
         {
-            if (User.Identity == null && User.Identity.IsAuthenticated == false)
-            {
-                TempData["Message"] = "You are already logged in! Log out if you want to login a new profile.";
-                RedirectToPage("/");
-            }
-
-            MyReviews = _bookManager.GetAllReviewsByUser(Convert.ToInt32(User.FindFirstValue("id")));
             MyUser = _userCon.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+            MyReviews = _reviewManager.GetAllReviewsByUser(MyUser);
+
             return Page();
         }
         public async Task<IActionResult> OnPost(IFormFile profilePicture)
@@ -60,6 +55,7 @@ namespace web.Pages
                     }
 
                     MyUser = _userCon.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+
                     string oldFilePath = Path.Combine(uploadsPath, MyUser.PicturePath);
 
                     if (MyUser.PicturePath != "noPic")

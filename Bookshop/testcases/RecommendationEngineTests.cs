@@ -23,8 +23,8 @@ namespace UnitTests
             var users = new List<User>();
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
-            user1.Reviews = new List<Review>() { new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id) };
-            user2.Reviews = new List<Review>() { new Review(2, "comment", 4, DateTime.Now, 0, user2, book1.Id) };
+            user1.Reviews = new List<Review>() { new Review(1, "comment", 5, DateTime.Now, 0, user1, book1) };
+            user2.Reviews = new List<Review>() { new Review(2, "comment", 4, DateTime.Now, 0, user2, book1) };
 
             users.Add(user1);
             users.Add(user2);
@@ -54,8 +54,8 @@ namespace UnitTests
             var users = new List<User>();
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
-            user1.Reviews = new List<Review>() { new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id) };
-            user2.Reviews = new List<Review>() { new Review(2, "comment", 4, DateTime.Now, 0, user2, book2.Id) };
+            user1.Reviews = new List<Review>() { new Review(1, "comment", 5, DateTime.Now, 0, user1, book1) };
+            user2.Reviews = new List<Review>() { new Review(2, "comment", 4, DateTime.Now, 0, user2, book2) };
 
             users.Add(user1);
             users.Add(user2);
@@ -85,11 +85,11 @@ namespace UnitTests
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
             user1.Reviews = new List<Review>() {
-                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id),
-                new Review(3, "comment", 1, DateTime.Now, 0, user1, book2.Id) };
+                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1),
+                new Review(3, "comment", 1, DateTime.Now, 0, user1, book2) };
             user2.Reviews = new List<Review>() {
-                new Review(2, "comment", 4, DateTime.Now, 0, user2, book1.Id),
-                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2.Id) };
+                new Review(2, "comment", 4, DateTime.Now, 0, user2, book1),
+                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2) };
 
             users.Add(user1);
             users.Add(user2);
@@ -119,13 +119,13 @@ namespace UnitTests
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
             user1.Reviews = new List<Review>() {
-                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id),
-                new Review(2, "comment", 1, DateTime.Now, 0, user1, book3.Id) };
+                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1),
+                new Review(2, "comment", 1, DateTime.Now, 0, user1, book3) };
             book1.AddReview(user1.Reviews[0]);
             book3.AddReview(user1.Reviews[1]);
             user2.Reviews = new List<Review>() {
-                new Review(3, "comment", 4, DateTime.Now, 0, user2, book1.Id),
-                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2.Id) };
+                new Review(3, "comment", 4, DateTime.Now, 0, user2, book1),
+                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2) };
             book1.AddReview(user2.Reviews[0]);
             book2.AddReview(user2.Reviews[1]);
             users.Add(user1);
@@ -154,11 +154,11 @@ namespace UnitTests
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
             user1.Reviews = new List<Review>() {
-                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id),
-                new Review(3, "comment", 4, DateTime.Now, 0, user1, book2.Id) };
+                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1),
+                new Review(3, "comment", 4, DateTime.Now, 0, user1, book2) };
             user2.Reviews = new List<Review>() {
-                new Review(2, "comment", 5, DateTime.Now, 0, user2, book1.Id),
-                new Review(4, "comment", 2, DateTime.Now, 0, user2, book3.Id) };
+                new Review(2, "comment", 5, DateTime.Now, 0, user2, book1),
+                new Review(4, "comment", 2, DateTime.Now, 0, user2, book3) };
 
             users.Add(user1);
             users.Add(user2);
@@ -186,10 +186,10 @@ namespace UnitTests
             var user1 = new User(1, "Jeff", "mail.jeff@jeff", "jeffUser123", "password1", "picture.png1");
             var user2 = new User(2, "Chef", "mail.chef@chef", "chefUser123", "password2", "picture.png2");
             user1.Reviews = new List<Review>() {
-                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1.Id) };
+                new Review(1, "comment", 5, DateTime.Now, 0, user1, book1) };
             user2.Reviews = new List<Review>() {
-                new Review(2, "comment", 5, DateTime.Now, 0, user2, book1.Id),
-                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2.Id) };
+                new Review(2, "comment", 5, DateTime.Now, 0, user2, book1),
+                new Review(4, "comment", 2, DateTime.Now, 0, user2, book2) };
             book1.AddReview(user1.Reviews[0]);
             book1.AddReview(user2.Reviews[0]);
             book2.AddReview(user2.Reviews[1]);

@@ -1,6 +1,8 @@
 ﻿@page
 @model web.Pages.UserProfileUpdateModel
-
+@section scripts{
+    <partial name="_ValidationScriptsPartial" />
+    }
 <div class="container">
     <div class="row">
         <form method="post" asp-page-handler="OnPost" asp-page="UserProfileUpdate" class="form">
@@ -11,12 +13,12 @@
             </div>
             <div class="col-4">
                 <label class="form-label d-flex">Old email: <br /><b>@Model.OldUser.Email</b> </label>
-                <input asp-for="OldUser.Email" type="text" class="form-control" />
+                <input asp-for="OldUser.Email" type="email" class="form-control" />
                 <span asp-validation-for="@Model.OldUser.Email"></span>
             </div>
             <div class="col-4">
                 <label class="form-label d-flex">Old password: <br /><i>Hidden for security</i></label>
-                <!-- Avoid displaying old password for security reasons -->
+
                 <input asp-for="OldUser.Password" type="password" class="form-control" />
                 <span asp-validation-for="@Model.OldUser.Password"></span>
             </div>

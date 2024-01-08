@@ -64,8 +64,8 @@ namespace Classes
             }
         }
         public User User { get => _user; set => _user = value; }
-        public int BookId { get; set; }
-        public Review(int id, string comment, int rating, DateTime date, int likes, User user, int bookId)
+        public Book Book { get; set; }
+        public Review(int id, string comment, int rating, DateTime date, int likes, User user, Book book)
         {
             _id = id;
             Comment = comment;
@@ -73,7 +73,7 @@ namespace Classes
             Date = date;
             Likes = likes;
             User = user;
-            BookId = bookId;
+            Book = book;
         }
         public Review()
         {
