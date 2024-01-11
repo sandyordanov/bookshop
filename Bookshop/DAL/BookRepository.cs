@@ -191,7 +191,7 @@ namespace DAL
                                     string AuthorWebsite = reader.GetString(11);
                                     string AuthorTwitter = reader.GetString(12);
 
-                                    Author author = new Author(AuthorId, AuthorName, AuthorBirthdate, AuthorDescription, AuthorWebsite, AuthorTwitter, null);
+                                    Author author = new Author(AuthorId, AuthorName, AuthorBirthdate, AuthorDescription, AuthorWebsite, AuthorTwitter);
                                     List<Author> authors = new List<Author> { author };
                                     reader.Close();
                                     switch (format)
@@ -305,7 +305,7 @@ namespace DAL
                             string authorWebsite = reader.GetString(11);
                             string authorTwitter = reader.GetString(12);
 
-                            Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter, null);
+                            Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter);
                             List<Author> authors = new List<Author> { author };
 
                             if (format == Format.PAPERBOOK || format == Format.HARDCOVER || format == Format.PAPERBACK)
@@ -313,18 +313,19 @@ namespace DAL
                                 int pages = reader.GetInt32(13);
                                 string isbn = reader.GetString(14);
                                 string isbn10 = reader.GetString(15);
-                                PaperBook paperBook = new PaperBook(bookId, title, description, publisher, language, publicationDate, format, authors, pages, isbn, isbn10);
+                                Book paperBook = new PaperBook(bookId, title, description, publisher, language, publicationDate, format, authors, pages, isbn, isbn10);
                                 bookList.Add(paperBook);
                             }
                             else if (format == Format.EBOOK)
                             {
                                 double fileSize = reader.GetDouble(16);
                                 string link = reader.GetString(17);
-                                EBook eBook = new EBook(bookId, title, description, publisher, language, publicationDate, format, authors, fileSize, link);
+                                Book eBook = new EBook(bookId, title, description, publisher, language, publicationDate, format, authors, fileSize, link);
                                 bookList.Add(eBook);
                             }
                             else
                             {
+                                
                                 throw new Exception("An error occurred - unsupported book type");
                             }
                         }
@@ -378,7 +379,7 @@ namespace DAL
                             string authorWebsite = reader.GetString(4);
                             string authorTwitter = reader.GetString(5);
 
-                            Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter, null);
+                            Author author = new Author(authorId, authorName, authorBirthdate, authorDescription, authorWebsite, authorTwitter);
                             authors.Add(author);
                         }
                     }

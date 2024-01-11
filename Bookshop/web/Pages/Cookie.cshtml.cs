@@ -14,8 +14,15 @@ namespace web.Pages
             {
                 Expires = DateTime.Now.AddDays(30)
             };
+            if (ThemeColor == "light")
+            {
+                Response.Cookies.Append("ColorThemeCookie", "dark", cookieOptions);
 
-            Response.Cookies.Append("ColorThemeCookie", ThemeColor, cookieOptions);
+            }
+            else if (ThemeColor == "dark")
+            {
+                Response.Cookies.Append("ColorThemeCookie", "light", cookieOptions);
+            }
 
             return RedirectToPage("/Index");
         }

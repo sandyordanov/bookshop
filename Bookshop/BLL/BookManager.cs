@@ -5,6 +5,7 @@ using DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,15 +33,6 @@ namespace BLL
         {
             return _bookRepo.GetAllBooks();
         }
-        public List<Book> GetAllBooksWithReviews()
-        {
-            var books = _bookRepo.GetAllBooks();
-            foreach (var book in books)
-            {
-                book.AddReviews(_reviewRepo.GetAllReviewsByBook(book));
-            }
-            return books;
-        }
         public List<Author> GetAllAuthors()
         {
             return _bookRepo.GetAllAuthors();
@@ -52,7 +44,6 @@ namespace BLL
         public Book GetBook(int bookId)
         {
             var book = _bookRepo.GetBook(bookId);
-            book.AddReviews(_reviewRepo.GetAllReviewsByBook(book));
             return book;
         }
         public bool UpdateBook(Book book)
@@ -74,8 +65,28 @@ namespace BLL
         //statistics
         public Statistics GetBookStatistics(Book book)
         {
-            StatisticsCalculator calculator = new StatisticsCalculator(book.GetReviews());
+            List<Review> reviews = _reviewRepo.GetAllReviewsByBook(book);
+            StatisticsCalculator calculator = new StatisticsCalculator(reviews);
             return calculator.CalculateStatistics();
+        }
+
+        public Dictionary<Book, Statistics> SortBooksByRating(List<Book> books)
+        {
+            Dictionary<Book, Statistics> sortedList = new Dictionary<Book, Statistics>();
+            foreach (var book in books)
+            {
+                sortedList.Add(book, GetBookStatistics(book));
+            }
+            sortedList = sortedList.OrderByDescending(x => x.Value.Average).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            return sortedList;
+        }
+
+        public List<Book> SearchForBooks(string search, List<Book> books)
+        {
+            SearchEngine searchEngine = new SearchEngine();
+            var result = searchEngine.SearchForBooks(search, books);
+            return result;
         }
     }
 }

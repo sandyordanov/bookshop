@@ -10,6 +10,7 @@ namespace DAL.DbConnection
     {
         public static string Get()
         {
+    
             return @"Server = mssqlstud.fhict.local; Database = dbi505814_jungle; User Id = dbi505814_jungle; Password = Spreadthered123@;TrustServerCertificate=True";
         }
     }

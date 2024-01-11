@@ -96,12 +96,36 @@ namespace Classes
             }
         }
 
-        public DateTime PublicationDate { get { return _publicationDate; } set { if (value > DateTime.MaxValue || value < DateTime.MinValue) { throw new ArgumentException("Insert valid datetime format"); } _publicationDate = value; } }
-        public Format Format { get { return _format; } set { _format = value; } }
-        public List<Author> Authors { get { return _authors; } set { if (value == null) { throw new ArgumentException("Authors cannot be null"); } _authors = value; } }
-        public string Genre { get; set; }
+        public DateTime PublicationDate
+        {
+            get { return _publicationDate; }
+            set
+            {
+                if (value > DateTime.MaxValue || value < DateTime.MinValue) { throw new ArgumentException("Insert valid datetime format"); }
+                _publicationDate = value;
+            }
+        }
+        public Format Format
+        {
+            get { return _format; }
+            set
+            {
+                _format = value;
+            }
+        }
+        public List<Author> Authors
+        {
+            get { return _authors; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentException("The book must have an author");
+                }
+                _authors = value;
+            }
+        }
 
-        private List<Review> Reviews;
         public Book()
         {
 
@@ -116,34 +140,7 @@ namespace Classes
             PublicationDate = publicationDate;
             Format = format;
             Authors = authors;
-            Reviews = new List<Review>();
-        }
 
-        public void AddReview(Review review)
-        {
-            Reviews.Add(review);
-        }
-        public void AddReviews(List<Review> reviews)
-        {
-            Reviews.AddRange(reviews);
-        }
-        public List<Review> GetReviews()
-        {
-            return Reviews;
-        }
-        public Review GetReviewByUser(int userId)
-        {
-            var result = Reviews.Find(x => x.User.Id == userId);
-            if (result == null)
-            {
-                return null;
-            }
-            Reviews.Remove(result);
-            return result;
-        }
-        public void RemoveReview(Review review)
-        {
-            Reviews.Remove(review);
         }
         public override string ToString()
         {

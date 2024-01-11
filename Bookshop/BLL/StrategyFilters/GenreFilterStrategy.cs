@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace BLL.StrategyFilters
 {
-    public class GenreFilterStrategy : IBookFilterStrategy
-    {
-        private string genre;
+    //public class GenreFilterStrategy : IBookFilterStrategy
+    //{
+    //    private string genre;
 
-        public GenreFilterStrategy(string genre)
-        {
-            this.genre = genre;
-        }
+    //    public GenreFilterStrategy(string genre)
+    //    {
+    //        this.genre = genre;
+    //    }
 
-        public IEnumerable<Book> Filter(IEnumerable<Book> books)
-        {
-            return books.Where(book => book.Genre == genre);
-        }
-    }
+    //    public IEnumerable<Book> Filter(IEnumerable<Book> books)
+    //    {
+    //        return books.Where(book => book.Genre == genre);
+    //    }
+    //}
 }

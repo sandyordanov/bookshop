@@ -9,8 +9,9 @@ namespace BLL
 {
     public class StatisticsCalculator
     {
+        private List<Review> reviews;
         private Statistics statistics;
-        List<Review> reviews;
+
         public StatisticsCalculator(List<Review> _reviews)
         {
             reviews = _reviews;

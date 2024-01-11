@@ -34,14 +34,8 @@ namespace DAL
 
         public User GetUserById(int id)
         {
-            
-            string query = @"
-        SELECT u.Name, u.Email, u.Username, u.Password, u.ProfilePicturePath, 
-               r.Id, r.Comment, r.Rating, r.Date, r.Likes, r.Book_id 
-        FROM Users u
-        LEFT JOIN Reviews r ON u.Id = r.User_id
-        WHERE u.Id = @id";
-
+            string query = @"SELECT u.Name, u.Email, u.Username, u.Password, u.ProfilePicturePath FROM Users u
+                            WHERE u.Id = @id";
             using (SqlConnection conn = new SqlConnection(DbConnectionString.Get()))
             {
                 conn.Open();
@@ -54,40 +48,26 @@ namespace DAL
                         User user = null;
                         while (reader.Read())
                         {
-                            // If the user object hasn't been created yet, create it
+
                             if (user == null)
                             {
                                 user = new User(
                                      id,
-                                     reader.GetString(0), // Name
-                                     reader.GetString(1), // Email
-                                     reader.GetString(2), // Username
-                                     reader.GetString(3), // Password
-                                     reader.GetString(4)  // ProfilePicturePath
+                                     reader.GetString(0),
+                                     reader.GetString(1),
+                                     reader.GetString(2),
+                                     reader.GetString(3),
+                                     reader.GetString(4)
                                 );
-                                user.Reviews = new List<Review>(); // Initialize the Reviews list
+
                             }
 
-                            // Check if the Review fields are not DBNull, which means this user has reviews
-                            if (!reader.IsDBNull(5))
-                            {
-                                var review = new Review(
-                                    reader.GetInt32(5),    // Review Id
-                                    reader.GetString(6),   // Comment
-                                    reader.GetInt32(7),    // Rating
-                                    reader.GetDateTime(8), // Date
-                                    reader.GetInt32(9), // Date
-                                    user,
-                                    null
-                                );
-                                user.Reviews.Add(review);
-                            }
                         }
                         return user;
                     }
                 }
             }
-            return null; // If user not found or no reviews
+            return null;
         }
 
         public User GetUserByUsername(string username)
@@ -129,15 +109,14 @@ namespace DAL
             {
                 connection.Open();
 
-                
-                string query = @" SELECT u.Id, u.Name, u.Email, r.Id, r.Comment, r.Rating, r.Date, r.Likes, r.Book_id FROM Users u LEFT JOIN Reviews r ON u.Id = r.User_id";
+
+                string query = @" SELECT u.Id, u.Name, u.Email FROM Users u";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         var result = new List<User>();
-                        var reviewsByUser = new Dictionary<int, List<Review>>();
 
                         while (reader.Read())
                         {
@@ -146,30 +125,11 @@ namespace DAL
                             string email = reader.GetString(2);
 
                             User user;
-                            if (!reviewsByUser.ContainsKey(userId))
-                            {
-                                user = new User(userId, name, email);
-                                user.Reviews = new List<Review>();
-                                reviewsByUser[userId] = user.Reviews;
-                                result.Add(user);
-                            }
-                            else
-                            {
-                                user = result.First(u => u.Id == userId);
-                            }
 
-                            if (!reader.IsDBNull(3)) // This means there are review fields
-                            {
-                                var review = new Review(
-                                    reader.GetInt32(3),    // Review Id
-                                    reader.GetString(4),   // Comment
-                                    reader.GetInt32(5),    // Rating
-                                    reader.GetDateTime(6), // Date
-                                    reader.GetInt32(7),    // Likes
-                                    user,null 
-                                );
-                                reviewsByUser[userId].Add(review);
-                            }
+
+                            user = new User(userId, name, email);
+
+                            result.Add(user);
                         }
                         return result;
                     }
@@ -280,6 +240,39 @@ namespace DAL
                             result.Add(reviewId, opinion);
                         }
                         return result;
+                    }
+                }
+            }
+        }
+        public void AddPowerUser(int userId)
+        {
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+                string query = "INSERT INTO PowerUsers (User_id) VALUES (@id)";
+                using (SqlCommand com = new SqlCommand(query, con))
+                {
+                    com.Parameters.AddWithValue("id", userId);
+                    com.ExecuteNonQuery();
+                }
+            }
+        }
+        public bool CheckIfUserIsPowerUser(User user)
+        {
+            using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
+            {
+                con.Open();
+                string query = "SELECT * FROM PowerUsers WHERE User_id = @id";
+                using (SqlCommand com = new SqlCommand(query, con))
+                {
+                    com.Parameters.AddWithValue("id", user.Id);
+                    using (SqlDataReader reader = com.ExecuteReader())
+                    {
+                        if (reader.Read != null)
+                        {
+                            return true;
+                        }
+                        return false;
                     }
                 }
             }

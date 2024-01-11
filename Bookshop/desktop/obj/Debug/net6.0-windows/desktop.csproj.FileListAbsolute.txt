@@ -49,3 +49,4 @@ D:\S2-Individual\bookshop\Bookshop\desktop\obj\Debug\net6.0-windows\desktop.Prop
 D:\S2-Individual\bookshop\Bookshop\desktop\bin\Debug\net6.0-windows\BLL.dll
 D:\S2-Individual\bookshop\Bookshop\desktop\bin\Debug\net6.0-windows\BLL.pdb
 D:\S2-Individual\bookshop\Bookshop\desktop\bin\Debug\net6.0-windows\BCrypt.Net-Next.dll
+D:\S2-Individual\bookshop\Bookshop\desktop\obj\Debug\net6.0-windows\desktop.UCReviews.resources

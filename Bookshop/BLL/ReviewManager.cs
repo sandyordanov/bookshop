@@ -18,7 +18,6 @@ namespace BLL
 
         public bool AddReview(Review review)
         {
-            review.Book.AddReview(review);
             return _reviewRepo.AddReview(review);
         }
         public Review GetReview(int reviewId)
@@ -32,6 +31,10 @@ namespace BLL
 
             throw new Exception("review not found");
         }
+        public List<Review> GetAllReviews()
+        {
+            return _reviewRepo.GetAllReviews();
+        }
         public List<Review> GetAllReviewsByBook(Book book)
         {
             return _reviewRepo.GetAllReviewsByBook(book);
@@ -39,6 +42,18 @@ namespace BLL
         public List<Review> GetAllReviewsByUser(User user)
         {
             return _reviewRepo.GetAllReviewsByUser(user);
+        }
+        public Review GetReviewOnBookByUser(User user, Book book)
+        {
+            var reviewsByUser = _reviewRepo.GetAllReviewsByUser(user);
+            foreach (var review in reviewsByUser)
+            {
+                if (review.Book.Id == book.Id)
+                {
+                    return review;
+                }
+            }
+            return null;
         }
         public bool UpdateReview(Review review)
         {

@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            groupBox2 = new GroupBox();
-            rdbPaperBook = new RadioButton();
             label12 = new Label();
             tbISBN10 = new TextBox();
             label11 = new Label();
@@ -59,53 +57,24 @@
             btnConfirm = new Button();
             btnCancel = new Button();
             pictureBox1 = new PictureBox();
-            groupBox3 = new GroupBox();
-            rdbEBook = new RadioButton();
             label8 = new Label();
             tbLink = new TextBox();
             label10 = new Label();
             tbFileSize = new TextBox();
-            d = new GroupBox();
+            groupBoxType = new GroupBox();
+            label14 = new Label();
+            label13 = new Label();
             lbDanger = new Label();
-            groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
-            groupBox3.SuspendLayout();
-            d.SuspendLayout();
+            groupBoxType.SuspendLayout();
             SuspendLayout();
-            // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(rdbPaperBook);
-            groupBox2.Controls.Add(label12);
-            groupBox2.Controls.Add(tbISBN10);
-            groupBox2.Controls.Add(label11);
-            groupBox2.Controls.Add(tbISBN);
-            groupBox2.Controls.Add(label6);
-            groupBox2.Controls.Add(tbPages);
-            groupBox2.Location = new Point(6, 16);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(332, 175);
-            groupBox2.TabIndex = 16;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Paperbook specific";
-            // 
-            // rdbPaperBook
-            // 
-            rdbPaperBook.AutoSize = true;
-            rdbPaperBook.Location = new Point(309, 16);
-            rdbPaperBook.Name = "rdbPaperBook";
-            rdbPaperBook.Size = new Size(17, 16);
-            rdbPaperBook.TabIndex = 22;
-            rdbPaperBook.TabStop = true;
-            rdbPaperBook.UseVisualStyleBackColor = true;
-            rdbPaperBook.CheckedChanged += rdbPaperBook_CheckedChanged;
             // 
             // label12
             // 
             label12.AutoSize = true;
             label12.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label12.Location = new Point(10, 114);
+            label12.Location = new Point(16, 117);
             label12.Name = "label12";
             label12.Size = new Size(72, 20);
             label12.TabIndex = 12;
@@ -114,7 +83,7 @@
             // tbISBN10
             // 
             tbISBN10.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            tbISBN10.Location = new Point(117, 111);
+            tbISBN10.Location = new Point(123, 114);
             tbISBN10.Name = "tbISBN10";
             tbISBN10.ReadOnly = true;
             tbISBN10.Size = new Size(194, 28);
@@ -124,7 +93,7 @@
             // 
             label11.AutoSize = true;
             label11.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label11.Location = new Point(10, 80);
+            label11.Location = new Point(16, 83);
             label11.Name = "label11";
             label11.Size = new Size(54, 20);
             label11.TabIndex = 10;
@@ -133,7 +102,7 @@
             // tbISBN
             // 
             tbISBN.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            tbISBN.Location = new Point(117, 77);
+            tbISBN.Location = new Point(123, 80);
             tbISBN.Name = "tbISBN";
             tbISBN.ReadOnly = true;
             tbISBN.Size = new Size(194, 28);
@@ -143,7 +112,7 @@
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.Location = new Point(10, 46);
+            label6.Location = new Point(16, 49);
             label6.Name = "label6";
             label6.Size = new Size(101, 20);
             label6.TabIndex = 3;
@@ -152,7 +121,7 @@
             // tbPages
             // 
             tbPages.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            tbPages.Location = new Point(117, 43);
+            tbPages.Location = new Point(123, 46);
             tbPages.Name = "tbPages";
             tbPages.ReadOnly = true;
             tbPages.Size = new Size(194, 28);
@@ -255,6 +224,7 @@
             cbFormat.Name = "cbFormat";
             cbFormat.Size = new Size(151, 28);
             cbFormat.TabIndex = 16;
+            cbFormat.SelectedIndexChanged += cbFormat_SelectedIndexChanged;
             // 
             // pubDatePicker
             // 
@@ -397,36 +367,11 @@
             pictureBox1.TabIndex = 20;
             pictureBox1.TabStop = false;
             // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(rdbEBook);
-            groupBox3.Controls.Add(label8);
-            groupBox3.Controls.Add(tbLink);
-            groupBox3.Controls.Add(label10);
-            groupBox3.Controls.Add(tbFileSize);
-            groupBox3.Location = new Point(6, 197);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(332, 167);
-            groupBox3.TabIndex = 21;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "E-Book specific";
-            // 
-            // rdbEBook
-            // 
-            rdbEBook.AutoSize = true;
-            rdbEBook.Location = new Point(309, 21);
-            rdbEBook.Name = "rdbEBook";
-            rdbEBook.Size = new Size(17, 16);
-            rdbEBook.TabIndex = 23;
-            rdbEBook.TabStop = true;
-            rdbEBook.UseVisualStyleBackColor = true;
-            rdbEBook.CheckedChanged += rdbEBook_CheckedChanged;
-            // 
             // label8
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label8.Location = new Point(11, 81);
+            label8.Location = new Point(14, 250);
             label8.Name = "label8";
             label8.Size = new Size(118, 20);
             label8.TabIndex = 10;
@@ -435,7 +380,7 @@
             // tbLink
             // 
             tbLink.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            tbLink.Location = new Point(135, 77);
+            tbLink.Location = new Point(138, 246);
             tbLink.Name = "tbLink";
             tbLink.ReadOnly = true;
             tbLink.Size = new Size(176, 28);
@@ -445,7 +390,7 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            label10.Location = new Point(10, 46);
+            label10.Location = new Point(13, 215);
             label10.Name = "label10";
             label10.Size = new Size(71, 20);
             label10.TabIndex = 3;
@@ -454,22 +399,52 @@
             // tbFileSize
             // 
             tbFileSize.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
-            tbFileSize.Location = new Point(87, 43);
+            tbFileSize.Location = new Point(90, 212);
             tbFileSize.Name = "tbFileSize";
             tbFileSize.ReadOnly = true;
             tbFileSize.Size = new Size(194, 28);
             tbFileSize.TabIndex = 9;
             // 
-            // d
+            // groupBoxType
             // 
-            d.Controls.Add(groupBox3);
-            d.Controls.Add(groupBox2);
-            d.FlatStyle = FlatStyle.Flat;
-            d.Location = new Point(1154, 26);
-            d.Name = "d";
-            d.Size = new Size(344, 366);
-            d.TabIndex = 22;
-            d.TabStop = false;
+            groupBoxType.Controls.Add(label14);
+            groupBoxType.Controls.Add(label8);
+            groupBoxType.Controls.Add(label13);
+            groupBoxType.Controls.Add(tbLink);
+            groupBoxType.Controls.Add(tbPages);
+            groupBoxType.Controls.Add(label10);
+            groupBoxType.Controls.Add(label6);
+            groupBoxType.Controls.Add(tbFileSize);
+            groupBoxType.Controls.Add(tbISBN);
+            groupBoxType.Controls.Add(label12);
+            groupBoxType.Controls.Add(label11);
+            groupBoxType.Controls.Add(tbISBN10);
+            groupBoxType.FlatStyle = FlatStyle.Flat;
+            groupBoxType.Location = new Point(1154, 26);
+            groupBoxType.Name = "groupBoxType";
+            groupBoxType.Size = new Size(344, 366);
+            groupBoxType.TabIndex = 22;
+            groupBoxType.TabStop = false;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label14.Location = new Point(11, 189);
+            label14.Name = "label14";
+            label14.Size = new Size(119, 20);
+            label14.TabIndex = 7;
+            label14.Text = "Ebook specific:";
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Font = new Font("Times New Roman", 10.8F, FontStyle.Regular, GraphicsUnit.Point);
+            label13.Location = new Point(6, 23);
+            label13.Name = "label13";
+            label13.Size = new Size(150, 20);
+            label13.TabIndex = 6;
+            label13.Text = "Paperbook specific:";
             // 
             // lbDanger
             // 
@@ -486,7 +461,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(lbDanger);
-            Controls.Add(d);
+            Controls.Add(groupBoxType);
             Controls.Add(pictureBox1);
             Controls.Add(btnCancel);
             Controls.Add(btnConfirm);
@@ -501,14 +476,11 @@
             Name = "UCBooks";
             Size = new Size(1505, 463);
             Load += UCBooks_Load;
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
-            d.ResumeLayout(false);
+            groupBoxType.ResumeLayout(false);
+            groupBoxType.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -550,9 +522,9 @@
         private ComboBox cbAuthors;
         private DateTimePicker pubDatePicker;
         private ComboBox cbFormat;
-        private RadioButton rdbPaperBook;
-        private GroupBox d;
-        private RadioButton rdbEBook;
+        private GroupBox groupBoxType;
         private Label lbDanger;
+        private Label label14;
+        private Label label13;
     }
 }

@@ -84,7 +84,6 @@ namespace Classes
         }
         public string PicturePath { get => _picturePath; set => _picturePath = value; }
 
-        public List<Review> Reviews { get; set; }
         public Dictionary<int, string> LikedReviews { get; set; }
         public Dictionary<int, string> DislikedReviews { get; set; }
 
@@ -105,13 +104,6 @@ namespace Classes
             Username = username;
             PicturePath = profilePicture;
         }
-        public User(int id, string name, string email, List<Review> reviews)
-        {
-            _id = id;
-            Name = name;
-            Email = email;
-            Reviews = reviews;
-        }
         public User(int id, string name, string email, string username, string password, string picturePath)
         {
             _id = id;
@@ -121,6 +113,10 @@ namespace Classes
             Password = password;
             PicturePath = picturePath;
 
+        }
+        public override string ToString()
+        {
+            return Name ;
         }
     }
 }

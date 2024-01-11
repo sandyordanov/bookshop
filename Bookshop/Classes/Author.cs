@@ -22,18 +22,16 @@ namespace Classes
         public string Description { get { return _description; } set { _description = value; } }
         public string Website { get { return _website; } set { _website = value; } }
         public string Twitter { get { return _twitter; } set { _twitter = value; } }
-        public List<string>? Genres { get { return _genres; } set { _genres = value; } }
 
 
 
-        public Author(int id, string fullName, DateTime birthdate, string description, string website, string twitter, List<string> genres)
+        public Author(int id, string fullName, DateTime birthdate, string description, string website, string twitter)
         {
             _id = id;
             FullName = fullName;
             Birthdate = birthdate;
             Description = description;
             Website = website;
-            Genres = genres;
         }
         public override string ToString()
         {

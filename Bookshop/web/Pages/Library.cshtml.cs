@@ -15,7 +15,7 @@ namespace web.Pages
         private BLL.ReviewManager _reviewManager;
 
         public List<Book> recommendedBooks { get; set; }
-        public LibraryModel(IReviewRepository reviewRepository, IUserRepository userRepository, IBookRepository bookRepo, BLL.ReviewManager revMan)
+        public LibraryModel(IReviewRepository reviewRepository, IUserRepository userRepository, IBookRepository bookRepo, ReviewManager revMan)
         {
             _reviewManager = revMan;
             _userCon = new UserController(userRepository);
@@ -24,23 +24,33 @@ namespace web.Pages
         public void OnGet()
         {
             //Recommended
-            List<User> users = _userCon.GetAllUsers();
-            foreach (var user in users)
+            Dictionary<Book, List<Review>> books = new Dictionary<Book, List<Review>>();
+            Dictionary<User, List<Review>> users = new Dictionary<User, List<Review>>();
+            
+            var allUsers = _userCon.GetAllUsers();
+            var allBooks = _bookManager.GetAllBooks();
+            foreach (var book in allBooks)
             {
-                   user.Reviews = (_reviewManager.GetAllReviewsByUser(user));
+                var reviews = _reviewManager.GetAllReviewsByBook(book);
+                books.Add(book, reviews);
             }
-            RecommendationEngine engine = new RecommendationEngine(_bookManager.GetAllBooksWithReviews(), users);
+            foreach (var user in allUsers)
+            {
+                var reviews = _reviewManager.GetAllReviewsByUser(user);
+                users.Add(user, reviews);
+            }
+            RecommendationEngine engine = new RecommendationEngine(books, users);
             //try
             //{
-                recommendedBooks = engine.GetRecommendations(Convert.ToInt32(User.FindFirstValue("id")));
+            recommendedBooks = engine.GetRecommendations(Convert.ToInt32(User.FindFirstValue("id")));
             //}
             //catch (Exception ex)
             //{
             //    TempData["recommendationErrors"] = ex.Message;
             //}
-            
 
-            
+
+
         }
     }
 }

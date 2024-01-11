@@ -127,6 +127,37 @@ namespace DAL
                 }
             }
         }
+        public List<Review> GetAllReviews()
+        {
+            using (SqlConnection connection = new SqlConnection(DbConnectionString.Get()))
+            {
+                connection.Open();
+                string query = "SELECT Reviews.Id, Reviews.Comment, Reviews.Rating, Reviews.Date, Reviews.Likes, Reviews.Book_id,Users.Id, Users.Name, Users.Username FROM Reviews " +
+                   "INNER JOIN Users ON Reviews.User_id = Users.Id ";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        List<Review> result = new List<Review>();
+                        while (reader.Read())
+                        {
+                            int reviewId = reader.GetInt32(0);
+                            string comment = reader.GetString(1);
+                            int rating = reader.GetInt32(2);
+                            DateTime date = reader.GetDateTime(3);
+                            int likes = reader.GetInt32(4);
+                            int bookId = reader.GetInt32(5);
+                            User user = new User(reader.GetInt32(6), reader.GetString(7), reader.GetString(8));
+                            Book book = new BookRepository().GetBook(bookId);
+                            Review review = new Review(reviewId, comment, rating, date, likes, user, book);
+                            result.Add(review);
+                        }
+                        return result;
+                    }
+                }
+            }
+        }
 
         public Review? GetReview(int reviewId)
         {

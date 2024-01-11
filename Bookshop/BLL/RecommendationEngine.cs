@@ -9,31 +9,43 @@ namespace BLL
 {
     public class RecommendationEngine
     {
-        private List<Book> books;
-        private List<User> users;
+        private Dictionary<Book, List<Review>> books = new Dictionary<Book, List<Review>>();
+        private Dictionary<User, List<Review>> users = new Dictionary<User, List<Review>>();
 
-        public RecommendationEngine(List<Book> books, List<User> users)
+        public RecommendationEngine(Dictionary<Book,List<Review>> books, Dictionary<User,List<Review>> users)
         {
-            this.books = books.FindAll(book => book.GetReviews().Count() > 0);
-            this.users = users.FindAll(user => user.Reviews.Count() > 0);
+            foreach (var book in books)
+            {
+                if (book.Value.Count>0)
+                {
+                    this.books.Add(book.Key, book.Value);
+                }
+            }
+            foreach (var user in users)
+            {
+                if (user.Value.Count > 0)
+                {
+                    this.users.Add(user.Key, user.Value);
+                }
+            }
         }
 
         // Collaborative filtering recommendation method
         public List<Book> GetRecommendations(int userId)
         {
-            var user = users.FirstOrDefault(u => u.Id == userId);
-            if (user == null)
+            var user = users.FirstOrDefault(u => u.Key.Id == userId);
+            if (user.Key == null)
             {
                 throw new ArgumentException("You need to leave at least one review on a book, before getting recommendations.");
             }
 
-            var similarUsers = FindSimilarUsers(user);
+            var similarUsers = FindSimilarUsers(user.Key);
 
             // Aggregate ratings from similar users
             var aggregatedRatings = AggregateRatings(similarUsers);
 
             // Identify books that the user hasn't rated yet
-            var unratedBooks = FindUnratedBooks(user);
+            var unratedBooks = FindUnratedBooks(user.Key);
 
             // Rank unrated books based on aggregated ratings
             var rankedBooks = RankBooks(aggregatedRatings, unratedBooks);
@@ -46,15 +58,15 @@ namespace BLL
         {
             List<User> similarUsers = new List<User>();
 
-            foreach (User user in users)
+            foreach (User user in users.Keys)
             {
                 if (user.Id != targetUser.Id)
                 {
                     bool hasCommonReview = false;
 
-                    foreach (Review review in user.Reviews)
+                    foreach (Review review in users[user])
                     {
-                        if (targetUser.Reviews.Any(targetReview => targetReview.Book.Id == review.Book.Id))
+                        if (users[targetUser].Any(targetReview => targetReview.Book.Id == review.Book.Id))
                         {
                             hasCommonReview = true;
                             break;
@@ -79,7 +91,7 @@ namespace BLL
 
             foreach (var user in similarUsers)
             {
-                foreach (var bookId in user.Reviews.Select(rev => rev.Book.Id).ToArray())
+                foreach (var bookId in users[user].Select(rev => rev.Book.Id).ToArray())
                 {
                     if (!aggregatedRatings.ContainsKey(bookId))
                     {
@@ -87,7 +99,7 @@ namespace BLL
                     }
 
                     // Weighted sum based on the similarity of users
-                    aggregatedRatings[bookId] += user.Reviews.First(r => r.Book.Id == bookId).Rating;
+                    aggregatedRatings[bookId] += users[user].First(r => r.Book.Id == bookId).Rating;
                 }
             }
 
@@ -98,11 +110,11 @@ namespace BLL
         {
             List<Book> unratedBooks = new List<Book>();
 
-            foreach (Book book in books)
+            foreach (Book book in books.Keys)
             {
                 bool isRated = false;
 
-                foreach (Review review in user.Reviews)
+                foreach (Review review in users[user])
                 {
                     if (review.Book.Id == book.Id)
                     {

@@ -14,6 +14,7 @@ namespace DAL
         bool DeleteReview(Review review);
         //the gets
         Review? GetReview(int reviewId);
+        List<Review> GetAllReviews();
         List<Review> GetAllReviewsByBook(Book book);
         List<Review> GetAllReviewsByUser(User user);
         //user review checks

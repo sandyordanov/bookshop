@@ -2,6 +2,7 @@ using BLL;
 using BLL.StrategyFilters;
 using Classes;
 using DAL;
+using DAL.Interfaces;
 using UnitTests.Fakes;
 
 namespace UnitTests
@@ -13,8 +14,11 @@ namespace UnitTests
         public void FilterByStrategies_Should_FilterByAuthor()
         {
             //Arrange
-            FakeBookDbMediator bookRepo = new FakeBookDbMediator();
-            FakeReviewDbMediator reviewRepo = new FakeReviewDbMediator();
+            IBookRepository bookRepo = new FakeBookDbMediator();
+
+
+
+            IReviewRepository reviewRepo = new FakeReviewDbMediator();
             BookManager manager = new BookManager(bookRepo, reviewRepo);
 
             Author author = new Author(1, "Robert Brown", DateTime.Today, "description", "website.com", "twitter.com/author1", new List<string>() { "genre1", "genre2" });

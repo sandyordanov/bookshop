@@ -5,8 +5,26 @@
         private double _filesize;
         private string _downloadLink;
 
-        public double FileSize { get => _filesize; set => _filesize = value; }
-        public string DownloadLink { get => _downloadLink; set => _downloadLink = value; }
+        public double FileSize
+        {
+            get => _filesize;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException(nameof(value), "File size must be a positive number.");
+                _filesize = value;
+            }
+        }
+        public string DownloadLink
+        {
+            get => _downloadLink;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("Invalid URL format.", nameof(value));
+                _downloadLink = value;
+            }
+        }
         public EBook()
         {
             

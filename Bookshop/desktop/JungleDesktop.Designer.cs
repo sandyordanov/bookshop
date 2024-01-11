@@ -58,6 +58,7 @@
             reviewsToolStripMenuItem.Name = "reviewsToolStripMenuItem";
             reviewsToolStripMenuItem.Size = new Size(76, 24);
             reviewsToolStripMenuItem.Text = "Reviews";
+            reviewsToolStripMenuItem.Click += reviewsToolStripMenuItem_Click;
             // 
             // panel1
             // 

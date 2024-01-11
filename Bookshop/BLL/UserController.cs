@@ -21,15 +21,24 @@ namespace BLL
         public User GetUserById(int id)
         {
             User user = _userRepository.GetUserById(id);
-            user.LikedReviews = GetLikedReviews(id);
-            user.DislikedReviews = GetDislikedReviews(id);
+
+
             if (user == null)
             {
                 throw new Exception("User return was null - user not found");
             }
             else { return user; }
         }
-
+        public User GetUserLikes(User user)
+        {
+            user.LikedReviews = GetLikedReviews(user.Id);
+            user.DislikedReviews = GetDislikedReviews(user.Id);
+            if (user == null)
+            {
+                throw new Exception("User return was null - user not found");
+            }
+            else { return user; }
+        }
 
         public bool RegisterUser(User user)
         {
@@ -67,7 +76,7 @@ namespace BLL
             {
                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, salt, true);
-            }    
+            }
             return _userRepository.UpdateUserProfile(user);
         }
         public Dictionary<int, string> GetLikedReviews(int userId)
@@ -77,6 +86,14 @@ namespace BLL
         private Dictionary<int, string> GetDislikedReviews(int userId)
         {
             return _userRepository.GetDislikedReviews(userId);
+        }
+        public void AddPowerUser(int userId)
+        {
+            _userRepository.AddPowerUser(userId);
+        }
+        public bool CheckIfUserIsPowerUser(User user)
+        {
+            return _userRepository.CheckIfUserIsPowerUser(user);
         }
     }
 }

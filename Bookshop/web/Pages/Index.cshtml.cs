@@ -5,6 +5,7 @@ using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.Eventing.Reader;
+using System.Net;
 
 namespace web.Pages
 {
@@ -12,9 +13,7 @@ namespace web.Pages
     {
         private BookManager bookManager;
 
-
-        [BindProperty(SupportsGet = true)]
-        public List<Book> books { get; set; }
+        public Dictionary<Book, Statistics> TopBooks { get; set; }
 
 
         public IndexModel(IBookRepository bookRepo, IReviewRepository reviewRepo)
@@ -24,15 +23,12 @@ namespace web.Pages
 
         public void OnGet()
         {
-            books = bookManager.GetAllBooks();
+            TopBooks = bookManager.SortBooksByRating(bookManager.GetAllBooks()).Take(12).ToDictionary(pair => pair.Key, pair => pair.Value); ;
         }
         public IActionResult OnPost(int? id)
-        {      
-                return RedirectToPage("/Book",id);
-        }
-        public void OnPost()
         {
-
+            return RedirectToPage("/Book", id);
         }
+
     }
 }

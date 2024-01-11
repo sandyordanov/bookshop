@@ -19,3 +19,20 @@
 #downvoteArrow {
     color: white;
 }
+#btnLight{
+    opacity:100%;
+}
+#btnDark {
+    
+   background-color: darkslategray;
+}
+#topTwelve{
+    text-decoration:none;
+    color:white;
+}
+#head{
+    color:white;
+}
+a{
+    color:white;
+}

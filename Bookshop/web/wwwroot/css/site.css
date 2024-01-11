@@ -20,3 +20,22 @@ h1{
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 }
 
+#btnLight {
+    opacity: 50%;
+    background-color: darkslategray;
+    
+}
+
+#btnDark {
+    
+}
+#topTwelve {
+    text-decoration: none;
+    color: black;
+}
+#head{
+    color:black;
+}
+a{
+    color:black;
+}

@@ -59,9 +59,9 @@ namespace web.Pages
                 if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     int userId = Convert.ToInt32(User.FindFirstValue("id"));
-                    MyUser = userController.GetUserById(userId);
+                    MyUser = userController.GetUserLikes(userController.GetUserById(userId));
                     UserHasReviews = _reviewManager.UserHasReviewsOnBook(userId, Book.Id);
-                    NewReview = Book.GetReviewByUser(userId);
+                    NewReview = _reviewManager.GetReviewOnBookByUser(MyUser, Book);
                     if (UserHasReviews)
                     {
                         Reviews.Remove(Reviews.FirstOrDefault(x => x.Id == NewReview.Id));
