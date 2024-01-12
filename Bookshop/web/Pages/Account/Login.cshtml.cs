@@ -35,48 +35,45 @@ namespace web.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if(!ModelState.IsValid) { return Page(); }
+            if (!ModelState.IsValid) { return Page(); }
             if (!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password))
             {
-                //admin auth
-                if (Username == "admin" && Password == "admin")
+                int result = 0;
+                try
                 {
-                    List<Claim> claims = new List<Claim>();
-
-                    claims.Add(new Claim("UserType", "Admin"));
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-
-                    return RedirectToPage("/AdminPanel");
+                    result = userManager.TryToLogUserIn(Username, Password);
+                }
+                catch (Exception)
+                {
+                    TempData["isLogged"] = "Username or password invalid.";
                 }
 
-                var result = userManager.TryToLogUserIn(Username, Password);
                 if (result > 0)
                 {
-                    List<Claim> claims = new List<Claim>();
+                    //poweruser check
+                    if (userManager.CheckIfUserIsPowerUser(result))
+                    {
+                        List<Claim> claims = new List<Claim>();
+                        claims.Add(new Claim("id", result.ToString()));
+                        claims.Add(new Claim("UserType", "PowerUser"));
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+                    }
+                    else
+                    {
+                        List<Claim> claims = new List<Claim>();
 
-                    claims.Add(new Claim("id", result.ToString()));
-                    claims.Add(new Claim("UserType", "User"));
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
+                        claims.Add(new Claim("id", result.ToString()));
+                        claims.Add(new Claim("UserType", "User"));
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
 
+                    }
                     return RedirectToPage("/Index");
                 }
             }
             TempData["IsLogged"] = "Username or password invalid.";
             return Page();
         }
-        public async Task<IActionResult> OnGetRedirectAfterRegistration(User registrated)
-        {
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, registrated.Name));
-            claims.Add(new Claim("id", registrated.Id.ToString()));
-            claims.Add(new Claim("UserType", "User"));
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-
-            return RedirectToPage("/Index");
-        }
-
     }
 }

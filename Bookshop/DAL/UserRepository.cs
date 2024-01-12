@@ -257,7 +257,7 @@ namespace DAL
                 }
             }
         }
-        public bool CheckIfUserIsPowerUser(User user)
+        public bool CheckIfUserIsPowerUser(int userId)
         {
             using (SqlConnection con = new SqlConnection(DbConnectionString.Get()))
             {
@@ -265,10 +265,10 @@ namespace DAL
                 string query = "SELECT * FROM PowerUsers WHERE User_id = @id";
                 using (SqlCommand com = new SqlCommand(query, con))
                 {
-                    com.Parameters.AddWithValue("id", user.Id);
+                    com.Parameters.AddWithValue("id", userId);
                     using (SqlDataReader reader = com.ExecuteReader())
                     {
-                        if (reader.Read != null)
+                        if (reader.Read())
                         {
                             return true;
                         }

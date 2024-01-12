@@ -35,7 +35,7 @@ namespace desktop
 
             if (!int.TryParse(tbLikeThreshold.Text, out int value))
             {
-                MessageBox.Show("Please enter a valid number");
+                MessageBox.Show("Please enter a valid number. From how much likes should reviews be considered highly rated.");
                 return;
             }
             var treshHold = int.Parse(tbLikeThreshold.Text);
@@ -60,19 +60,54 @@ namespace desktop
 
         private void btnPromote_Click(object sender, EventArgs e)
         {
-            _userController.AddPowerUser(selectedReview.User.Id);
+            bool isAlreadyPromoted = _userController.CheckIfUserIsPowerUser(selectedReview.User.Id);
+            if (isAlreadyPromoted)
+            {
+                MessageBox.Show("User is already a power user");
+                return;
+            }
+            else
+            {
+                _userController.AddPowerUser(selectedReview.User.Id);
+                MessageBox.Show("User promoted to power user");
+            }
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             var newComment = tbComment.Text;
             selectedReview.Comment = newComment;
-            _reviewManager.UpdateReview(selectedReview);
+            bool success = _reviewManager.UpdateReview(selectedReview);
+            if (success)
+            {
+                MessageBox.Show("Review updated");
+            }
+
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             _reviewManager.DeleteReview(selectedReview);
+            MessageBox.Show("Review deleted");
+            var reviews = _reviewManager.GetAllReviews();
+            lbReviews.DataSource = reviews.ToList();
+        }
+
+        private void btnGetAll_Click(object sender, EventArgs e)
+        {
+            var reviews = _reviewManager.GetAllReviews();
+            lbReviews.DataSource = reviews.ToList();
+        }
+
+        private void btnDeleteUser_Click(object sender, EventArgs e)
+        {
+           bool success = _userController.DeleteUserProfile(selectedReview.User);
+            if (success)
+            {
+                MessageBox.Show("User deleted");
+            }
+            var reviews = _reviewManager.GetAllReviews();
+            lbReviews.DataSource = reviews.ToList();
         }
     }
 }

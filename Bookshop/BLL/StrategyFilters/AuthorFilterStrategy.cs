@@ -18,7 +18,16 @@ namespace BLL.StrategyFilters
 
         public IEnumerable<Book> Filter(IEnumerable<Book> books)
         {
-            return books.Where(book => book.Authors.Contains(author));
+            foreach (Book book in books)
+            {
+                   foreach (Author author in book.Authors)
+                {
+                    if (author.Id == this.author.Id)
+                    {
+                        yield return book;
+                    }
+                }
+            }
         }
     }
 }

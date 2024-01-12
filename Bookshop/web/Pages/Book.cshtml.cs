@@ -104,7 +104,7 @@ namespace web.Pages
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var rev = _reviewManager.GetReview(revId);
-                User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+                User currentUser = userController.GetUserLikes(userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id"))));
                 _reviewManager.VoteOnReview(rev, currentUser, "upVote");
                 return RedirectToPage("/Book", new { id = rev.Book.Id });
             }
@@ -115,7 +115,7 @@ namespace web.Pages
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 var rev = _reviewManager.GetReview(revId);
-                User currentUser = userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id")));
+                User currentUser = userController.GetUserLikes(userController.GetUserById(Convert.ToInt32(User.FindFirstValue("id"))));
                 _reviewManager.VoteOnReview(rev, currentUser, "downVote");
                 return RedirectToPage("/Book", new { id = rev.Book.Id });
             }

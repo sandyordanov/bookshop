@@ -1,0 +1,137 @@
+﻿@page
+@using Classes;
+@model web.Pages.ContributeModel
+@{
+}
+<h1>B&R Contributor</h1>
+<h3>Adding a New Title</h3>
+<p>Welcome! Thank you for your contribution.</p>
+<p>Adding a new title to the B&R library is easy. Just fill out the form below and click the "Submit" button. Your submission will be reviewed by our editors and, if accepted, will be added to the library.</p>
+<p>Before you submit, please check to see if the title you are submitting is already in the library. You can do this by searching for the title in the search bar at the top of the page.</p>
+
+
+<div class="text-danger">@TempData["errors"]</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col -6">
+            <h1>Add a Paper Book</h1>
+            <form method="post" asp-page-handler="Book">
+                <div class="form-group">
+                    <label for="Title">Title:</label>
+                    <input type="text" id="Title" name="Title" class="form-control" asp-for="Book.Title">
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description:</label>
+                    <textarea id="Description" name="Description" class="form-control" asp-for="Book.Description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="Publisher">Publisher:</label>
+                    <input type="text" id="Publisher" name="Publisher" class="form-control" asp-for="Book.Publisher">
+                </div>
+
+                <div class="form-group">
+                    <label for="Language">Language:</label>
+                    <input type="text" id="Language" name="Language" class="form-control" asp-for="Book.Language">
+                </div>
+
+                <div class="form-group">
+                    <label for="PublicationDate">Publication Date:</label>
+                    <input type="date" id="PublicationDate" name="PublicationDate" class="form-control" asp-for="Book.PublicationDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="Format">Format:</label>
+                    <select id="Format" name="Format" class="form-control" asp-for="Book.Format">
+                        <option value="Hardcover">Hardcover</option>
+                        <option value="Paperback">Paperback</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="Pages">Number of Pages:</label>
+                    <input type="number" id="Pages" name="Pages" class="form-control" asp-for="Pages" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="ISBN">ISBN:</label>
+                    <input type="text" id="ISBN" name="ISBN" class="form-control" asp-for="ISBN">
+                </div>
+
+                <div class="form-group">
+                    <label for="ISBN10">ISBN10:</label>
+                    <input type="text" id="ISBN10" name="ISBN10" class="form-control" asp-for="ISBN10">
+                </div>
+                <div class="form-group">
+                    <label for="Authors">Authors:</label>
+                    <select id="Authors" name="Authors" class="form-control" asp-for="SelectedAuthors" multiple>
+                        @foreach (var author in Model.AllAuthors)
+                        {
+                            <option value="@author.Id">@author.FullName</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="col">
+            <h1>Add an Ebook Book</h1>
+            <form method="post" asp-page-handler="EBook">
+                <div class="form-group">
+                    <label for="Title">Title:</label>
+                    <input type="text" id="Title" name="Title" class="form-control" asp-for="Book.Title">
+                </div>
+
+                <div class="form-group">
+                    <label for="Description">Description:</label>
+                    <textarea id="Description" name="Description" class="form-control" asp-for="Book.Description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="Publisher">Publisher:</label>
+                    <input type="text" id="Publisher" name="Publisher" class="form-control" asp-for="Book.Publisher">
+                </div>
+
+                <div class="form-group">
+                    <label for="Language">Language:</label>
+                    <input type="text" id="Language" name="Language" class="form-control" asp-for="Book.Language">
+                </div>
+
+                <div class="form-group">
+                    <label for="PublicationDate">Publication Date:</label>
+                    <input type="date" id="PublicationDate" name="PublicationDate" class="form-control" asp-for="Book.PublicationDate">
+                </div>
+
+                <div class="form-group">
+                    <label for="Format">Format:</label>
+                    <select id="Format" name="Format" class="form-control" asp-for="Book.Format">
+                        <option value="Ebook">Ebook</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="FileSize">Filesize:</label>
+                    <input type="text" id="Filesize" name="Filesize" class="form-control" asp-for="Filesize">
+                </div>
+                <div class="form-group">
+                    <label for="DownloadLink">DownloadLink:</label>
+                    <input type="text" id="DownloadLink" name="DownloadLink" class="form-control" asp-for="DownloadLink">
+                </div>
+
+                <div class="form-group">
+                    <label for="Authors">Authors:</label>
+                    <select id="Authors" name="Authors" class="form-control" asp-for="SelectedAuthors" multiple>
+                        @foreach (var author in Model.AllAuthors)
+                        {
+                            <option value="@author.Id">@author.FullName</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+

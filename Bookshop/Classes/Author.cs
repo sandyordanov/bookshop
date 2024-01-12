@@ -24,7 +24,10 @@ namespace Classes
         public string Twitter { get { return _twitter; } set { _twitter = value; } }
 
 
-
+        public Author()
+        {
+            
+        }
         public Author(int id, string fullName, DateTime birthdate, string description, string website, string twitter)
         {
             _id = id;

@@ -91,9 +91,14 @@ namespace BLL
         {
             _userRepository.AddPowerUser(userId);
         }
-        public bool CheckIfUserIsPowerUser(User user)
+        public bool CheckIfUserIsPowerUser(int userId)
         {
-            return _userRepository.CheckIfUserIsPowerUser(user);
+            return _userRepository.CheckIfUserIsPowerUser(userId);
         }
+        public bool DeleteUserProfile(User user)
+        {
+            return _userRepository.DeleteUserProfile(user);
+        }
+        
     }
 }

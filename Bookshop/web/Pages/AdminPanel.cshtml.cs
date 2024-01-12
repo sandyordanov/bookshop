@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace web.Pages
 {
-    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "PowerUser")]
     public class AdminPanelModel : PageModel
     {
         public void OnGet()

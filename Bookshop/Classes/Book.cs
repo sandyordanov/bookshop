@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Classes
 {
-    public abstract class Book
+    public class Book
     {
         private int _id;
         private string _title;
