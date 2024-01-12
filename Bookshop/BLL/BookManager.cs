@@ -16,8 +16,6 @@ namespace BLL
         private IBookRepository _bookRepo;
         private IReviewRepository _reviewRepo;
 
-        //private List<Book> books;
-
         public BookManager(IBookRepository bookRep, IReviewRepository revRep)
         {
             _bookRepo = bookRep;

@@ -15,10 +15,13 @@ namespace UnitTests.Fakes
         public FakeBookDbMediator()
         {
             books = new Dictionary<int, Book>();
-            var book1 = new PaperBook(1, "The Great Book1", "A classic phylosophical novel.", "Publisher1", "English", DateTime.Now, Format.PAPERBACK, new List<Author>() { new Author(1, "Robert Brown", DateTime.Today, "description", "website.com", "twitter.com/author1", new List<string>() { "genre1", "genre2" }) }, 50, "029382931", "12331242");
-            var book2 = new EBook(2, "The Great Book2", "A classic romance novel.", "Publisher2", "English", DateTime.Now, Format.EBOOK, new List<Author>() { new Author(2, "Jeniffer White", DateTime.Today, "description", "website.com", "twitter.com/author1", new List<string>() { "genre1", "genre2" }) }, 2.4, "downloadlink.com");
-            books.Add(book1.Id,book1 );
-            books.Add(book2.Id,book2 );
+            authors = new Dictionary<int, Author>();
+            var book1 = new PaperBook(1, "The Great Book1", "A classic phylosophical novel.", "Publisher1", "English", DateTime.Now, Format.PAPERBACK, new List<Author>() { new Author(1, "Robert Brown", DateTime.Today, "description", "website.com", "twitter.com/author1") }, 50, "0293829311", "1233124212");
+            var book2 = new EBook(2, "The Great Book2", "A classic romance novel.", "Publisher2", "English", DateTime.Now, Format.EBOOK, new List<Author>() { new Author(2, "Jeniffer White", DateTime.Today, "description", "website.com", "twitter.com/author1") }, 2.4, "downloadlink.com");
+            books.Add(book1.Id, book1);
+            books.Add(book2.Id, book2);
+            authors.Add(1, new Author(1, "Robert Brown", DateTime.Today, "description", "website.com", "twitter.com/author1"));
+            authors.Add(2, new Author(2, "Jeniffer White", DateTime.Today, "description", "website.com", "twitter.com/author1"));
         }
         public void AddAuthor(Author author)
         {
@@ -49,7 +52,7 @@ namespace UnitTests.Fakes
 
         public List<Format> GetAllFormats()
         {
-            var formats = new List<Format>() { Format.EBOOK,Format.PAPERBOOK,Format.AUDIOBOOK,Format.PAPERBACK,Format.HARDCOVER};
+            var formats = new List<Format>() { Format.EBOOK, Format.PAPERBOOK, Format.AUDIOBOOK, Format.PAPERBACK, Format.HARDCOVER };
             return formats;
         }
 
