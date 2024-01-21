@@ -1,35 +1,34 @@
 ﻿using BLL;
 using Classes;
+using DAL;
+using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.Eventing.Reader;
+using System.Net;
 
 namespace web.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-        private BookManagement bookManager;
+        private BookManager bookManager;
+
+        public Dictionary<Book, Statistics> TopBooks { get; set; }
 
 
-        [BindProperty(SupportsGet = true)]
-        public List<PaperBook> books { get; set; }
-
-
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IBookRepository bookRepo, IReviewRepository reviewRepo)
         {
-            _logger = logger;
-            bookManager = new BookManagement();
+            bookManager = new BookManager(bookRepo, reviewRepo);
         }
 
         public void OnGet()
         {
-            books = bookManager.GetAllBooks();
+            TopBooks = bookManager.SortBooksByRating(bookManager.GetAllBooks()).Take(12).ToDictionary(pair => pair.Key, pair => pair.Value); ;
         }
-        public IActionResult OnPost(string id)
+        public IActionResult OnPost(int? id)
         {
-                HttpContext.Session.SetString("id", id);
-                return RedirectToPage("/Book");
+            return RedirectToPage("/Book", id);
         }
+
     }
 }

@@ -1,0 +1,38 @@
+﻿body, .card {
+    background-color: Canvas;
+    color: CanvasText;
+    color-scheme: light dark;
+    margin-bottom: 60px;
+}
+
+#reviewForm{
+    opacity:75%;
+}
+#header {
+    background-color: darkslategray;
+    color: CanvasText;
+    color-scheme: light dark;
+}
+#upvoteArrow{
+   color:white;
+}
+#downvoteArrow {
+    color: white;
+}
+#btnLight{
+    opacity:100%;
+}
+#btnDark {
+    
+   background-color: darkslategray;
+}
+#topTwelve{
+    text-decoration:none;
+    color:white;
+}
+#head{
+    color:white;
+}
+a{
+    color:white;
+}

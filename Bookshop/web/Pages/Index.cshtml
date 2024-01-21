@@ -9,22 +9,64 @@
 
 </div>
 
-<div class="container-fluid text-center">
-    @foreach (var book in Model.books)
-    {
-        <div class="card d-inline-flex" style="width: 18rem;">
-            <img class="card-img-top" src="~/book.png" alt="Card image cap" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">@book.Title</h5>
-                <p class="card-text">Author: @book.Author</p>
-                <p class="card-text">Publisher: @book.Publisher</p>
-                <form method="post" asp-page-handler="Post" asp-for="car.Id">
-                    <input type="hidden" name="id" value="@book.Id" class="form-control" />
-                    <button type="submit" class="btn btn-warning p-1">See details</button>
-                </form>
-            </div>
-        </div>
-    }
+<div class="text-success">
+    @TempData["Message"]
 </div>
-    
+<div class="text-danger">
+    @TempData["ErrorMessage"]
+</div>
+<div class="row">
 
+    <div class="col">
+        <h3 class="mb-3 text-center text-warning">Top 12 Highly Rated Books</h3>
+        
+        @foreach (var book in Model.TopBooks)
+        {
+            <a id="topTwelve" asp-route-id="@book.Key.Id" asp-page="/Book">
+                <div class="row">
+                    <div class="col-2">
+                        <img class="card-img-top" src="~/book.png" alt="Card image cap" style="width: 4rem;">
+                    </div>
+                    <div class="col-4">
+                        <p class="card-title fw-bold">@book.Key.Title [@book.Key.Format]</p>
+
+                        <p class="card-text">Publisher: @book.Key.Publisher</p>
+                    </div>
+                    <div class="col-3">
+                        <p class="card-text">Author: @string.Join(",",book.Key.Authors.Select(author => author.FullName))</p>
+                    </div>
+
+                    <div class="col-2 text-center ">
+                        <div class="row">
+                            <h5> @book.Value.Average/5 &#11088;</h5>
+                        </div>
+                        <div class="row">
+                            <p class="text-secondary">@book.Value.ReviewCount reviews</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </a>
+            <hr />
+        }
+    </div>
+</div>
+
+
+@*  <div class="col">
+        <h3>Sort by:</h3>
+    </div>
+    <div class="col">
+        <form method="post" asp-page-handler="Sort">
+            <select name="sort" class="form-select" aria-label="Default select example">
+                <option value="Title">Title</option>
+                <option value="Author">Author</option>
+                <option value="Publisher">Publisher</option>
+                <option value="Rating">Rating</option>
+            </select>
+            <button type="submit" class="btn btn-outline-primary">sort</button>
+        </form>
+    </div>
+
+*@

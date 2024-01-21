@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL
+namespace BLL.StrategyFilters
 {
-    public interface IUserRepository
+    public interface IBookFilterStrategy
     {
-        User GetUserByUsername(string username);
+        IEnumerable<Book> Filter(IEnumerable<Book> books);
     }
 }

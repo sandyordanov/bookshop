@@ -1,43 +1,83 @@
-﻿namespace Classes
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Classes
 {
     public class Review
     {
-        int userId;
-        int rating;
-        string comment;
-        DateTime dateCreated;
+        int _id;
+        string _comment;
+        int _rating;
+        DateTime _date;
+        int _likes;
+        private User _user;
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+        [Required(ErrorMessage = "Comment is required.")]
+        [MaxLength(5000)]
+        public string Comment
+        {
+            get => _comment;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Comment cannot be empty or whitespace.");
+                }
+                _comment = value;
+            }
+        }
 
-        public Review(int userId, int rating, string comment)
+        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
+        public int Rating
         {
-            this.userId = userId;
-            SetRating(rating);
-            SetComment(comment);
-            dateCreated = SetCreationDate();
+            get => _rating;
+            set
+            {
+                if (value < 1 || value > 5)
+                {
+                    throw new ArgumentOutOfRangeException("Rating must be between 1 and 5.");
+                }
+                _rating = value;
+            }
         }
-        public void SetRating(int rating)
+
+        public DateTime Date
         {
-            this.rating = rating;
+            get => _date;
+            set => _date = value;
         }
-        public void SetComment(string comment)
+
+        public int Likes
         {
-            this.comment = comment;
+            get => _likes;
+            set
+            {
+                
+                _likes = value;
+            }
         }
-        public DateTime SetCreationDate()
+        public User User { get => _user; set => _user = value; }
+        public Book Book { get; set; }
+        public Review(int id, string comment, int rating, DateTime date, int likes, User user, Book book)
         {
-            return DateTime.Now;
+            _id = id;
+            Comment = comment;
+            Rating = rating;
+            Date = date;
+            Likes = likes;
+            User = user;
+            Book = book;
         }
-        public int GetRating()
+        public Review()
         {
-            return rating;
+
         }
-        public string GetComment()
+        public override string ToString()
         {
-            if (!string.IsNullOrEmpty(comment)) { return comment; }
-            else { return "No comment added"; }
-        }
-        public string GetReviewerName()
-        {
-            return "";
+            return $"Review id: {Id}, user: {User.Username}, book: {Book.Title}";
         }
     }
 }

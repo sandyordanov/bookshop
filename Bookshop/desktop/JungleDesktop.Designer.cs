@@ -30,6 +30,7 @@
         {
             menuStrip1 = new MenuStrip();
             addBooksToolStripMenuItem = new ToolStripMenuItem();
+            reviewsToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -38,10 +39,10 @@
             // 
             menuStrip1.BackColor = SystemColors.ActiveCaption;
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { addBooksToolStripMenuItem, reviewsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1176, 28);
+            menuStrip1.Size = new Size(1504, 28);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -52,19 +53,26 @@
             addBooksToolStripMenuItem.Text = "Books";
             addBooksToolStripMenuItem.Click += addBooksToolStripMenuItem_Click;
             // 
+            // reviewsToolStripMenuItem
+            // 
+            reviewsToolStripMenuItem.Name = "reviewsToolStripMenuItem";
+            reviewsToolStripMenuItem.Size = new Size(76, 24);
+            reviewsToolStripMenuItem.Text = "Reviews";
+            reviewsToolStripMenuItem.Click += reviewsToolStripMenuItem_Click;
+            // 
             // panel1
             // 
             panel1.BackColor = SystemColors.InactiveCaption;
             panel1.Location = new Point(0, 27);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1176, 467);
+            panel1.Size = new Size(1505, 463);
             panel1.TabIndex = 2;
             // 
             // JungleDesktop
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1176, 496);
+            ClientSize = new Size(1504, 490);
             Controls.Add(panel1);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -82,5 +90,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem addBooksToolStripMenuItem;
         private Panel panel1;
+        private ToolStripMenuItem reviewsToolStripMenuItem;
     }
 }

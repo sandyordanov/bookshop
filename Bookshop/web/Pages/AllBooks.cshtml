@@ -1,0 +1,41 @@
+﻿@page
+@model web.Pages.AllBooksModel
+@{
+}
+<h1>All books</h1>
+<form method="get">
+    <label for="SelectedAuthor">Author:</label>
+    <select id="SelectedAuthor" name="SelectedAuthorId">
+        <option value="">-- Select an Author --</option>
+        @foreach (var author in Model.AllAuthors)
+        {
+            <option value="@author.Id">@author.FullName</option>
+        }
+    </select>
+
+    <label for="Booktype">Book type:</label>
+    <select id="Booktype" name="Booktype">
+        <option value="">-- Select a Book Type --</option>
+        <option value="Paperbook">Paperbook</option>
+        <option value="Ebook">Ebook</option>
+    </select>
+
+
+    <button type="submit">Apply Filters</button>
+</form>
+<div class="row">
+    <div class="container-fluid text-center mt-1">
+        @foreach (var book in Model.Books)
+        {
+            <div class=" card d-inline-flex" style="width: 18rem;">
+                <img class="card-img-top" src="~/book.png" alt="Card image cap" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">@book.Title [@book.Format]</h5>
+                    <p class="card-text">Author: @string.Join(",",book.Authors.Select(author => author.FullName))</p>
+                    <p class="card-text">Publisher: @book.Publisher</p>
+                    <a class="btn btn-info" asp-route-id="@book.Id" asp-page="/Book">Details</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

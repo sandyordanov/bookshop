@@ -1,9 +1,289 @@
 ﻿@page
+@using Classes;
 @model web.Pages.BookModel
 @{
 }
-<h1>Title: @Model.Book.Title</h1>
-<h3>Author: @Model.Book.Author</h3>
-<h4>Publication year: @Model.Book.PublicationYear</h4>
-<h4>Publisher: @Model.Book.Publisher</h4>
-<h4>ISBN: @Model.Book.ISBN</h4>
+@inject BLL.BookManager bookManager;
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="row">
+                <img src="~/book.png" />
+            </div>
+            <div class="row mt-2 text-center">
+                <div class="col">
+                    <form method="post" asp-page-handler="OnPostUserOperations">
+                        <input type="hidden" />
+                        <button type="submit" class="btn btn-secondary border border-1 border-success rounded-pill" asp-page-handler="UserOperations"> Want to read</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="row">
+                @if (Model.Book.GetType() == typeof(PaperBook))
+                {
+                    var paperBook = (PaperBook)Model.Book;
+                    <h1> @paperBook.Title</h1>
+                    <h3> @string.Join(',',paperBook.Authors.Select(author => author.FullName))</h3>
+                    <p>@paperBook.Description</p>
+                    <h4>Publication year: @paperBook.PublicationDate</h4>
+                    <h4>Publisher: @paperBook.Publisher</h4>
+                    <h4>ISBN: @paperBook.ISBN</h4>
+                    <h4>ISBN10: @paperBook.ISBN10</h4>
+                }
+                else if (Model.Book.GetType() == typeof(EBook))
+                {
+                    var ebook = (EBook)Model.Book;
+                    <h1> @ebook.Title</h1>
+                    <h3>@string.Join(',',ebook.Authors.Select(author => author.FullName))</h3>
+                    <p>@ebook.Description</p>
+                    <h4>Publication year: @ebook.PublicationDate</h4>
+                    <h4>Publisher: @ebook.Publisher</h4>
+                    <h4>Format: @ebook.Format</h4>
+                    <h4>File size: @ebook.FileSize</h4>
+                }
+                <hr />
+            </div>
+            <h2>Rating</h2>
+            <div class="row">
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>5 stars</h5>
+                        </div>
+                        <div class="col-8 mt-1">
+                            <div class="progress rounded-pill">
+                                <div class="progress-bar rounded-pill bg-warning " role="progressbar" style="width: @Model.Statistics.fiveStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <p class="text-secondary">@Model.Statistics.fiveStarReviewsCount (@Model.Statistics.fiveStarReviewsPercentage<span>%</span>)</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>4 stars</h5>
+                        </div>
+                        <div class="col-8 mt-1">
+                            <div class="progress rounded-pill">
+                                <div class="progress-bar rounded-pill bg-warning " role="progressbar" style="width: @Model.Statistics.fourStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <p class="text-secondary">@Model.Statistics.fourStarReviewsCount (@Model.Statistics.fourStarReviewsPercentage<span>%</span>)</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>3 stars</h5>
+                        </div>
+                        <div class="col-8 mt-1">
+                            <div class="progress rounded-pill">
+                                <div class="progress-bar rounded-pill bg-warning " role="progressbar" style="width: @Model.Statistics.threeStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <p class="text-secondary">@Model.Statistics.threeStarReviewsCount (@Model.Statistics.threeStarReviewsPercentage<span>%</span>)</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>2 stars</h5>
+                        </div>
+                        <div class="col-8 mt-1">
+                            <div class="progress rounded-pill">
+                                <div class="progress-bar rounded-pill bg-warning " role="progressbar" style="width: @Model.Statistics.twoStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <p class="text-secondary">@Model.Statistics.twoStarReviewsCount (@Model.Statistics.twoStarReviewsPercentage<span>%</span>)</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-2">
+                            <h5>1 stars</h5>
+                        </div>
+                        <div class="col-8 mt-1">
+                            <div class="progress rounded-pill">
+                                <div class="progress-bar rounded-pill bg-warning " role="progressbar" style="width: @Model.Statistics.oneStarReviewsPercentage%" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <p class="text-secondary">@Model.Statistics.oneStarReviewsCount (@Model.Statistics.oneStarReviewsPercentage<span>%</span>)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2 text-center mt-5">
+                    <div class="row">
+                        <h4> @Model.Statistics.Average/5 &#11088;</h4>
+                    </div>
+                    <div class="row">
+                        <p class="text-secondary">@Model.Statistics.ReviewCount reviews</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<hr />
+
+<div class="container mt-3">
+    <h2>Ratings & Reviews</h2>
+    @if (Model.UserHasReviews)
+    {
+        <div class="text-center">
+            @if (Model.NewReview.User.PicturePath != "noPic")
+            {
+                <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/uploads/@Model.NewReview.User.PicturePath">
+            }
+            else
+            {
+                <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/userIcon.png">
+            }
+            <h1 class="">Your review</h1>
+            @for (int i = 0; i < Model.NewReview.Rating; i++)
+            {
+                <span>&#11088</span>
+            }
+            <p class="mt-2 border border-dark border-3 rounded-3">@Model.NewReview.Date | <span class="bg-black text-white"> @Model.NewReview.Likes👍</span></p>
+            <p class="">@Model.NewReview.Comment</p>
+            <form method="post" asp-page-handler="Edit">
+                <input type="hidden" value="@Model.NewReview.Id" name="revId" />
+                <button type="submit">Edit</button>
+            </form>
+
+        </div>
+    }
+    else
+    {
+        <div class="text-center">
+            <img id="userIcon" style="border-radius:70%; width:5%; height:5%;" src="~/userIcon.png">
+            <h1 class="">What do you think?</h1>
+        </div>
+        <form method="post" asp-page-handler="OnPost">
+            <div class="form-group">
+                <label for="comment">Comment:</label>
+                <textarea asp-for="NewReview.Comment" class="form-control" id="reviewForm" name="Comment" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="rating">Rating:</label>
+                <select asp-for="NewReview.Rating" class="form-control" id="reviewForm" name="Rating" required>
+                    <option value="1">1 - Poor</option>
+                    <option value="2">2 - Fair</option>
+                    <option value="3">3 - Good</option>
+                    <option value="4">4 - Very Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                <button type="submit" class="btn btn-primary" asp-page-handler="OnPost">Submit Review</button>
+            </div>
+        </form>
+    }
+
+    <hr />
+</div>
+
+<div id="scroll-pagi" class="container">
+    <div class=" row text-center">
+        <h3>Community Reviews</h3>
+    </div>
+    @foreach (var review in Model.Reviews)
+    {
+
+        <div class="row">
+            <div class="col-3">
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-4">
+                        <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+                            <img id="userIcon" style="width: 100%; height: 100%;" src="~/uploads/@review.User.PicturePath" alt="User Icon">
+                        </div>
+                        <h5>@review.User.Name</h5>
+                        <p class="text-light">@review.User.Username</p>
+
+                    </div>
+                    <div class="col-8">
+                        <div class="row">
+                            <div class="col text-start">
+                                @for (int i = 0; i < review.Rating; i++)
+                                {
+                                    <span>&#11088</span>
+                                }
+                                <p class="">@review.Date</p>
+                            </div>
+                            @if (Model.MyUser != null)
+                            {
+                                <div class="col text-end">
+                                    <form method="post" asp-page-handler="Upvote">
+                                        <span class=" text-muted">@review.Likes likes </span>
+                                        <input type="hidden" value="@review.Id" name="revId" />
+                                        <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                                        <button type="submit" id="upvoteArrow" class="btn" style="background-color:@(Model.MyUser.LikedReviews.ContainsKey(review.Id) ? "green" : null)" @if (Model.MyUser.LikedReviews.ContainsKey(review.Id))
+                                        {
+                                            <text>disabled</text>
+                                        }><span>↑</span></button>
+                                    </form>
+
+                                    <form method="post" asp-page-handler="Downvote">
+                                        <input type="hidden" value="@review.Id" name="revId" />
+                                        <input type="hidden" value="@Model.Book.Id" name="bookId" />
+                                        <button type="submit" id="downvoteArrow" class="btn" style="background-color:@(Model.MyUser.DislikedReviews.ContainsKey(review.Id) ? "red" : null)" @if (Model.MyUser.DislikedReviews.ContainsKey(review.Id))
+                                        {
+                                            <text>disabled</text>
+                                        }><span>↓</span></button>
+                                    </form>
+                                    <form method="post" asp-page-handler="DownVote">
+                                    </form>
+                                </div>
+                            }
+                            
+                        </div>
+                        <div class="row ">
+                            <div class="col">
+                                <p>@review.Comment</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+    }
+</div>
+<div class="row text-center">
+    <div class="col">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                        <a class="page-link" asp-page="Book" asp-route-id="@Model.Book.Id" asp-route-pageNumber="@i" ('@i')">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+@if (Model.pagiButtonPressed)
+{
+    <script>
+        var searchResultsSection = document.getElementById("scroll-pagi");  // Replace "search-results" with the actual ID or selector of your search results section
+        if (searchResultsSection) {
+            searchResultsSection.scrollIntoView({ behavior: "smooth" });
+        }
+    </script>
+}
+

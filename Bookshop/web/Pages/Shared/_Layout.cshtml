@@ -1,52 +1,106 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor httpContextaccessor
+@{
+    string theme = Convert.ToString(Html.Raw(httpContextaccessor.HttpContext.Request.Cookies["ColorThemeCookie"]));
+    string oppositeTheme = theme == "dark" ? "light" : "dark";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - web</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/web.styles.css" asp-append-version="true" />
+    @if (Context.Request.Cookies.ContainsKey("ColorThemeCookie"))
+    {
+        if (theme.ToString() == "dark")
+        {
+            <link rel="stylesheet" href="~/css/darkMode.css" asp-append-version="true" />
+        }
+        else if (theme.ToString() == "light")
+        {
+            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        }
+        else
+        {
+            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        }
+    }
+    else
+    {
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    }
+
+    @*  <link rel="stylesheet" href="~/web.styles.css" asp-append-version="true" />  *@
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">web</a>
+    <header class="">
+        <nav id="head" class="navbar navbar-expand-sm navbar-toggleable-sm  border-bottom box-shadow mb-3">
+            <div class="container ">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">B&R</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Timetable">Timetable</a>
+                                <a class="nav-link text-@oppositeTheme" asp-area="" asp-page="/AllBooks">All books</a>
+                            </li>
+                            <li class="nav-item text-@oppositeTheme">
+                                <a class="nav-link text-@oppositeTheme" asp-area="" asp-page="/Library">My library</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Profile">Profile</a>
+                                <a class="nav-link text-@oppositeTheme" asp-area="" asp-page="/Profile">Profile</a>
                             </li>
-                            <li class="nav-item d-flex justify-content-end flex-grow-1">
-                                <form method="post" class="form-inline">
-                                    <button type="submit" class="btn btn-light nav-link " asp-page="/Logout">Logout</button>
+                            <!-- Search Bar -->
+                            <li class="nav-item d-flex justify-content-center flex-grow-1">
+                                <form method="post" asp-page-handler="Search" asp-page="/Search">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control rounded" name="search" placeholder="Book, author..." aria-label="Search" aria-describedby="search-addon" />
+                                        <button type="submit" class="btn btn-light">search</button>
+                                    </div>
                                 </form>
                             </li>
-                        }
-                        else
-                        {
+                            
+                            @if (User.HasClaim("UserType", "PowerUser"))
+                            {
+                                <li class="nav-item d-flex justify-content-end flex-grow-1">
+                                    <a class="nav-link text-@oppositeTheme" asp-page="/Contribute">Contribute</a>
+                                </li>
+                            }
+                            <!-- Logout Button -->
                             <li class="nav-item d-flex justify-content-end flex-grow-1">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                                <a class="btn btn-light nav-link text-dark" asp-page="Account/Logout">Logout</a>
                             </li>
-                        }
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="navbar-collapse collapse d-flex flex-row bd-highlight mb-3 justify-content-end">
+                        <ul class="navbar-nav">
+                            <li class="nav-item ">
+                                <a class="nav-link text-@oppositeTheme" asp-area="" asp-page="/Account/Register">Register</a>
+                            </li>
+                            <li class="nav-item d-flex flex-grow-1">
+                                <a class="nav-link text-@oppositeTheme" asp-area="" asp-page="/Account/Login">Login</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+
             </div>
+            <div class="nav-item  justify-content-end" style="display:flex">
+                <form method="post" asp-page="/Cookie" asp-page-handler="SetMode">
+                    <input type="hidden" value="@theme" name="ThemeColor" />
+                    <button type="submit" class="btn btn-@theme border-1 border-@theme">@theme</button>
+                </form>
+            </div>
+
         </nav>
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -63,7 +117,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
